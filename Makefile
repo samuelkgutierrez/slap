@@ -32,7 +32,7 @@ RM = /bin/rm -rf
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
 clean:
 	$(RM) *.o $(TARGET)
