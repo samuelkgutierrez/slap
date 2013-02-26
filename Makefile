@@ -12,3 +12,30 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SHELL  = /bin/sh
+
+.SUFFIXES:
+.SUFFIXES: .cxx .hxx .o
+.PHONY: clean all
+
+TARGET = slap
+
+CXX = g++
+CXXFLAGS = -Wall -g -O0
+
+SOURCES = $(wildcard *.cxx)
+OBJS = $(SOURCES:.cpp=.o)
+
+RM = /bin/rm -rf
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $(TARGET)
+
+clean:
+	$(RM) *.o $(TARGET)
+
+%.o: %.cxx
+	$(CXX) -c $(CXXFLAGS) $< -o $@
