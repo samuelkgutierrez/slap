@@ -35,7 +35,7 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
 clean:
-	$(RM) *.o $(TARGET)
+	$(RM) *.o $(TARGET) $(TARGET).dSYM
 
 %.o: %.cxx
 	$(CXX) -c $(CXXFLAGS) $< -o $@
