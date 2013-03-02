@@ -19,14 +19,30 @@
 #include <cstdio>
 #include <iostream>
 
+#include <unistd.h>
+
+#include "Utils.hxx"
 #include "AlphabetParser.hxx"
 
 using namespace std;
 
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+usage(void)
+{
+    cout << "usage" << endl;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////////////// */
 int
 main(int argc, char **argv)
 {
     AlphabetParser *alphaParser = NULL;
+
+    if (!Util::pathUsable("/tmpd")) {
+        cerr << "boo!" << endl;
+    }
 
     alphaParser = new AlphabetParser("test");
 

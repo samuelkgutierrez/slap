@@ -15,17 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ALPHABET_PARSER_INCLUDED
-#define ALPHABET_PARSER_INCLUDED
-
 #include <string>
 
-class AlphabetParser {
-private:
-    AlphabetParser(void);
-protected:
-public:
-    AlphabetParser(std::string fileToParse);
-};
+#include <unistd.h>
 
-#endif
+#include "Utils.hxx"
+
+using namespace std;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+Util::pathUsable(string path)
+{
+    return (-1 != access(path.c_str(), F_OK | R_OK));
+}
