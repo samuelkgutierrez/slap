@@ -15,20 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <cstdio>
-#include <iostream>
+#include <string>
 
-#include "AlphabetParser.hxx"
-
-using namespace std;
-
-int
-main(int argc, char **argv)
-{
-    AlphabetParser *alphaParser = NULL;
-
-    alphaParser = new AlphabetParser("test");
-
-    return EXIT_SUCCESS;
-}
+class AlphabetParser {
+private:
+    AlphabetParser(void) { }
+protected:
+public:
+    AlphabetParser(std::string fileToParse);
+};

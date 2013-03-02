@@ -15,20 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <cstdio>
+#include <string>
 #include <iostream>
 
 #include "AlphabetParser.hxx"
 
 using namespace std;
 
-int
-main(int argc, char **argv)
+AlphabetParser::AlphabetParser(string fileToParse)
 {
-    AlphabetParser *alphaParser = NULL;
-
-    alphaParser = new AlphabetParser("test");
-
-    return EXIT_SUCCESS;
+    cout << fileToParse << endl;
 }

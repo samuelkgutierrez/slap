@@ -25,7 +25,7 @@ CXX = g++
 CXXFLAGS = -Wall -g -O0
 
 SOURCES = $(wildcard *.cxx)
-OBJS = $(SOURCES:.cpp=.o)
+OBJS = $(SOURCES:.cxx=.o)
 
 RM = /bin/rm -rf
 
