@@ -20,12 +20,10 @@
 
 #include <string>
 
-class AlphabetParser {
+class Parser {
 private:
-    AlphabetParser(void);
 protected:
 public:
-    AlphabetParser(std::string fileToParse);
 };
 
 #endif
