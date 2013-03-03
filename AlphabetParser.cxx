@@ -27,6 +27,7 @@
 #include "Utils.hxx"
 #include "AlphabetParser.hxx"
 
+#define LINE_BUF_SIZE 4096
 #define ALPHABET_START_KEYWORD "alphabet"
 #define ALPHABET_END_KEYWORD   "end"
 
@@ -42,7 +43,7 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
 {
     FILE *filep = NULL;
     /* line buffer pointer */
-    char *lineBufp = new char[4096];
+    char *lineBufp = new char[LINE_BUF_SIZE];
     /* we mess with lineBufp, so stash it */
     char *saveLineBufp = lineBufp;
     /* flag indicating whether or not we have seen the start keyword */
@@ -61,7 +62,7 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
         throw FAILURE_IO;
     }
     /* parse the thing */
-    while (NULL != fgets(lineBufp, 4095, filep)) {
+    while (NULL != fgets(lineBufp, LINE_BUF_SIZE - 1, filep)) {
         /* skip all the white space and get starting position */
         lineBufp += strspn(lineBufp, WHITESPACE);
         /* find extent of word */
