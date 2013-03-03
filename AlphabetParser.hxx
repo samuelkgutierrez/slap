@@ -23,10 +23,11 @@
 
 class AlphabetParser {
 private:
-    std::set<std::string> *alphabet; 
+    std::set<std::string> alphabet;
     AlphabetParser(void);
 protected:
 public:
+    ~AlphabetParser(void);
     AlphabetParser(const std::string &fileToParse);
 };
 

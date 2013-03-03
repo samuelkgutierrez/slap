@@ -15,42 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <cstdio>
-#include <iostream>
 #include <string>
 
-#include <unistd.h>
-
 #include "Constants.hxx"
-#include "Utils.hxx"
-#include "AlphabetParser.hxx"
 
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static void
-usage(void)
+string
+Constants::rc2String(int rc)
 {
-    cout << "usage" << endl;
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-/* ////////////////////////////////////////////////////////////////////////// */
-int
-main(int argc, char **argv)
-{
-    AlphabetParser *alphaParser = NULL;
-
-    try {
-        alphaParser = new AlphabetParser("zing");
+    switch (rc) {
+        case SUCCESS:
+            return "success";
+        case FAILURE:
+            return "failure";
+        case FAILURE_IO:
+            return "io failure";
+        default:
+            return "unknown";
     }
-    catch (int err) {
-        cerr << "slap exception: " << Constants::rc2String(err) << endl;
-        return EXIT_FAILURE;
-    }
-
-    delete alphaParser;
-
-    return EXIT_SUCCESS;
 }

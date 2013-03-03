@@ -15,24 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-#include <iostream>
+#ifndef CONSTANTS_INCLUDED
+#define CONSTANTS_INCLUDED
 
-#include "Constants.hxx"
-#include "Utils.hxx"
-#include "AlphabetParser.hxx"
+#define SUCCESS    0
+#define FAILURE    1
+#define FAILURE_IO 2
 
-using namespace std;
+class Constants {
+private:
+    Constants(void);
+    ~Constants(void);
+public:
+    static std::string rc2String(int rc);
+};
 
-AlphabetParser::~AlphabetParser(void)
-{
-}
-
-AlphabetParser::AlphabetParser(const string &fileToParse)
-{
-    if (!Util::pathUsable(fileToParse)) {
-        cerr << "unable to use: " << fileToParse
-             << ". cannot continue..." << endl;
-        throw FAILURE_IO;
-    }
-}
+#endif
