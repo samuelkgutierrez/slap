@@ -15,46 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <cstdio>
-#include <iostream>
 #include <string>
+#include <iostream>
 
-#include <unistd.h>
-
-#include "Constants.hxx"
-#include "Utils.hxx"
-#include "AlphabetParser.hxx"
+#include "Alphabet.hxx"
 
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static void
-usage(void)
+Alphabet::Alphabet(const set<string> &alphaSet)
 {
-    cout << "usage" << endl;
+    this->alphabet = alphaSet;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* ////////////////////////////////////////////////////////////////////////// */
-int
-main(int argc, char **argv)
+void
+Alphabet::echo(void)
 {
-    AlphabetParser *alphaParser = NULL;
-    Alphabet *alphabet = NULL;
-
-    try {
-        alphaParser = new AlphabetParser("./tests/whitespace.alpha");
-        alphabet = alphaParser->getNewAlphabet();
-        alphabet->echo();
+    set<string>::iterator setIter;
+    for (setIter = this->alphabet.begin();
+         setIter != this->alphabet.end();
+         ++setIter) {
+        cout << *setIter << endl;
     }
-    catch (int err) {
-        cerr << "slap exception: " << Constants::rc2String(err) << endl;
-        return EXIT_FAILURE;
-    }
-
-    delete alphaParser;
-    delete alphabet;
-
-    return EXIT_SUCCESS;
 }

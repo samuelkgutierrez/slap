@@ -27,7 +27,7 @@
 #include "Utils.hxx"
 #include "AlphabetParser.hxx"
 
-#define LINE_BUF_SIZE 4096
+#define LINE_BUF_SIZE          4096
 #define ALPHABET_START_KEYWORD "alphabet"
 #define ALPHABET_END_KEYWORD   "end"
 
@@ -36,6 +36,7 @@ using namespace std;
 /* ////////////////////////////////////////////////////////////////////////// */
 AlphabetParser::~AlphabetParser(void)
 {
+    ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -44,7 +45,7 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
     FILE *filep = NULL;
     /* line buffer pointer */
     char *lineBufp = new char[LINE_BUF_SIZE];
-    /* we mess with lineBufp, so stash it */
+    /* we mess with lineBufp, so stash it so we can clean up later */
     char *saveLineBufp = lineBufp;
     /* flag indicating whether or not we have seen the start keyword */
     bool alphabetStart = false;
@@ -133,4 +134,12 @@ out:
              << ". cannot continue..." << endl;
         throw ec;
     }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+Alphabet *
+AlphabetParser::getNewAlphabet(void)
+{
+    /* caller is responsible for cleanup */
+    return new Alphabet(this->alphabet);
 }
