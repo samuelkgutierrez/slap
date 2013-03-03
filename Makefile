@@ -40,4 +40,4 @@ clean:
 
 %.o: %.cxx
 	$(CXX) -c $(CXXFLAGS) $< -o $@
-	$(CXX) -MM $(CXXFLAGS) $< > $*.d
+	@$(CXX) -MM $(CXXFLAGS) $< > $*.d
