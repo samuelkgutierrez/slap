@@ -108,7 +108,6 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
             }
         }
     }
-    
     for (setIter = this->alphabet.begin();
          setIter != this->alphabet.end();
          ++setIter) {
