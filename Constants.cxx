@@ -32,6 +32,8 @@ Constants::rc2String(int rc)
             return "failure";
         case FAILURE_IO:
             return "io failure";
+        case FAILURE_INVLD_FILE_FORMAT:
+            return "invalid file format";
         default:
             return "unknown";
     }

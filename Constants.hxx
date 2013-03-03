@@ -18,9 +18,10 @@
 #ifndef CONSTANTS_INCLUDED
 #define CONSTANTS_INCLUDED
 
-#define SUCCESS    0
-#define FAILURE    1
-#define FAILURE_IO 2
+#define SUCCESS                   0
+#define FAILURE                   1
+#define FAILURE_IO                2
+#define FAILURE_INVLD_FILE_FORMAT 3
 
 #define WHITESPACE " \t\n\v\f\r"
 
