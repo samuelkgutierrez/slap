@@ -23,19 +23,21 @@ TARGET = slap
 
 CXX = g++
 CXXFLAGS = -Wall -g -O0
+RM = /bin/rm -rf
 
 SOURCES = $(wildcard *.cxx)
 OBJS = $(SOURCES:.cxx=.o)
 
-RM = /bin/rm -rf
-
 all: $(TARGET)
+
+-include $(OBJS:.o=.d)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
 clean:
-	$(RM) *.o $(TARGET) $(TARGET).dSYM
+	$(RM) *.o $(TARGET) $(TARGET).dSYM *.d
 
 %.o: %.cxx
 	$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(CXX) -MM $(CXXFLAGS) $< > $*.d

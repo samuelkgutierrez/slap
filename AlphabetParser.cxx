@@ -22,7 +22,7 @@
 
 using namespace std;
 
-AlphabetParser::AlphabetParser(string fileToParse)
+AlphabetParser::AlphabetParser(const string &fileToParse)
 {
     cout << fileToParse << endl;
 }

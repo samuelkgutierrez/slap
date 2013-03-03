@@ -25,7 +25,7 @@ using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-Util::pathUsable(string path)
+Util::pathUsable(const string &path)
 {
     return (-1 != access(path.c_str(), F_OK | R_OK));
 }

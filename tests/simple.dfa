@@ -1,0 +1,3 @@
+Dfa -> dfa States InitialState AcceptingStates Transitions
+States -> states StateList end
+InitialState -> initial

@@ -20,13 +20,12 @@
 
 #include <string>
 
-class Util
-{
+class Util {
 private:
     Util(void);
 protected:
 public:
-    static bool pathUsable(std::string path);
+    static bool pathUsable(const std::string &path);
 };
 
 #endif

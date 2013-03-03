@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
+#include <string>
 
 #include <unistd.h>
 
@@ -44,7 +45,9 @@ main(int argc, char **argv)
         cerr << "boo!" << endl;
     }
 
-    alphaParser = new AlphabetParser("test");
+    alphaParser = new AlphabetParser("zing");
+
+    delete alphaParser;
 
     return EXIT_SUCCESS;
 }

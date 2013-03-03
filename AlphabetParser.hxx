@@ -19,13 +19,15 @@
 #define ALPHABET_PARSER_INCLUDED
 
 #include <string>
+#include <set>
 
 class AlphabetParser {
 private:
+    std::set<std::string> *alphabet; 
     AlphabetParser(void);
 protected:
 public:
-    AlphabetParser(std::string fileToParse);
+    AlphabetParser(const std::string &fileToParse);
 };
 
 #endif
