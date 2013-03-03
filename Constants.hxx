@@ -22,6 +22,8 @@
 #define FAILURE    1
 #define FAILURE_IO 2
 
+#define WHITESPACE " \t\n\v\f\r"
+
 class Constants {
 private:
     Constants(void);

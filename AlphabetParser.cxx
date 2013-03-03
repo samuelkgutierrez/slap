@@ -17,6 +17,11 @@
 
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
+
+#include <errno.h>
+#include <string.h>
 
 #include "Constants.hxx"
 #include "Utils.hxx"
@@ -24,15 +29,31 @@
 
 using namespace std;
 
+/* ////////////////////////////////////////////////////////////////////////// */
 AlphabetParser::~AlphabetParser(void)
 {
 }
 
+/* ////////////////////////////////////////////////////////////////////////// */
 AlphabetParser::AlphabetParser(const string &fileToParse)
 {
-    if (!Util::pathUsable(fileToParse)) {
-        cerr << "unable to use: " << fileToParse
-             << ". cannot continue..." << endl;
+    FILE *filep = NULL;
+    char lineBuf[4096];
+    char *lineBufp = NULL;
+    int startPos = 0;
+    bool startRead = false;
+
+    if (NULL == (filep = fopen(fileToParse.c_str(), "r+"))) {
+        int err = errno;
+        cerr << "cannot open " << fileToParse << ". " << strerror(err) << endl;
         throw FAILURE_IO;
     }
+    while (NULL != fgets(lineBuf, sizeof(lineBuf) - 1, filep)) {
+        lineBufp = lineBuf;
+        /* skip all the white space and get starting position */
+        startPos = strspn(lineBuf, WHITESPACE);
+        lineBufp += startPos;
+    }
+
+    fclose(filep);
 }

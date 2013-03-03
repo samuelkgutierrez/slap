@@ -43,7 +43,7 @@ main(int argc, char **argv)
     AlphabetParser *alphaParser = NULL;
 
     try {
-        alphaParser = new AlphabetParser("zing");
+        alphaParser = new AlphabetParser("./tests/simple.alpha");
     }
     catch (int err) {
         cerr << "slap exception: " << Constants::rc2String(err) << endl;
