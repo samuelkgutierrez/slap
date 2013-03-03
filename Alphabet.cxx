@@ -17,6 +17,7 @@
 
 #include <string>
 #include <iostream>
+#include <cstdio>
 
 #include "Alphabet.hxx"
 
@@ -29,10 +30,19 @@ Alphabet::Alphabet(const set<string> &alphaSet)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+bool
+Alphabet::isMember(AlphabetSymbol &symbol)
+{
+    printf("finding: %s\n", symbol.getString().c_str());
+    return (this->alphabet.end() != this->alphabet.find(symbol.getString()));
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 void
 Alphabet::echo(void)
 {
     set<string>::iterator setIter;
+
     for (setIter = this->alphabet.begin();
          setIter != this->alphabet.end();
          ++setIter) {

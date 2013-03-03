@@ -15,49 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
-#include <cstdio>
-#include <iostream>
-#include <string>
-
-#include <unistd.h>
-
-#include "Constants.hxx"
-#include "Utils.hxx"
 #include "AlphabetSymbol.hxx"
-#include "AlphabetParser.hxx"
 
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static void
-usage(void)
+AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
 {
-    cout << "usage" << endl;
+    this->symbol = strSymbol;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* ////////////////////////////////////////////////////////////////////////// */
-int
-main(int argc, char **argv)
+string
+AlphabetSymbol::getString(void)
 {
-    AlphabetParser *alphaParser = NULL;
-    Alphabet *alphabet = NULL;
-    AlphabetSymbol symbol("'foo");
-
-    try {
-        alphaParser = new AlphabetParser("./tests/whitespace.alpha");
-        alphabet = alphaParser->getNewAlphabet();
-        alphabet->echo();
-        cout << alphabet->isMember(symbol) << endl;
-    }
-    catch (int err) {
-        cerr << "slap exception: " << Constants::rc2String(err) << endl;
-        return EXIT_FAILURE;
-    }
-
-    delete alphaParser;
-    delete alphabet;
-
-    return EXIT_SUCCESS;
+    return this->symbol;
 }

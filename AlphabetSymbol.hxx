@@ -15,24 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ALPHABET_INCLUDED
-#define ALPHABET_INCLUDED
+#ifndef ALPHABET_SYMBOL_INCLUDED
+#define ALPHABET_SYMBOL_INCLUDED
 
 #include <string>
-#include <set>
 
-#include "AlphabetSymbol.hxx"
-
-class Alphabet {
+class AlphabetSymbol {
 private:
-    Alphabet(void);
-    std::set<std::string> alphabet;
+    AlphabetSymbol(void);
+    std::string symbol;
 protected:
 public:
-    Alphabet(const std::set<std::string> &alphaSet);
-    bool isMember(AlphabetSymbol &symbol);
-    void echo(void);
-
+    AlphabetSymbol(const std::string &strSymbol);
+    std::string getString(void);
 };
 
 #endif

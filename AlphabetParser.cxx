@@ -116,7 +116,7 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
             }
             /* or are we dealing with a new alphabet symbol? */
             haveSomeAlpha = true;
-            this->alphabet.insert(string(lineBufp, strlen(lineBufp) + 1));
+            this->alphabet.insert(string(lineBufp, strlen(lineBufp)));
             lineBufp += (wordEnd + 1);
         }
     }
