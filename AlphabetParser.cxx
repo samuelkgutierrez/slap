@@ -118,7 +118,15 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
             }
             /* or are we dealing with a new alphabet symbol? */
             haveSomeAlpha = true;
-            this->alphabet.insert(string(lineBufp, strlen(lineBufp)));
+            /* make sure this symbol already isn't in our set */
+            if (!this->alphabet.insert(string(lineBufp,
+                                       strlen(lineBufp))).second) {
+                cerr << "duplicate symbol \""
+                     << string(lineBufp, strlen(lineBufp)) << "\" found..."
+                     << endl;
+                ec = FAILURE_INVLD_FILE_FORMAT;
+                goto out;
+            }
             lineBufp += (wordEnd + 1);
         }
     }
