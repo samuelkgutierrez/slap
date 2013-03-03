@@ -41,10 +41,12 @@ AlphabetParser::~AlphabetParser(void)
 AlphabetParser::AlphabetParser(const string &fileToParse)
 {
     FILE *filep = NULL;
-    char lineBuf[4096];
-    char *lineBufp = NULL;
+    char *lineBufp = new char[4096];
+    /* we mess with lineBufp, so stash it */
+    char *saveLineBufp = lineBufp;
     bool alphabetStart = false;
     bool haveSomeAlpha = false;
+    bool alphabetEnd = false;
     int ec = SUCCESS;
     int wordEnd = 0;
     set<string>::iterator setIter;
@@ -54,19 +56,20 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
         cerr << "cannot open " << fileToParse << ". " << strerror(err) << endl;
         throw FAILURE_IO;
     }
-    while (NULL != fgets(lineBuf, sizeof(lineBuf) - 1, filep)) {
-        lineBufp = lineBuf;
+    /* parse the thing */
+    while (NULL != fgets(lineBufp, 4095, filep)) {
         /* skip all the white space and get starting position */
-        lineBufp += strspn(lineBuf, WHITESPACE);
+        lineBufp += strspn(lineBufp, WHITESPACE);
+        /* find extent of word */
+        wordEnd = strcspn(lineBufp, WHITESPACE);
+        /* cap the string we have */
+        *(lineBufp + wordEnd) = '\0';
         /* if we are at the end of the buffer, just skip */
         if ('\0' == *lineBufp) {
             continue;
         }
         /* have we seen the "alphabet" keyword? */
         if (!alphabetStart) {
-            wordEnd = strcspn(lineBufp, WHITESPACE);
-            /* cap the string before whitespace */
-            *(lineBufp + wordEnd) = '\0';
             /* this better be the start keyword */
             if (0 != strcasecmp(ALPHABET_START_KEYWORD, lineBufp)) {
                 ec = FAILURE_INVLD_FILE_FORMAT;
@@ -75,47 +78,51 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
             alphabetStart = true;
             continue;
         }
-        else {
-            while ('\0' != *lineBufp) {
-                lineBufp += strspn(lineBufp, WHITESPACE);
-                wordEnd = strcspn(lineBufp, WHITESPACE);
-                *(lineBufp + wordEnd) = '\0';
-                /* if we are at the end of the buffer, just skip */
-                if ('\0' == *lineBufp) {
-                    continue;
-                }
-                /* are we ending? */
-                if (0 == strcasecmp(ALPHABET_END_KEYWORD, lineBufp)) {
-                    if (!haveSomeAlpha) {
-                        cerr << "end detected with empty alphabet..." << endl;
-                        ec = FAILURE_INVLD_FILE_FORMAT;
-                        goto out;
-                    }
-                    /* all is well... */
-                    else {
-                        break;
-                    }
-                }
-                /* if not dealing with a new alphabet symbol, bail */
-                if ('\'' != *lineBufp) {
+        /* grab all the input that we can from the current buffer */
+        while ('\0' != *lineBufp) {
+            /* skip all the white space and get starting position */
+            lineBufp += strspn(lineBufp, WHITESPACE);
+            /* find extent of word */
+            wordEnd = strcspn(lineBufp, WHITESPACE);
+            /* cap the string we have */
+            *(lineBufp + wordEnd) = '\0';
+            /* if we are at the end of the buffer, just skip */
+            if ('\0' == *lineBufp) {
+                continue;
+            }
+            /* are we ending? */
+            if (0 == strcasecmp(ALPHABET_END_KEYWORD, lineBufp)) {
+                if (!haveSomeAlpha) {
+                    cerr << "end detected with empty alphabet..." << endl;
                     ec = FAILURE_INVLD_FILE_FORMAT;
                     goto out;
                 }
-                /* or are we dealing with a new alphabet symbol? */
-                haveSomeAlpha = true;
-                this->alphabet.insert(string(lineBufp, strlen(lineBufp) + 1));
-                lineBufp += (wordEnd + 1);
+                /* all is well... */
+                else {
+                    alphabetEnd = true;
+                    break;
+                }
             }
+            /* if not dealing with a new alphabet symbol, bail */
+            if ('\'' != *lineBufp) {
+                ec = FAILURE_INVLD_FILE_FORMAT;
+                goto out;
+            }
+            /* or are we dealing with a new alphabet symbol? */
+            haveSomeAlpha = true;
+            this->alphabet.insert(string(lineBufp, strlen(lineBufp) + 1));
+            lineBufp += (wordEnd + 1);
         }
     }
-    for (setIter = this->alphabet.begin();
-         setIter != this->alphabet.end();
-         ++setIter) {
-        cout << "o " << *setIter << endl;
+    /* did we succeed in finding all the pieces that are required? */
+    if (!alphabetEnd) {
+        cerr << "end keyword not found..." << endl;
+        ec = FAILURE_INVLD_FILE_FORMAT;
     }
 
 out:
     (void)fclose(filep);
+    delete[] saveLineBufp;
 
     if (SUCCESS != ec) {
         cerr << "invalid alphabet format detected in: " << fileToParse
