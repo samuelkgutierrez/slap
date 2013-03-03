@@ -33,7 +33,6 @@ Alphabet::Alphabet(const set<string> &alphaSet)
 bool
 Alphabet::isMember(AlphabetSymbol &symbol)
 {
-    printf("finding: %s\n", symbol.getString().c_str());
     return (this->alphabet.end() != this->alphabet.find(symbol.getString()));
 }
 

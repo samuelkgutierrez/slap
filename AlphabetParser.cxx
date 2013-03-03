@@ -62,6 +62,8 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
         cerr << "cannot open " << fileToParse << ". " << strerror(err) << endl;
         throw FAILURE_IO;
     }
+    /* can't hurt */
+    fill_n(lineBufp, LINE_BUF_SIZE, '\0');
     /* parse the thing */
     while (NULL != fgets(lineBufp, LINE_BUF_SIZE - 1, filep)) {
         /* skip all the white space and get starting position */
