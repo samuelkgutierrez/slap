@@ -41,15 +41,19 @@ AlphabetParser::~AlphabetParser(void)
 AlphabetParser::AlphabetParser(const string &fileToParse)
 {
     FILE *filep = NULL;
+    /* line buffer pointer */
     char *lineBufp = new char[4096];
     /* we mess with lineBufp, so stash it */
     char *saveLineBufp = lineBufp;
+    /* flag indicating whether or not we have seen the start keyword */
     bool alphabetStart = false;
+    /* flag indicating whether or not we have seen some alphabet symbols */
     bool haveSomeAlpha = false;
+    /* flag indicating whether or not we have seen the end keyword */
     bool alphabetEnd = false;
+    /* exit code */
     int ec = SUCCESS;
     int wordEnd = 0;
-    set<string>::iterator setIter;
 
     if (NULL == (filep = fopen(fileToParse.c_str(), "r+"))) {
         int err = errno;
@@ -116,7 +120,6 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
     }
     /* did we succeed in finding all the pieces that are required? */
     if (!alphabetEnd) {
-        cerr << "end keyword not found..." << endl;
         ec = FAILURE_INVLD_FILE_FORMAT;
     }
 
