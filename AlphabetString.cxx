@@ -29,7 +29,13 @@ AlphabetString::AlphabetString(void)
 string
 AlphabetString::stringify(void)
 {
-    return "TODO";
+    string out;
+    vector<AlphabetSymbol>::iterator it;
+
+    for (it = this->alphaString.begin(); it != this->alphaString.end(); ++it) {
+        out.append(it->stringify());
+    }
+    return out;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -37,12 +43,4 @@ void
 AlphabetString::append(const AlphabetSymbol &sym)
 {
     this->alphaString.push_back(sym);
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-ostream &
-operator<<(ostream &out, const AlphabetString &str)
-{
-    out << "TODO";
-    return out;
 }

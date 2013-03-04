@@ -34,12 +34,12 @@ AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
 AlphabetSymbol::AlphabetSymbol(const AlphabetSymbol &other) :
     symbol(other.symbol)
 {
-    cout << "YO!!!!!!!!!!" << endl;
+    ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-AlphabetSymbol::getString(void)
+AlphabetSymbol::stringify(void)
 {
     return this->symbol;
 }

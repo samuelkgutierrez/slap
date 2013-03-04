@@ -33,7 +33,7 @@ Alphabet::Alphabet(const set<string> &alphaSet)
 bool
 Alphabet::isMember(AlphabetSymbol &symbol)
 {
-    return (this->alphabet.end() != this->alphabet.find(symbol.getString()));
+    return (this->alphabet.end() != this->alphabet.find(symbol.stringify()));
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

@@ -56,6 +56,7 @@ main(int argc, char **argv)
         as->append(AlphabetSymbol("'a"));
         as->append(AlphabetSymbol("'b"));
         as->append(AlphabetSymbol("'c"));
+        cout << as->stringify() << endl;
     }
     catch (int err) {
         cerr << "slap exception: " << Constants::rc2String(err) << endl;
@@ -64,6 +65,7 @@ main(int argc, char **argv)
 
     delete alphaParser;
     delete alphabet;
+    delete as;
 
     return EXIT_SUCCESS;
 }

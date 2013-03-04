@@ -32,8 +32,6 @@ public:
     AlphabetString(void);
     void append(const AlphabetSymbol &sym);
     std::string stringify(void);
-    friend std::ostream &operator<<(std::ostream &out,
-                                    const AlphabetString &str);
 };
 
 #endif
