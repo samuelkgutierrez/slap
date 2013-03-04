@@ -26,7 +26,7 @@
 #include "Utils.hxx"
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
-#include "AlphabetParser.hxx"
+#include "AlphabetReader.hxx"
 
 using namespace std;
 
@@ -42,16 +42,16 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    AlphabetParser *alphaParser = NULL;
+    AlphabetReader *alphaParser = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
     AlphabetString *as = NULL;
     AlphabetString::iterator it;
 
     try {
-        alphaParser = new AlphabetParser("./tests/whitespace.alpha");
+        alphaParser = new AlphabetReader("./tests/whitespace.alpha");
         alphabet = alphaParser->getNewAlphabet();
-        cout << alphabet << endl;
+        cout << alphabet;
         cout << alphabet->isMember(symbol) << endl;
         as = new AlphabetString();
         as->append(AlphabetSymbol("'a"));

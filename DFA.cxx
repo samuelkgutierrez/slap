@@ -21,7 +21,7 @@ using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-DFA::accepts(string charString)
+DFA::accepts(const AlphabetString &alphaString)
 {
     return true;
 }

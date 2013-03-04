@@ -19,13 +19,14 @@
 #define DFA_INCLUDED 
 
 #include "FiniteStateMachine.hxx"
+#include "AlphabetString.hxx"
 
 class DFA : public FiniteStateMachine {
 private:
     DFA(void);
 protected:
 public:
-    bool accepts(std::string charString);
+    bool accepts(const AlphabetString &alphaString);
 };
 
 #endif

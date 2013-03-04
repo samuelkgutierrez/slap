@@ -15,22 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ALPHABET_PARSER_INCLUDED
-#define ALPHABET_PARSER_INCLUDED
+#ifndef ALPHABET_READER_INCLUDED
+#define ALPHABET_READER_INCLUDED
 
 #include <string>
 #include <set>
 
 #include "Alphabet.hxx"
 
-class AlphabetParser {
+class AlphabetReader {
 private:
     std::set<std::string> alphabet;
-    AlphabetParser(void);
+    AlphabetReader(void);
 protected:
 public:
-    ~AlphabetParser(void);
-    AlphabetParser(const std::string &fileToParse);
+    ~AlphabetReader(void);
+    AlphabetReader(const std::string &fileToParse);
     Alphabet *getNewAlphabet(void);
 };
 
