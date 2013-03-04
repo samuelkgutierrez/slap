@@ -37,14 +37,29 @@ Alphabet::isMember(AlphabetSymbol &symbol)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-void
-Alphabet::echo(void)
+std::ostream &
+operator<<(std::ostream &out, const Alphabet &a)
 {
     set<string>::iterator setIter;
 
-    for (setIter = this->alphabet.begin();
-         setIter != this->alphabet.end();
+    for (setIter = a.alphabet.begin();
+         setIter != a.alphabet.end();
          ++setIter) {
-        cout << *setIter << endl;
+        out << *setIter << endl;
     }
+    return out;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+std::ostream &
+operator<<(std::ostream &out, const Alphabet *a)
+{
+    set<string>::iterator setIter;
+
+    for (setIter = a->alphabet.begin();
+         setIter != a->alphabet.end();
+         ++setIter) {
+        out << *setIter << endl;
+    }
+    return out;
 }

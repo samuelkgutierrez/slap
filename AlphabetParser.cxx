@@ -127,6 +127,7 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
                 ec = FAILURE_INVLD_FILE_FORMAT;
                 goto out;
             }
+            /* +1 to skip over string cap */
             lineBufp += (wordEnd + 1);
         }
     }

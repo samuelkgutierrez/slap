@@ -18,6 +18,7 @@
 #ifndef ALPHABET_INCLUDED
 #define ALPHABET_INCLUDED
 
+#include <ostream>
 #include <string>
 #include <set>
 
@@ -31,7 +32,10 @@ protected:
 public:
     Alphabet(const std::set<std::string> &alphaSet);
     bool isMember(AlphabetSymbol &symbol);
-    void echo(void);
+    friend std::ostream &operator<<(std::ostream &out,
+                                    const Alphabet &a);
+    friend std::ostream &operator<<(std::ostream &out,
+                                    const Alphabet *a);
 };
 
 #endif

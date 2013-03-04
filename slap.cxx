@@ -25,6 +25,7 @@
 #include "Constants.hxx"
 #include "Utils.hxx"
 #include "AlphabetSymbol.hxx"
+#include "AlphabetString.hxx"
 #include "AlphabetParser.hxx"
 
 using namespace std;
@@ -44,12 +45,17 @@ main(int argc, char **argv)
     AlphabetParser *alphaParser = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
+    AlphabetString *as = NULL;
 
     try {
         alphaParser = new AlphabetParser("./tests/whitespace.alpha");
         alphabet = alphaParser->getNewAlphabet();
-        alphabet->echo();
+        cout << alphabet << endl;
         cout << alphabet->isMember(symbol) << endl;
+        as = new AlphabetString();
+        as->append(AlphabetSymbol("'a"));
+        as->append(AlphabetSymbol("'b"));
+        as->append(AlphabetSymbol("'c"));
     }
     catch (int err) {
         cerr << "slap exception: " << Constants::rc2String(err) << endl;

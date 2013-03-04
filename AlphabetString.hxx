@@ -15,24 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ALPHABET_SYMBOL_INCLUDED
-#define ALPHABET_SYMBOL_INCLUDED
+#ifndef ALPHABET_STRING_INCLUDED
+#define ALPHABET_STRING_INCLUDED
 
 #include <string>
 #include <ostream>
+#include <vector>
 
-class AlphabetSymbol {
+#include "AlphabetSymbol.hxx"
+
+class AlphabetString {
 private:
-    AlphabetSymbol(void);
-    std::string symbol;
+    std::vector<AlphabetSymbol> alphaString;
 protected:
 public:
-    /* copy constructor */
-    AlphabetSymbol(const AlphabetSymbol &other);
-    AlphabetSymbol(const std::string &strSymbol);
-    std::string getString(void);
+    AlphabetString(void);
+    void append(const AlphabetSymbol &sym);
+    std::string stringify(void);
     friend std::ostream &operator<<(std::ostream &out,
-                                    const AlphabetSymbol &sym);
+                                    const AlphabetString &str);
 };
 
 #endif

@@ -15,39 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-
-#include "AlphabetSymbol.hxx"
+#include "AlphabetString.hxx"
 
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
+AlphabetString::AlphabetString(void)
 {
-    this->symbol = strSymbol;
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-/**
- * copy constructor.
- */
-AlphabetSymbol::AlphabetSymbol(const AlphabetSymbol &other) :
-    symbol(other.symbol)
-{
-    cout << "YO!!!!!!!!!!" << endl;
+    ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-AlphabetSymbol::getString(void)
+AlphabetString::stringify(void)
 {
-    return this->symbol;
+    return "TODO";
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+AlphabetString::append(const AlphabetSymbol &sym)
+{
+    this->alphaString.push_back(sym);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 ostream &
-operator<<(ostream &out, const AlphabetSymbol &sym)
+operator<<(ostream &out, const AlphabetString &str)
 {
-    out << sym.symbol;
+    out << "TODO";
     return out;
 }
