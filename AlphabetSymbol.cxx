@@ -31,3 +31,11 @@ AlphabetSymbol::getString(void)
 {
     return this->symbol;
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+ostream &
+operator<<(ostream &out, const AlphabetSymbol &sym)
+{
+    out << sym.symbol;
+    return out;
+}

@@ -32,7 +32,6 @@ public:
     Alphabet(const std::set<std::string> &alphaSet);
     bool isMember(AlphabetSymbol &symbol);
     void echo(void);
-
 };
 
 #endif

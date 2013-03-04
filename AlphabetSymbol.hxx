@@ -19,6 +19,7 @@
 #define ALPHABET_SYMBOL_INCLUDED
 
 #include <string>
+#include <ostream>
 
 class AlphabetSymbol {
 private:
@@ -28,6 +29,8 @@ protected:
 public:
     AlphabetSymbol(const std::string &strSymbol);
     std::string getString(void);
+    friend std::ostream &operator<<(std::ostream &out,
+                                    const AlphabetSymbol &sym);
 };
 
 #endif
