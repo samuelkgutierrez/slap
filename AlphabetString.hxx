@@ -32,6 +32,13 @@ public:
     AlphabetString(void);
     void append(const AlphabetSymbol &sym);
     std::string stringify(void);
+    /* ////////////////////////////////////////////////////////////////////// */
+    typedef std::vector<AlphabetSymbol>::iterator iterator;
+    typedef std::vector<AlphabetSymbol>::const_iterator const_iterator;
+    iterator begin(void);
+    const_iterator begin(void) const;
+    iterator end(void);
+    const_iterator end(void) const;
 };
 
 #endif

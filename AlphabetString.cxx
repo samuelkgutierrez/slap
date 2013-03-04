@@ -44,3 +44,31 @@ AlphabetString::append(const AlphabetSymbol &sym)
 {
     this->alphaString.push_back(sym);
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+vector<AlphabetSymbol>::iterator
+AlphabetString::begin(void)
+{
+    return this->alphaString.begin();
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+vector<AlphabetSymbol>::const_iterator
+AlphabetString::begin(void) const
+{
+    return this->alphaString.begin();
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+vector<AlphabetSymbol>::iterator
+AlphabetString::end(void)
+{
+    return this->alphaString.end();
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+vector<AlphabetSymbol>::const_iterator
+AlphabetString::end(void) const
+{
+    return this->alphaString.end();
+}
