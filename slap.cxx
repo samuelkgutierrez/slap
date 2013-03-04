@@ -23,7 +23,6 @@
 #include <unistd.h>
 
 #include "Constants.hxx"
-#include "Utils.hxx"
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
 #include "AlphabetReader.hxx"
@@ -42,15 +41,15 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    AlphabetReader *alphaParser = NULL;
+    AlphabetReader *alphaReader = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
     AlphabetString *as = NULL;
     AlphabetString::iterator it;
 
     try {
-        alphaParser = new AlphabetReader("./tests/whitespace.alpha");
-        alphabet = alphaParser->getNewAlphabet();
+        alphaReader = new AlphabetReader("./tests/whitespace.alpha");
+        alphabet = alphaReader->getNewAlphabet();
         cout << alphabet;
         cout << alphabet->isMember(symbol) << endl;
         as = new AlphabetString();
@@ -67,7 +66,7 @@ main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    delete alphaParser;
+    delete alphaReader;
     delete alphabet;
     delete as;
 
