@@ -24,6 +24,7 @@
 #define FAILURE_INVLD_FILE_FORMAT 3
 
 #define WHITESPACE " \t\n\v\f\r"
+#define SLAP_WHERE __FILE__, __LINE__
 
 class Constants {
 private:

@@ -16,16 +16,29 @@
  */
 
 #include <string>
+#include <cstdio>
 
-#include <unistd.h>
+#include <string.h>
 
-#include "Utils.hxx"
+#include "SLAPException.hxx"
 
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-bool
-Util::pathUsable(const string &path)
+SLAPException::SLAPException(const char *fileName,
+                             int lineNo,
+                             const string &errMsg)
 {
-    return (-1 != access(path.c_str(), F_OK | R_OK));
+    char numBuf[16];
+
+    memset(numBuf, '\0', sizeof(numBuf));
+    snprintf(numBuf, sizeof(numBuf) - 1, " (%d): ", lineNo);
+    whatString.append(fileName).append(numBuf).append(errMsg);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+const char *
+SLAPException::what(void) const throw()
+{
+    return this->whatString.c_str();
 }

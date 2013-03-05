@@ -15,17 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_INCLUDED
-#define UTILS_INCLUDED 
+#ifndef SLAP_EXCEPTION_INCLUDED
+#define SLAP_EXCEPTION_INCLUDED
 
 #include <string>
+#include <exception>
 
-class Util {
+class SLAPException : public std::exception {
 private:
-    Util(void);
+    std::string whatString;
+    SLAPException(void);
 protected:
 public:
-    static bool pathUsable(const std::string &path);
+    ~SLAPException(void) throw() { }
+    SLAPException(const char *fileName,
+                  int lineNo,
+                  const std::string &errMsg);
+
+    virtual const char *what(void) const throw();
 };
 
 #endif

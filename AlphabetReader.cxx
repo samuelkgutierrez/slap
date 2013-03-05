@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "Constants.hxx"
-#include "Utils.hxx"
+#include "SLAPException.hxx"
 #include "AlphabetReader.hxx"
 
 #define LINE_BUF_SIZE          4096
@@ -53,14 +53,15 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
     bool haveSomeAlpha = false;
     /* flag indicating whether or not we have seen the end keyword */
     bool alphabetEnd = false;
-    /* exit code */
-    int ec = SUCCESS;
+    string eString = "invalid alphabet format detected in: " +
+                     fileToParse + ". cannot continue...\n";
     int wordEnd = 0;
 
     if (NULL == (filep = fopen(fileToParse.c_str(), "r+"))) {
         int err = errno;
-        cerr << "cannot open " << fileToParse << ". " << strerror(err) << endl;
-        throw FAILURE_IO;
+        string eStr = "cannot open " + fileToParse +
+                      ". " + strerror(err) + ".\n";
+        throw SLAPException(SLAP_WHERE, eStr);
     }
     /* can't hurt */
     fill_n(lineBufp, LINE_BUF_SIZE, '\0');
@@ -80,8 +81,7 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
         if (!alphabetStart) {
             /* this better be the start keyword */
             if (0 != strcasecmp(ALPHABET_START_KEYWORD, lineBufp)) {
-                ec = FAILURE_INVLD_FILE_FORMAT;
-                break;
+                throw SLAPException(SLAP_WHERE, eString);
             }
             alphabetStart = true;
             continue;
@@ -101,9 +101,7 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
             /* are we ending? */
             if (0 == strcasecmp(ALPHABET_END_KEYWORD, lineBufp)) {
                 if (!haveSomeAlpha) {
-                    cerr << "end detected with empty alphabet..." << endl;
-                    ec = FAILURE_INVLD_FILE_FORMAT;
-                    goto out;
+                    throw SLAPException(SLAP_WHERE, "end detected with empty alphabet...");
                 }
                 /* all is well... */
                 else {
@@ -113,8 +111,7 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
             }
             /* if not dealing with a new alphabet symbol, bail */
             if ('\'' != *lineBufp) {
-                ec = FAILURE_INVLD_FILE_FORMAT;
-                goto out;
+                throw SLAPException(SLAP_WHERE, eString);
             }
             /* or are we dealing with a new alphabet symbol? */
             haveSomeAlpha = true;
@@ -124,8 +121,7 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
                 cerr << "duplicate symbol \""
                      << string(lineBufp, strlen(lineBufp)) << "\" found..."
                      << endl;
-                ec = FAILURE_INVLD_FILE_FORMAT;
-                goto out;
+                throw SLAPException(SLAP_WHERE, eString);
             }
             /* +1 to skip over string cap */
             lineBufp += (wordEnd + 1);
@@ -133,18 +129,11 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
     }
     /* did we succeed in finding all the pieces that are required? */
     if (!alphabetEnd) {
-        ec = FAILURE_INVLD_FILE_FORMAT;
+        throw SLAPException(SLAP_WHERE, eString);
     }
 
-out:
     (void)fclose(filep);
     delete[] saveLineBufp;
-
-    if (SUCCESS != ec) {
-        cerr << "invalid alphabet format detected in: " << fileToParse
-             << ". cannot continue..." << endl;
-        throw ec;
-    }
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
