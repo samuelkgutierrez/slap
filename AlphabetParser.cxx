@@ -25,7 +25,7 @@
 
 #include "Constants.hxx"
 #include "SLAPException.hxx"
-#include "AlphabetReader.hxx"
+#include "AlphabetParser.hxx"
 
 #define LINE_BUF_SIZE          4096
 #define ALPHABET_START_KEYWORD "alphabet"
@@ -34,13 +34,13 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetReader::~AlphabetReader(void)
+AlphabetParser::~AlphabetParser(void)
 {
     ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetReader::AlphabetReader(const string &fileToParse)
+AlphabetParser::AlphabetParser(const string &fileToParse)
 {
     FILE *filep = NULL;
     /* line buffer pointer */
@@ -138,7 +138,7 @@ AlphabetReader::AlphabetReader(const string &fileToParse)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 Alphabet *
-AlphabetReader::getNewAlphabet(void)
+AlphabetParser::getNewAlphabet(void)
 {
     /* caller is responsible for cleanup */
     return new Alphabet(this->alphabet);

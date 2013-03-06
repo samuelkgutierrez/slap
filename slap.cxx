@@ -25,7 +25,7 @@
 #include "Constants.hxx"
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
-#include "AlphabetReader.hxx"
+#include "AlphabetParser.hxx"
 
 using namespace std;
 
@@ -41,14 +41,14 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    AlphabetReader *alphaReader = NULL;
+    AlphabetParser *alphaReader = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
     AlphabetString *as = NULL;
     AlphabetString::iterator it;
 
     try {
-        alphaReader = new AlphabetReader("./tests/whitespace.alpha");
+        alphaReader = new AlphabetParser("./tests/whitespace.alpha");
         alphabet = alphaReader->getNewAlphabet();
         cout << alphabet;
         cout << alphabet->isMember(symbol) << endl;
