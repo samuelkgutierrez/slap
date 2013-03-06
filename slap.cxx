@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include "Constants.hxx"
+#include "SLAPException.hxx"
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
 #include "AlphabetParser.hxx"
@@ -61,8 +62,8 @@ main(int argc, char **argv)
             cout << *it << endl;
         }
     }
-    catch (int err) {
-        cerr << "slap exception: " << Constants::rc2String(err) << endl;
+    catch (SLAPException &e) {
+        cerr << e.what() << endl;
         return EXIT_FAILURE;
     }
 

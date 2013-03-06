@@ -18,11 +18,6 @@
 #ifndef CONSTANTS_INCLUDED
 #define CONSTANTS_INCLUDED
 
-#define SUCCESS                   0
-#define FAILURE                   1
-#define FAILURE_IO                2
-#define FAILURE_INVLD_FILE_FORMAT 3
-
 #define WHITESPACE " \t\n\v\f\r"
 #define SLAP_WHERE __FILE__, __LINE__
 
@@ -31,7 +26,6 @@ private:
     Constants(void);
     ~Constants(void);
 public:
-    static std::string rc2String(int rc);
 };
 
 #endif

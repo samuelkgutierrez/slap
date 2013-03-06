@@ -15,26 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-
 #include "Constants.hxx"
 
 using namespace std;
-
-/* ////////////////////////////////////////////////////////////////////////// */
-string
-Constants::rc2String(int rc)
-{
-    switch (rc) {
-        case SUCCESS:
-            return "success";
-        case FAILURE:
-            return "failure";
-        case FAILURE_IO:
-            return "io failure";
-        case FAILURE_INVLD_FILE_FORMAT:
-            return "invalid file format";
-        default:
-            return "unknown";
-    }
-}
