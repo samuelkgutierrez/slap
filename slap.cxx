@@ -42,15 +42,15 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    AlphabetParser *alphaReader = NULL;
+    AlphabetParser *alphaParser = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
     AlphabetString *as = NULL;
     AlphabetString::iterator it;
 
     try {
-        alphaReader = new AlphabetParser("./tests/whitespace.alpha");
-        alphabet = alphaReader->getNewAlphabet();
+        alphaParser = new AlphabetParser("./tests/whitespace.alpha");
+        alphabet = alphaParser->getNewAlphabet();
         cout << alphabet;
         cout << alphabet->isMember(symbol) << endl;
         as = new AlphabetString();
@@ -67,7 +67,7 @@ main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    delete alphaReader;
+    delete alphaParser;
     delete alphabet;
     delete as;
 

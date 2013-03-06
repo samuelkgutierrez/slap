@@ -20,9 +20,11 @@
 
 class State {
 private:
+    bool acceptState;
     State(void);
 protected:
 public:
+    bool accept(void);
 };
 
 #endif

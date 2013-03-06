@@ -18,3 +18,8 @@
 #include "State.hxx"
 
 /* ////////////////////////////////////////////////////////////////////////// */
+bool
+State::accept(void)
+{
+    return this->acceptState;
+}
