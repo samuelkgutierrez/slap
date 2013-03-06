@@ -20,11 +20,14 @@
 
 #include <string>
 
+#include "State.hxx"
+
 class FiniteStateMachine {
 private:
     FiniteStateMachine(void);
 protected:
 public:
+    virtual void addState(const State &state) = 0;
     virtual bool accepts(std::string charString) = 0;
 };
 

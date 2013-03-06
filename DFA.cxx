@@ -16,12 +16,3 @@
  */
 
 #include "DFA.hxx"
-
-using namespace std;
-
-/* ////////////////////////////////////////////////////////////////////////// */
-bool
-DFA::accepts(const AlphabetString &alphaString)
-{
-    return true;
-}

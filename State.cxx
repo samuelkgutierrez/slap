@@ -15,19 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DFA_INCLUDED
-#define DFA_INCLUDED 
+#include "State.hxx"
 
-#include "FiniteStateMachine.hxx"
-#include "AlphabetString.hxx"
-
-class DFA : public FiniteStateMachine {
-private:
-    DFA(void);
-protected:
-public:
-    void addState(const State &state);
-    bool accepts(const AlphabetString &alphaString);
-};
-
-#endif
+/* ////////////////////////////////////////////////////////////////////////// */
