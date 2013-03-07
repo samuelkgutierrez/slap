@@ -17,9 +17,32 @@
 
 #include "State.hxx"
 
+using namespace std;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State::State(const AlphabetSymbol &alphaSymbol, bool start, bool accept)
+{
+    this->symbol = new AlphabetSymbol(alphaSymbol);
+    this->startState = start;
+    this->acceptState = accept;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State::~State(void)
+{
+    delete this->symbol;
+}
+
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
 State::accept(void)
 {
     return this->acceptState;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+State::start(void)
+{
+    return this->startState;
 }

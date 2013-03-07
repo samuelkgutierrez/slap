@@ -27,6 +27,7 @@
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
 #include "AlphabetParser.hxx"
+#include "State.hxx"
 
 using namespace std;
 
@@ -47,6 +48,7 @@ main(int argc, char **argv)
     AlphabetSymbol symbol("'foo");
     AlphabetString *as = NULL;
     AlphabetString::iterator it;
+    State *state = NULL;
 
     try {
         alphaParser = new AlphabetParser("./tests/whitespace.alpha");
@@ -61,6 +63,9 @@ main(int argc, char **argv)
         for (it = as->begin(); it != as->end(); ++it) {
             cout << *it << endl;
         }
+        state = new State(symbol, false, true);
+        cout << state->start() << endl;
+        cout << state->accept() << endl;
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
@@ -70,6 +75,7 @@ main(int argc, char **argv)
     delete alphaParser;
     delete alphabet;
     delete as;
+    delete state;
 
     return EXIT_SUCCESS;
 }

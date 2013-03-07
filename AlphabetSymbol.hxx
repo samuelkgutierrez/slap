@@ -23,8 +23,8 @@
 
 class AlphabetSymbol {
 private:
-    AlphabetSymbol(void);
     std::string symbol;
+    AlphabetSymbol(void);
 protected:
 public:
     /* copy constructor */

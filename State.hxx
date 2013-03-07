@@ -18,13 +18,20 @@
 #ifndef STATE_INCLUDED
 #define STATE_INCLUDED 
 
+#include "AlphabetSymbol.hxx"
+
 class State {
 private:
+    AlphabetSymbol *symbol;
+    bool startState;
     bool acceptState;
     State(void);
 protected:
 public:
+    ~State(void);
     bool accept(void);
+    bool start(void);
+    State(const AlphabetSymbol &symbol, bool start, bool accept);
 };
 
 #endif
