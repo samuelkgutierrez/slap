@@ -15,12 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AlphabetSymbol.hxx"
+#include "AlphabetString.hxx"
 #include "FiniteStateMachine.hxx"
 
 #if 0
 /* ////////////////////////////////////////////////////////////////////////// */
+State
 State::State move(const State &state, const AlphabetSymbol &symbol)
 {
-    ;
+    /* XXX this is where we will just use the transition table. the loop over
+     * symbols will be in the accepts routine. also need to think about adding
+     * special states: invalid, for example */
 }
 #endif
