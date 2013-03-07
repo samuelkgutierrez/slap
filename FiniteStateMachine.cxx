@@ -17,4 +17,10 @@
 
 #include "FiniteStateMachine.hxx"
 
+#if 0
 /* ////////////////////////////////////////////////////////////////////////// */
+State::State move(const State &state, const AlphabetSymbol &symbol)
+{
+    ;
+}
+#endif

@@ -18,17 +18,21 @@
 #ifndef FINITE_STATE_MACHINE_INCLUDED
 #define FINITE_STATE_MACHINE_INCLUDED 
 
-#include <string>
-
+#include "AlphabetSymbol.hxx"
+#include "AlphabetString.hxx"
 #include "State.hxx"
 
 class FiniteStateMachine {
 private:
     FiniteStateMachine(void);
 protected:
+    virtual State move(const State &state, const AlphabetSymbol &symbol);
 public:
-    virtual void addState(const State &state) = 0;
-    virtual bool accepts(std::string charString) = 0;
+    virtual int addState(const State &state) = 0;
+    virtual bool addTransition(const State &from,
+                               const AlphabetSymbol &symbol,
+                               const State &to) = 0;
+    virtual int accepts(const AlphabetString &alphaString) = 0;
 };
 
 #endif
