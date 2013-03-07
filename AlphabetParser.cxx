@@ -68,9 +68,9 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
     /* parse the thing */
     while (NULL != fgets(lineBufp, LINE_BUF_SIZE - 1, filep)) {
         /* skip all the white space and get starting position */
-        lineBufp += strspn(lineBufp, WHITESPACE);
+        lineBufp += strspn(lineBufp, SLAP_WHITESPACE);
         /* find extent of word */
-        wordEnd = strcspn(lineBufp, WHITESPACE);
+        wordEnd = strcspn(lineBufp, SLAP_WHITESPACE);
         /* cap the string we have */
         *(lineBufp + wordEnd) = '\0';
         /* if we are at the end of the buffer, just skip */
@@ -89,9 +89,9 @@ AlphabetParser::AlphabetParser(const string &fileToParse)
         /* grab all the input that we can from the current buffer */
         while ('\0' != *lineBufp) {
             /* skip all the white space and get starting position */
-            lineBufp += strspn(lineBufp, WHITESPACE);
+            lineBufp += strspn(lineBufp, SLAP_WHITESPACE);
             /* find extent of word */
-            wordEnd = strcspn(lineBufp, WHITESPACE);
+            wordEnd = strcspn(lineBufp, SLAP_WHITESPACE);
             /* cap the string we have */
             *(lineBufp + wordEnd) = '\0';
             /* if we are at the end of the buffer, just skip */

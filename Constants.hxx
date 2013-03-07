@@ -18,14 +18,7 @@
 #ifndef CONSTANTS_INCLUDED
 #define CONSTANTS_INCLUDED
 
-#define WHITESPACE " \t\n\v\f\r"
-#define SLAP_WHERE __FILE__, __LINE__
-
-class Constants {
-private:
-    Constants(void);
-    ~Constants(void);
-public:
-};
+#define SLAP_WHITESPACE " \t\n\v\f\r"
+#define SLAP_WHERE      __FILE__, __LINE__
 
 #endif
