@@ -15,19 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Constants.hxx"
+#include "SLAPException.hxx"
+#include "AlphabetSymbol.hxx"
+#include "AlphabetString.hxx"
+#include "AlphabetParser.hxx"
+#include "InputParser.hxx"
+#include "State.hxx"
+
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <string>
 
 #include <unistd.h>
-
-#include "Constants.hxx"
-#include "SLAPException.hxx"
-#include "AlphabetSymbol.hxx"
-#include "AlphabetString.hxx"
-#include "AlphabetParser.hxx"
-#include "State.hxx"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ usage(void)
 int
 main(int argc, char **argv)
 {
+    InputParser *inputParser = NULL;
     AlphabetParser *alphaParser = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
@@ -51,6 +53,8 @@ main(int argc, char **argv)
     State *state = NULL;
 
     try {
+        inputParser = new InputParser("./tests/dfa1.txt");
+
         alphaParser = new AlphabetParser("./tests/whitespace.alpha");
         alphabet = alphaParser->getNewAlphabet();
         cout << alphabet;
