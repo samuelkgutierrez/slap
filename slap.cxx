@@ -33,11 +33,13 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
+#if 0
 static void
 usage(void)
 {
     cout << "usage" << endl;
 }
+#endif
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -45,42 +47,16 @@ int
 main(int argc, char **argv)
 {
     FSMInputParser *inputParser = NULL;
-    AlphabetParser *alphaParser = NULL;
-    Alphabet *alphabet = NULL;
-    AlphabetSymbol symbol("'foo");
-    AlphabetString *as = NULL;
-    AlphabetString::iterator it;
-    State *state = NULL;
 
     try {
         inputParser = new FSMInputParser("./tests/dfa1.txt");
-        return EXIT_SUCCESS;
-
-        alphaParser = new AlphabetParser("./tests/whitespace.alpha");
-        alphabet = alphaParser->getNewAlphabet();
-        cout << alphabet;
-        cout << alphabet->isMember(symbol) << endl;
-        as = new AlphabetString();
-        as->append(AlphabetSymbol("'a"));
-        as->append(AlphabetSymbol("'b"));
-        as->append(AlphabetSymbol("'c"));
-        cout << as->stringify() << endl;
-        for (it = as->begin(); it != as->end(); ++it) {
-            cout << *it << endl;
-        }
-        state = new State(symbol, false, true);
-        cout << state->start() << endl;
-        cout << state->accept() << endl;
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
         return EXIT_FAILURE;
     }
 
-    delete alphaParser;
-    delete alphabet;
-    delete as;
-    delete state;
+    delete inputParser;
 
     return EXIT_SUCCESS;
 }

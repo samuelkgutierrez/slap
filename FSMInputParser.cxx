@@ -20,7 +20,6 @@
 #include "Constants.hxx"
 #include "FSMInputParser.hxx"
 #include "SLAPException.hxx"
-// XXX RM ME V
 #include "AlphabetParser.hxx"
 #include "Utils.hxx"
 
@@ -28,27 +27,21 @@
 #include <fstream>
 #include <algorithm>
 #include <locale>
-#include <vector>
+#include <map>
 
 #include <errno.h>
 #include <string.h>
 
 using namespace std;
 
-/* ////////////////////////////////////////////////////////////////////////// */
-static bool
-isParseType(const string &type)
-{
-#if 0
-    return type == "dfa" ||
-           type == "nfa" ||
-           type == "alphabet";
-#endif
-    return type == "alphabet";
-}
+enum FSMType {
+    DFA,
+    NFA,
+    UNKNOWN
+};
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static string 
+static string
 bufferFile(ifstream &fin)
 {
     string input, line;
@@ -61,12 +54,35 @@ bufferFile(ifstream &fin)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static FSMType
+determineFSMTypeFromInput(char *input)
+{
+    map<FSMType, string> validTypes;
+    /* populate with valid types */
+    validTypes[DFA] = "dfa";
+    validTypes[NFA] = "nfa";
+    char *typeStart = NULL;
+
+    for (map<FSMType, string>::iterator it = validTypes.begin();
+         it != validTypes.end();
+         ++it) {
+        if (NULL != (typeStart = strstr(input, it->second.c_str()))) {
+            /* now make sure that we are just dealing with a valid keyword */
+            if (Utils::strictlyCStr(input, typeStart,
+                strlen(it->second.c_str()))) {
+                return it->first;
+            }
+        }
+    }
+    return UNKNOWN;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 FSMInputParser::FSMInputParser(const string &fileToParse)
 {
     char *cInputStr = NULL;
     string inputStr;
     ifstream file(fileToParse.c_str());
-    AlphabetParser *alphaParser = NULL;
 
     if (!file.is_open()) {
         int err = errno;
@@ -78,41 +94,31 @@ FSMInputParser::FSMInputParser(const string &fileToParse)
     inputStr = bufferFile(file);
     /* convert to C string because it's easier to mess with C strings */
     cInputStr = Utils::getNewCString(inputStr);
-    /* first get the alphabet */
-    alphaParser = new AlphabetParser(cInputStr);
 
-#if 0
-    for (strvecIter = fileBuffer->begin();
-         strvecIter != fileBuffer->end();
-         ++strvecIter) {
-        lineBuf = Utils::getNewCString(*strvecIter);
-        lineBufp = lineBuf;
-        /* skip all the white space and get starting position */
-        lineBufp += strspn(lineBufp, SLAP_WHITESPACE);
-        /* find extent of word */
-        wordEnd = strcspn(lineBufp, SLAP_WHITESPACE);
-        /* cap the string we have */
-        *(lineBufp + wordEnd) = '\0';
-        /* if we are at the end of the buffer, just skip */
-        if ('\0' == *lineBufp) {
-            delete[] lineBuf;
-            continue;
-        }
-        /* this better be a valid parse type */
-        if (!isParseType(lineBufp)) {
-            /* XXX rm me */
-            continue;
-            string eStr = "cannot use " + fileToParse +
-                          ". invalid parse type: \'" +
-                          lineBuf + "\'\n";
-            throw SLAPException(SLAP_WHERE, eStr);
-        }
-        else {
-            AlphabetParser *tmp = new AlphabetParser(strvecIter, fileBuffer->end());
-        }
+    /* first get the alphabet - all FSM input will have one of these */
+    this->alphaParser = new AlphabetParser(cInputStr);
+    this->alphabet = alphaParser->getNewAlphabet();
 
-        delete[] lineBuf;
-    }
-#endif
+    /* now parse the finite state machine (FSM) description */
+    this->parse(cInputStr);
+
+    delete[] cInputStr;
     file.close();
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+FSMInputParser::~FSMInputParser(void)
+{
+    delete this->alphaParser;
+    delete this->alphabet;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+FSMInputParser::parse(char *cInputStr)
+{
+    FSMType type = determineFSMTypeFromInput(cInputStr);
+
+    if (UNKNOWN == type) {
+    }
 }

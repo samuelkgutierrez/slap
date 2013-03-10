@@ -1,6 +1,6 @@
 
 
-dfa 
+dfa               
 states 
 blah1
 blah2
@@ -26,4 +26,4 @@ end;
     alphabet
  'a		'b
 'c 
-end    
+end

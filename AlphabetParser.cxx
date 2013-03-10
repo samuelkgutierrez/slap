@@ -16,6 +16,7 @@
  */
 
 #include "Constants.hxx"
+#include "Utils.hxx"
 #include "SLAPException.hxx"
 #include "AlphabetParser.hxx"
 
@@ -24,8 +25,8 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include <errno.h>
 #include <string.h>
+#include <ctype.h>
 
 #define ALPHABET_START_KEYWORD "alphabet"
 #define ALPHABET_END_KEYWORD   "end"
@@ -51,7 +52,8 @@ AlphabetParser::AlphabetParser(char *input)
 
     /* find beginning of alphabet */
     alphaBegin = strstr(input, ALPHABET_START_KEYWORD);
-    if (NULL == alphaBegin) {
+    if (NULL == alphaBegin ||
+        !Utils::strictlyCStr(input, alphaBegin, strlen(ALPHABET_START_KEYWORD))) {
         string eStr = "cannot find beginning of alphabet specification. "
                       "cannot continue input parsing...";
         throw SLAPException(SLAP_WHERE, eStr);
@@ -60,7 +62,8 @@ AlphabetParser::AlphabetParser(char *input)
     alphaBegin += strlen(ALPHABET_START_KEYWORD);
     /* now that we know the start of the alphabet, find the end */
     alphaEnd = strstr(alphaBegin, ALPHABET_END_KEYWORD);
-    if (NULL == alphaEnd) {
+    if (NULL == alphaEnd ||
+        !Utils::strictlyCStr(input, alphaEnd, strlen(ALPHABET_END_KEYWORD))) {
         string eStr = "cannot find end of alphabet specification. "
                       "cannot continue input parsing...";
         throw SLAPException(SLAP_WHERE, eStr);
@@ -74,6 +77,7 @@ AlphabetParser::AlphabetParser(char *input)
         symLength = strcspn(cptr, SLAP_WHITESPACE);
         /* done parsing */
         if (cptr >= alphaEnd) {
+            /* make sure we have at least one alphabet symbol */
             if (!haveAlpha) {
                 string eStr = "no alphabet symbols found... cannot continue";
                 throw SLAPException(SLAP_WHERE, eStr);

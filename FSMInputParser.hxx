@@ -18,14 +18,22 @@
 #ifndef FSM_INPUT_PARSER_INCLUDED
 #define FSM_INPUT_PARSER_INCLUDED
 
+#include "Alphabet.hxx"
+#include "AlphabetParser.hxx"
+
 #include <string>
 
 class FSMInputParser {
 private:
+    Alphabet *alphabet;
+    AlphabetParser *alphaParser;
+
     FSMInputParser(void);
+    void parse(char *cInputStr);
 protected:
 public:
     FSMInputParser(const std::string &fileToParse);
+    ~FSMInputParser(void);
 };
 
 #endif

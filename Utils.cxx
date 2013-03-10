@@ -20,9 +20,11 @@
 #include <string>
 
 #include <string.h>
+#include <ctype.h>
 
 using namespace std;
 
+/* ////////////////////////////////////////////////////////////////////////// */
 char *
 Utils::getNewCString(const string &str)
 {
@@ -31,4 +33,24 @@ Utils::getNewCString(const string &str)
     memmove(lineBuf, str.c_str(), str.size());
     /* caller is responsible to call delete[] */
     return lineBuf;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+Utils::strictlyCStr(char *inStart, char *strBegin, int strLen)
+{
+    bool startOK = strBegin == inStart || isspace(*(strBegin - 1));
+
+    if (startOK) {
+        /* now check end */
+        for (int len = 0; len < strLen; ++len) {
+            if ('\0' == *(strBegin + len)) {
+                return false;
+            }
+        }
+        return '\0' == *(strBegin + strLen) || isspace(*(strBegin + strLen));
+    }
+    else {
+        return false;
+    }
 }

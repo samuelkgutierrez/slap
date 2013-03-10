@@ -27,6 +27,7 @@ private:
 protected:
 public:
     static char *getNewCString(const std::string &str);
+    static bool strictlyCStr(char *inStart, char *strBegin, int strLen);
 };
 
 #endif
