@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INPUT_PARSER_INCLUDED
-#define INPUT_PARSER_INCLUDED
+#ifndef FSM_INPUT_PARSER_INCLUDED
+#define FSM_INPUT_PARSER_INCLUDED
 
 #include <string>
 
