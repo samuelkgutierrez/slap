@@ -20,12 +20,15 @@
 #include "Constants.hxx"
 #include "InputParser.hxx"
 #include "SLAPException.hxx"
+// XXX RM ME V
+#include "AlphabetParser.hxx"
 #include "Utils.hxx"
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <locale>
+#include <vector>
 
 #include <errno.h>
 #include <string.h>
@@ -36,19 +39,34 @@ using namespace std;
 static bool
 isParseType(const string &type)
 {
+#if 0
     return type == "dfa" ||
            type == "nfa" ||
            type == "alphabet";
+#endif
+    return type == "alphabet";
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static string 
+bufferFile(ifstream &fin)
+{
+    string input, line;
+
+    while (fin.good()) {
+        getline(fin, line);
+        input += (line + "\n");
+    }
+    return input;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 InputParser::InputParser(const string &fileToParse)
 {
+    char *cInputStr = NULL;
+    string inputStr;
     ifstream file(fileToParse.c_str());
-    string line;
-    char *lineBuf = NULL;
-    char *lineBufp = NULL;
-    int wordEnd = 0;
+    AlphabetParser *alphaParser = NULL;
 
     if (!file.is_open()) {
         int err = errno;
@@ -56,9 +74,18 @@ InputParser::InputParser(const string &fileToParse)
                       ". " + strerror(err) + ".\n";
         throw SLAPException(SLAP_WHERE, eStr);
     }
-    while (file.good()) {
-        getline(file, line);
-        lineBuf = Utils::getCString(line);
+    /* buffer the file */
+    inputStr = bufferFile(file);
+    /* convert to C string because it's easier to mess with C strings */
+    cInputStr = Utils::getNewCString(inputStr);
+    /* first get the alphabet */
+    alphaParser = new AlphabetParser(cInputStr);
+
+#if 0
+    for (strvecIter = fileBuffer->begin();
+         strvecIter != fileBuffer->end();
+         ++strvecIter) {
+        lineBuf = Utils::getNewCString(*strvecIter);
         lineBufp = lineBuf;
         /* skip all the white space and get starting position */
         lineBufp += strspn(lineBufp, SLAP_WHITESPACE);
@@ -73,16 +100,19 @@ InputParser::InputParser(const string &fileToParse)
         }
         /* this better be a valid parse type */
         if (!isParseType(lineBufp)) {
+            /* XXX rm me */
+            continue;
             string eStr = "cannot use " + fileToParse +
                           ". invalid parse type: \'" +
                           lineBuf + "\'\n";
             throw SLAPException(SLAP_WHERE, eStr);
         }
         else {
-
+            AlphabetParser *tmp = new AlphabetParser(strvecIter, fileBuffer->end());
         }
 
         delete[] lineBuf;
     }
+#endif
     file.close();
 }

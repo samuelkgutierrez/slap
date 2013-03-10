@@ -18,12 +18,15 @@
 #ifndef ALPHABET_PARSER_INCLUDED
 #define ALPHABET_PARSER_INCLUDED
 
-#include <string>
-#include <set>
-
+#include "Parser.hxx"
 #include "Alphabet.hxx"
 
-class AlphabetParser {
+#include <string>
+#include <set>
+#include <fstream>
+#include <vector>
+
+class AlphabetParser : public Parser {
 private:
     std::set<std::string> alphabet;
     AlphabetParser(void);
@@ -31,6 +34,7 @@ protected:
 public:
     ~AlphabetParser(void);
     AlphabetParser(const std::string &fileToParse);
+    AlphabetParser(char *input);
     Alphabet *getNewAlphabet(void);
 };
 

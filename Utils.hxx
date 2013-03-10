@@ -26,7 +26,7 @@ private:
     ~Utils(void);
 protected:
 public:
-    static char *getCString(const std::string &str);
+    static char *getNewCString(const std::string &str);
 };
 
 #endif

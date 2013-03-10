@@ -54,6 +54,7 @@ main(int argc, char **argv)
 
     try {
         inputParser = new InputParser("./tests/dfa1.txt");
+        return EXIT_SUCCESS;
 
         alphaParser = new AlphabetParser("./tests/whitespace.alpha");
         alphabet = alphaParser->getNewAlphabet();

@@ -24,7 +24,7 @@
 using namespace std;
 
 char *
-Utils::getCString(const string &str)
+Utils::getNewCString(const string &str)
 {
     char *lineBuf = new char[str.size() + 1];
     lineBuf[str.size()] = '\0';

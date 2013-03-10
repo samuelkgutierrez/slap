@@ -15,6 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Constants.hxx"
+#include "SLAPException.hxx"
+#include "AlphabetParser.hxx"
+
 #include <string>
 #include <iostream>
 #include <cstdlib>
@@ -23,11 +27,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include "Constants.hxx"
-#include "SLAPException.hxx"
-#include "AlphabetParser.hxx"
-
-#define LINE_BUF_SIZE          4096
 #define ALPHABET_START_KEYWORD "alphabet"
 #define ALPHABET_END_KEYWORD   "end"
 
@@ -40,100 +39,63 @@ AlphabetParser::~AlphabetParser(void)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetParser::AlphabetParser(const string &fileToParse)
+/* it is assumed that the position into the iterator is set at the beginning
+ * of the alphabet specification. */
+AlphabetParser::AlphabetParser(char *input)
 {
-    FILE *filep = NULL;
-    /* line buffer pointer */
-    char *lineBufp = new char[LINE_BUF_SIZE];
-    /* we mess with lineBufp, so stash it so we can clean up later */
-    char *saveLineBufp = lineBufp;
-    /* flag indicating whether or not we have seen the start keyword */
-    bool alphabetStart = false;
-    /* flag indicating whether or not we have seen some alphabet symbols */
-    bool haveSomeAlpha = false;
-    /* flag indicating whether or not we have seen the end keyword */
-    bool alphabetEnd = false;
-    string eString = "invalid alphabet format detected in: " +
-                     fileToParse + ". cannot continue...\n";
-    int wordEnd = 0;
+    char *alphaBegin = NULL;
+    char *alphaEnd = NULL;
+    char *cptr = NULL;
+    int symLength = 0;
+    bool haveAlpha = false;
 
-    if (NULL == (filep = fopen(fileToParse.c_str(), "r+"))) {
-        int err = errno;
-        string eStr = "cannot open " + fileToParse +
-                      ". " + strerror(err) + ".\n";
+    /* find beginning of alphabet */
+    alphaBegin = strstr(input, ALPHABET_START_KEYWORD);
+    if (NULL == alphaBegin) {
+        string eStr = "cannot find beginning of alphabet specification. "
+                      "cannot continue input parsing...";
         throw SLAPException(SLAP_WHERE, eStr);
     }
-    /* can't hurt */
-    fill_n(lineBufp, LINE_BUF_SIZE, '\0');
-    /* parse the thing */
-    while (NULL != fgets(lineBufp, LINE_BUF_SIZE - 1, filep)) {
+    /* move passed the start keyword */
+    alphaBegin += strlen(ALPHABET_START_KEYWORD);
+    /* now that we know the start of the alphabet, find the end */
+    alphaEnd = strstr(alphaBegin, ALPHABET_END_KEYWORD);
+    if (NULL == alphaEnd) {
+        string eStr = "cannot find end of alphabet specification. "
+                      "cannot continue input parsing...";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    cptr = alphaBegin;
+    /* now we can get to parsing the thing... */
+    while ('\0' != *cptr) {
         /* skip all the white space and get starting position */
-        lineBufp += strspn(lineBufp, SLAP_WHITESPACE);
+        cptr += strspn(cptr, SLAP_WHITESPACE);
         /* find extent of word */
-        wordEnd = strcspn(lineBufp, SLAP_WHITESPACE);
-        /* cap the string we have */
-        *(lineBufp + wordEnd) = '\0';
-        /* if we are at the end of the buffer, just skip */
-        if ('\0' == *lineBufp) {
-            continue;
+        symLength = strcspn(cptr, SLAP_WHITESPACE);
+        /* done parsing */
+        if (cptr >= alphaEnd) {
+            if (!haveAlpha) {
+                string eStr = "no alphabet symbols found... cannot continue";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            break;
         }
-        /* have we seen the "alphabet" keyword? */
-        if (!alphabetStart) {
-            /* this better be the start keyword */
-            if (0 != strcasecmp(ALPHABET_START_KEYWORD, lineBufp)) {
-                throw SLAPException(SLAP_WHERE, eString);
-            }
-            alphabetStart = true;
-            continue;
+        /* if not dealing with a new alphabet symbol, bail */
+        if ('\'' != *cptr) {
+            string eStr = "invalid alphabet format. cannot continue...";
+            throw SLAPException(SLAP_WHERE, eStr);
         }
-        /* grab all the input that we can from the current buffer */
-        while ('\0' != *lineBufp) {
-            /* skip all the white space and get starting position */
-            lineBufp += strspn(lineBufp, SLAP_WHITESPACE);
-            /* find extent of word */
-            wordEnd = strcspn(lineBufp, SLAP_WHITESPACE);
-            /* cap the string we have */
-            *(lineBufp + wordEnd) = '\0';
-            /* if we are at the end of the buffer, just skip */
-            if ('\0' == *lineBufp) {
-                continue;
-            }
-            /* are we ending? */
-            if (0 == strcasecmp(ALPHABET_END_KEYWORD, lineBufp)) {
-                if (!haveSomeAlpha) {
-                    throw SLAPException(SLAP_WHERE, "end detected with empty alphabet...");
-                }
-                /* all is well... */
-                else {
-                    alphabetEnd = true;
-                    break;
-                }
-            }
-            /* if not dealing with a new alphabet symbol, bail */
-            if ('\'' != *lineBufp) {
-                throw SLAPException(SLAP_WHERE, eString);
-            }
-            /* or are we dealing with a new alphabet symbol? */
-            haveSomeAlpha = true;
-            /* make sure this symbol already isn't in our set */
-            if (!this->alphabet.insert(string(lineBufp,
-                                       strlen(lineBufp))).second) {
-                cerr << "duplicate symbol \""
-                     << string(lineBufp, strlen(lineBufp)) << "\" found..."
-                     << endl;
-                throw SLAPException(SLAP_WHERE, eString);
-            }
-            /* +1 to skip over string cap */
-            lineBufp += (wordEnd + 1);
+        /* make sure this symbol already isn't in our set */
+        if (!this->alphabet.insert(string(cptr, symLength)).second) {
+            string eStr = "duplicate symbol \"" + string(cptr, symLength) +
+                          "\" found. cannot continue...";
+            throw SLAPException(SLAP_WHERE, eStr);
         }
+        else {
+            haveAlpha = true;
+        }
+        cptr += symLength;
     }
-    /* did we succeed in finding all the pieces that are required? */
-    if (!alphabetEnd) {
-        throw SLAPException(SLAP_WHERE, eString);
-    }
-
-    (void)fclose(filep);
-    delete[] saveLineBufp;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
