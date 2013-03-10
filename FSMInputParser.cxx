@@ -18,7 +18,7 @@
 /* parses slap input */
 
 #include "Constants.hxx"
-#include "InputParser.hxx"
+#include "FSMInputParser.hxx"
 #include "SLAPException.hxx"
 // XXX RM ME V
 #include "AlphabetParser.hxx"
@@ -61,7 +61,7 @@ bufferFile(ifstream &fin)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-InputParser::InputParser(const string &fileToParse)
+FSMInputParser::FSMInputParser(const string &fileToParse)
 {
     char *cInputStr = NULL;
     string inputStr;

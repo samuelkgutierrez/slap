@@ -20,7 +20,7 @@
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
 #include "AlphabetParser.hxx"
-#include "InputParser.hxx"
+#include "FSMInputParser.hxx"
 #include "State.hxx"
 
 #include <cstdlib>
@@ -44,7 +44,7 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    InputParser *inputParser = NULL;
+    FSMInputParser *inputParser = NULL;
     AlphabetParser *alphaParser = NULL;
     Alphabet *alphabet = NULL;
     AlphabetSymbol symbol("'foo");
@@ -53,7 +53,7 @@ main(int argc, char **argv)
     State *state = NULL;
 
     try {
-        inputParser = new InputParser("./tests/dfa1.txt");
+        inputParser = new FSMInputParser("./tests/dfa1.txt");
         return EXIT_SUCCESS;
 
         alphaParser = new AlphabetParser("./tests/whitespace.alpha");

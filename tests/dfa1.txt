@@ -24,6 +24,6 @@ blah5 'c --> blah4
 end;
 
     alphabet
- 'a   'b
+ 'a		'b
 'c 
 end    

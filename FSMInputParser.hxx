@@ -20,12 +20,12 @@
 
 #include <string>
 
-class InputParser {
+class FSMInputParser {
 private:
-    InputParser(void);
+    FSMInputParser(void);
 protected:
 public:
-    InputParser(const std::string &fileToParse);
+    FSMInputParser(const std::string &fileToParse);
 };
 
 #endif
