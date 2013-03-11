@@ -39,7 +39,9 @@ Utils::getNewCString(const string &str)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-Utils::strictlyCStr(char *inStart, char *strBegin, int strLen)
+Utils::strictlyCStr(char *inStart,
+                    char *strBegin,
+                    int strLen)
 {
     bool startOK = strBegin == inStart || isspace(*(strBegin - 1));
 

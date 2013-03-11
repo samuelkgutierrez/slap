@@ -121,8 +121,40 @@ FSMInputParser::~FSMInputParser(void)
 static void
 stateParse(char *stateStart, char **stateEnd)
 {
+#if 0
     char *cptr = stateStart;
 
+    while ('\0' != *cptr) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        symLength = strcspn(cptr, SLAP_WHITESPACE);
+        /* done parsing */
+        if (cptr >= alphaEnd) {
+            /* make sure we have at least one alphabet symbol */
+            if (!haveAlpha) {
+                string eStr = "no alphabet symbols found... cannot continue";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            break;
+        }
+        /* if not dealing with a new alphabet symbol, bail */
+        if ('\'' != *cptr) {
+            string eStr = "invalid alphabet format. cannot continue...";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
+        /* make sure this symbol already isn't in our set */
+        if (!this->alphabet.insert(string(cptr, symLength)).second) {
+            string eStr = "duplicate symbol \"" + string(cptr, symLength) +
+                          "\" found. cannot continue...";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
+        else {
+            haveAlpha = true;
+        }
+        cptr += symLength;
+    }
+#endif
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

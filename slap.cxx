@@ -49,7 +49,7 @@ main(int argc, char **argv)
     FSMInputParser *inputParser = NULL;
 
     try {
-        inputParser = new FSMInputParser("./tests/dfa5.txt");
+        inputParser = new FSMInputParser("./tests/dfa1.txt");
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

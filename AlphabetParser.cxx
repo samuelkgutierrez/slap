@@ -49,7 +49,8 @@ AlphabetParser::AlphabetParser(char *input)
     bool haveAlpha = false;
 
     /* find beginning of alphabet */
-    alphaBegin = Utils::getListStart(input, (char *)ALPHABET_START_KEYWORD,
+    alphaBegin = Utils::getListStart(input,
+                                     (char *)ALPHABET_START_KEYWORD,
                                      (char *)ALPHABET_END_KEYWORD);
     if (NULL == alphaBegin) {
         string eStr = "cannot find beginning of alphabet specification. "
