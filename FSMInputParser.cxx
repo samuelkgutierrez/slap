@@ -32,8 +32,10 @@
 #include <errno.h>
 #include <string.h>
 
-#define STATES_START_KEYWORD "states"
-#define STATES_END_KEYWORD   "end;"
+#define STATES_START_KEYWORD        "states"
+#define STATES_END_KEYWORD          "end;"
+#define INITIAL_STATE_START_KEYWORD "initial"
+#define ACCEPT_STATE_START_KEYWORD  "accept"
 
 using namespace std;
 
@@ -129,7 +131,7 @@ stateParse(char *stateStart, char **end)
     int stateLen = 0;
 
     if (NULL == stateEnd ||
-        !Utils::strictlyCStr(stateEnd, stateEnd, strlen(STATES_END_KEYWORD))) {
+        !Utils::strictlyCStr(stateStart, stateEnd, strlen(STATES_END_KEYWORD))) {
         string eStr = "state end not found... cannot continue";
         throw SLAPException(SLAP_WHERE, eStr);
     }
@@ -139,18 +141,69 @@ stateParse(char *stateStart, char **end)
         /* find extent of word */
         stateLen = strcspn(cptr, SLAP_WHITESPACE);
         /* done parsing */
-        if (cptr >= stateEnd) {
+        if (cptr == stateEnd) {
             /* make sure we have at least one alphabet symbol */
             if (!haveState) {
                 string eStr = "no states found... cannot continue";
                 throw SLAPException(SLAP_WHERE, eStr);
             }
             /* capture end of state parse */
-            *end = cptr;
+            *end = cptr + strlen(STATES_END_KEYWORD);
             break;
         }
         /* XXX add addition to to set */
         cout << string(cptr, stateLen) << endl;
+        haveState = true;
+#if 0
+        /* make sure this symbol already isn't in our set */
+        if (!this->alphabet.insert(string(cptr, symLength)).second) {
+            string eStr = "duplicate symbol \"" + string(cptr, symLength) +
+                          "\" found. cannot continue...";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
+        else {
+            haveAlpha = true;
+        }
+#endif
+        cptr += stateLen;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+initialStateParse(char *stateStart, char **end)
+{
+    /* start passed the start keyword */
+    char *cptr = (stateStart + strlen(INITIAL_STATE_START_KEYWORD));
+    /* end of the state input */
+    char *stateEnd = strstr(stateStart, ACCEPT_STATE_START_KEYWORD);
+    bool haveState = false;
+    int stateLen = 0;
+
+    if (NULL == stateEnd ||
+        !Utils::strictlyCStr(stateStart, stateEnd,
+                             strlen(ACCEPT_STATE_START_KEYWORD))) {
+        string eStr = "initial state end not found... cannot continue";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    while ('\0' != *cptr) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        stateLen = strcspn(cptr, SLAP_WHITESPACE);
+        if (haveState) {
+            if (ACCEPT_STATE_START_KEYWORD !=
+                string(cptr, strlen(ACCEPT_STATE_START_KEYWORD))) {
+                string eStr = "multiple start states detected. "
+                              "cannot continue.";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* done parsing */
+            *end = cptr + strlen(ACCEPT_STATE_START_KEYWORD);
+            break;
+        }
+        /* XXX add addition to to set */
+        cout << "start: " << string(cptr, stateLen) << endl;
         haveState = true;
 #if 0
         /* make sure this symbol already isn't in our set */
@@ -182,6 +235,7 @@ FSMInputParser::parse(char *cInputStr)
                       "cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
+
     /* /// parse states /// */
     if (NULL == (pos = Utils::getListStart(pos,
                                            (char *)STATES_START_KEYWORD,
@@ -191,4 +245,15 @@ FSMInputParser::parse(char *cInputStr)
         throw SLAPException(SLAP_WHERE, eStr);
     }
     stateParse(pos, &pos);
+
+    /* /// parse initial state */
+    if (NULL == (pos =
+        Utils::getListStart(pos,
+                            (char *)INITIAL_STATE_START_KEYWORD,
+                            (char *)ACCEPT_STATE_START_KEYWORD))) {
+        string eStr = "cannot find \'" INITIAL_STATE_START_KEYWORD"\' begin. "
+                      "cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    initialStateParse(pos, &pos);
 }
