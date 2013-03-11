@@ -20,9 +20,9 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-State::State(const AlphabetSymbol &alphaSymbol, bool start, bool accept)
+State::State(const string &alphaSymbol, bool start = false, bool accept = false)
 {
-    this->symbol = new AlphabetSymbol(alphaSymbol);
+    this->symbol = alphaSymbol;
     this->startState = start;
     this->acceptState = accept;
 }
@@ -30,7 +30,7 @@ State::State(const AlphabetSymbol &alphaSymbol, bool start, bool accept)
 /* ////////////////////////////////////////////////////////////////////////// */
 State::~State(void)
 {
-    delete this->symbol;
+    ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

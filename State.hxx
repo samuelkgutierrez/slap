@@ -22,16 +22,16 @@
 
 class State {
 private:
-    AlphabetSymbol *symbol;
+    std::string symbol;
     bool startState;
     bool acceptState;
     State(void);
 protected:
 public:
     ~State(void);
+    State(const std::string &alphaSymbol, bool start, bool accept);
     bool accept(void);
     bool start(void);
-    State(const AlphabetSymbol &symbol, bool start, bool accept);
 };
 
 #endif

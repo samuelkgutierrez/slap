@@ -20,6 +20,7 @@
 
 #include "Alphabet.hxx"
 #include "AlphabetParser.hxx"
+#include "State.hxx"
 
 #include <string>
 
@@ -27,6 +28,7 @@ class FSMInputParser {
 private:
     Alphabet *alphabet;
     AlphabetParser *alphaParser;
+    /* XXX add state set */
 
     FSMInputParser(void);
     void parse(char *cInputStr);

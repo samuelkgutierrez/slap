@@ -4,10 +4,7 @@ dfa
 states 
 blah1
 blah2
-blah3
-blah4
-blah5
-end;
+blah3   blah4 blah5 end;
 initial
 blah1
 accept 

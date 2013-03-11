@@ -119,30 +119,40 @@ FSMInputParser::~FSMInputParser(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static void
-stateParse(char *stateStart, char **stateEnd)
+stateParse(char *stateStart, char **end)
 {
-#if 0
-    char *cptr = stateStart;
+    /* start passed the start keyword */
+    char *cptr = (stateStart + strlen(STATES_START_KEYWORD));
+    /* end of the state input */
+    char *stateEnd = strstr(stateStart, STATES_END_KEYWORD);
+    bool haveState = false;
+    int stateLen = 0;
 
+    if (NULL == stateEnd ||
+        !Utils::strictlyCStr(stateEnd, stateEnd, strlen(STATES_END_KEYWORD))) {
+        string eStr = "state end not found... cannot continue";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
     while ('\0' != *cptr) {
         /* skip all the white space and get starting position */
         cptr += strspn(cptr, SLAP_WHITESPACE);
         /* find extent of word */
-        symLength = strcspn(cptr, SLAP_WHITESPACE);
+        stateLen = strcspn(cptr, SLAP_WHITESPACE);
         /* done parsing */
-        if (cptr >= alphaEnd) {
+        if (cptr >= stateEnd) {
             /* make sure we have at least one alphabet symbol */
-            if (!haveAlpha) {
-                string eStr = "no alphabet symbols found... cannot continue";
+            if (!haveState) {
+                string eStr = "no states found... cannot continue";
                 throw SLAPException(SLAP_WHERE, eStr);
             }
+            /* capture end of state parse */
+            *end = cptr;
             break;
         }
-        /* if not dealing with a new alphabet symbol, bail */
-        if ('\'' != *cptr) {
-            string eStr = "invalid alphabet format. cannot continue...";
-            throw SLAPException(SLAP_WHERE, eStr);
-        }
+        /* XXX add addition to to set */
+        cout << string(cptr, stateLen) << endl;
+        haveState = true;
+#if 0
         /* make sure this symbol already isn't in our set */
         if (!this->alphabet.insert(string(cptr, symLength)).second) {
             string eStr = "duplicate symbol \"" + string(cptr, symLength) +
@@ -152,18 +162,21 @@ stateParse(char *stateStart, char **stateEnd)
         else {
             haveAlpha = true;
         }
-        cptr += symLength;
-    }
 #endif
+        cptr += stateLen;
+    }
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 void
 FSMInputParser::parse(char *cInputStr)
 {
-    FSMType type = determineFSMTypeFromInput(cInputStr);
+    FSMType type = UNKNOWN;
     char *pos = cInputStr;
 
+    /* XXX add start end balance checking thing here */
+
+    type = determineFSMTypeFromInput(cInputStr);
     if (UNKNOWN == type) {
         string eStr = "cannot determine finite state machine type. "
                       "cannot continue.";
