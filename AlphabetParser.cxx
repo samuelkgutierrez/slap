@@ -75,7 +75,7 @@ AlphabetParser::AlphabetParser(char *input)
         /* find extent of word */
         symLength = strcspn(cptr, SLAP_WHITESPACE);
         /* done parsing */
-        if (cptr >= alphaEnd) {
+        if (cptr == alphaEnd) {
             /* make sure we have at least one alphabet symbol */
             if (!haveAlpha) {
                 string eStr = "no alphabet symbols found... cannot continue";

@@ -256,4 +256,6 @@ FSMInputParser::parse(char *cInputStr)
         throw SLAPException(SLAP_WHERE, eStr);
     }
     initialStateParse(pos, &pos);
+
+    /* /// parse accept states /// */
 }
