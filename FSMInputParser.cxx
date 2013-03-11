@@ -202,9 +202,15 @@ initialStateParse(char *stateStart, char **end)
             *end = cptr + strlen(ACCEPT_STATE_START_KEYWORD);
             break;
         }
-        /* XXX add addition to to set */
-        cout << "start: " << string(cptr, stateLen) << endl;
-        haveState = true;
+        /* at the end */
+        else if (cptr == stateEnd) {
+            break;
+        }
+        else {
+            /* XXX add addition to to set */
+            cout << "start: " << string(cptr, stateLen) << endl;
+            haveState = true;
+        }
 #if 0
         /* make sure this symbol already isn't in our set */
         if (!this->alphabet.insert(string(cptr, symLength)).second) {
@@ -217,6 +223,10 @@ initialStateParse(char *stateStart, char **end)
         }
 #endif
         cptr += stateLen;
+    }
+    /* last bit of sanity */
+    if (!haveState) {
+        throw SLAPException(SLAP_WHERE, "no initial state. cannot continue.");
     }
 }
 
