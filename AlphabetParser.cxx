@@ -40,8 +40,6 @@ AlphabetParser::~AlphabetParser(void)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* it is assumed that the position into the iterator is set at the beginning
- * of the alphabet specification. */
 AlphabetParser::AlphabetParser(char *input)
 {
     char *alphaBegin = NULL;
@@ -51,9 +49,9 @@ AlphabetParser::AlphabetParser(char *input)
     bool haveAlpha = false;
 
     /* find beginning of alphabet */
-    alphaBegin = strstr(input, ALPHABET_START_KEYWORD);
-    if (NULL == alphaBegin ||
-        !Utils::strictlyCStr(input, alphaBegin, strlen(ALPHABET_START_KEYWORD))) {
+    alphaBegin = Utils::getListStart(input, (char *)ALPHABET_START_KEYWORD,
+                                     (char *)ALPHABET_END_KEYWORD);
+    if (NULL == alphaBegin) {
         string eStr = "cannot find beginning of alphabet specification. "
                       "cannot continue input parsing...";
         throw SLAPException(SLAP_WHERE, eStr);

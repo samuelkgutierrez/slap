@@ -32,6 +32,9 @@
 #include <errno.h>
 #include <string.h>
 
+#define STATES_START_KEYWORD "states"
+#define STATES_END_KEYWORD   "end;"
+
 using namespace std;
 
 enum FSMType {
@@ -92,6 +95,8 @@ FSMInputParser::FSMInputParser(const string &fileToParse)
     }
     /* buffer the file */
     inputStr = bufferFile(file);
+    /* close the file */
+    file.close();
     /* convert to C string because it's easier to mess with C strings */
     cInputStr = Utils::getNewCString(inputStr);
 
@@ -103,7 +108,6 @@ FSMInputParser::FSMInputParser(const string &fileToParse)
     this->parse(cInputStr);
 
     delete[] cInputStr;
-    file.close();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -114,11 +118,32 @@ FSMInputParser::~FSMInputParser(void)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static void
+stateParse(char *stateStart, char **stateEnd)
+{
+    char *cptr = stateStart;
+
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 void
 FSMInputParser::parse(char *cInputStr)
 {
     FSMType type = determineFSMTypeFromInput(cInputStr);
+    char *pos = cInputStr;
 
     if (UNKNOWN == type) {
+        string eStr = "cannot determine finite state machine type. "
+                      "cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
     }
+    /* /// parse states /// */
+    if (NULL == (pos = Utils::getListStart(pos,
+                                           (char *)STATES_START_KEYWORD,
+                                           (char *)STATES_END_KEYWORD))) {
+        string eStr = "cannot find \'" STATES_START_KEYWORD "\' begin. "
+                      "cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    stateParse(pos, &pos);
 }

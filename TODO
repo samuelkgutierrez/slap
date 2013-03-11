@@ -1,0 +1,2 @@
+make sure that we don't accidentally grab a symbol when searching for types. for
+example alphabet 'dfa 'nfa end;

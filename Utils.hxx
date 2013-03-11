@@ -27,7 +27,12 @@ private:
 protected:
 public:
     static char *getNewCString(const std::string &str);
-    static bool strictlyCStr(char *inStart, char *strBegin, int strLen);
+    static bool strictlyCStr(char *inStart,
+                             char *strBegin,
+                             int strLen);
+    static char *getListStart(char *inStart,
+                              char *beginKeyword,
+                              char *endKeyword);
 };
 
 #endif

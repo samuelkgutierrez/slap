@@ -18,6 +18,8 @@
 #include "Utils.hxx"
 
 #include <string>
+#include <iostream>
+#include <cstdio>
 
 #include <string.h>
 #include <ctype.h>
@@ -53,4 +55,29 @@ Utils::strictlyCStr(char *inStart, char *strBegin, int strLen)
     else {
         return false;
     }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+char *
+Utils::getListStart(char *inStart,
+                    char *beginKeyword,
+                    char *endKeyword)
+{
+    char *cptr = inStart;
+
+    while (NULL != (cptr = strstr(cptr, beginKeyword))) {
+        /* close, but not what we are looking for... skip */
+        if (!Utils::strictlyCStr(inStart, cptr, strlen(beginKeyword))) {
+            /* move pointer passed occurrence */
+            cptr += strlen(beginKeyword);
+            continue;
+        }
+        /* the keyword was found, but we couldn't find the end */
+        if (NULL == strstr(cptr, endKeyword)) {
+            return (char *)NULL;
+        }
+        /* else, good to go */
+        return cptr;
+    }
+    return (char *)NULL;
 }
