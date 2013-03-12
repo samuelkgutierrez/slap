@@ -19,6 +19,7 @@
 
 using namespace std;
 
+/* ////////////////////////////////////////////////////////////////////////// */
 FSMTransition::FSMTransition(const State &from,
                              const AlphabetSymbol &alphaSymbol,
                              const State &to)
