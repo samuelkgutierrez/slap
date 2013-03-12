@@ -127,7 +127,7 @@ parseSingleTransition(char *start,
     int part = 0;
     string state1, input, state2;
 
-    /* general transition form */
+    /* general transition form     */
     /* 0      1         2   3      */
     /* state1 'alphaSym --> state2 */
 

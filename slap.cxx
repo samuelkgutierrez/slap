@@ -18,7 +18,7 @@
 #include "SLAPException.hxx"
 #include "AlphabetParser.hxx"
 #include "FSMInputParser.hxx"
-#include "FSMTransitionTable.hxx"
+#include "FSMTransition.hxx"
 #include "State.hxx"
 
 #include <cstdlib>
@@ -35,7 +35,6 @@ dfaXListBool(const string &dfaInPath,
 {
     FSMInputParser *inputParser = NULL;
     AlphabetParser *alphaParser = NULL;
-    FSMTransitionTable *transTable = NULL;
 
     try {
         alphaParser = new AlphabetParser(dfaInPath);
@@ -45,11 +44,7 @@ dfaXListBool(const string &dfaInPath,
                                          alphaParser->getNewAlphabet());
         inputParser->parse();
 
-#if 0
-        transTable = new FSMTransitionTable(alphaParser->getNewAlphabet(),
-#endif
-                                            
-                                             
+
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

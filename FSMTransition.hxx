@@ -15,17 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FSM_TRANSITIONTABLE_INCLUDED
-#define FSM_TRANSITIONTABLE_INCLUDED
+#ifndef FSM_TRANSITION_INCLUDED
+#define FSM_TRANSITION_INCLUDED
 
-#include "Alphabet.hxx"
+#include "AlphabetSymbol.hxx"
 #include "State.hxx"
 
-class FSMTransitionTable {
+class FSMTransition {
 private:
 protected:
 public:
-    FSMTransitionTable(void);
+    FSMTransition(const State &from,
+                  const AlphabetSymbol &alphaSymbol,
+                  const State &to);
 };
 
 #endif
