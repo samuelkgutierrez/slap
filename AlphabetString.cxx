@@ -27,13 +27,13 @@ AlphabetString::AlphabetString(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-AlphabetString::stringify(void)
+AlphabetString::str(void)
 {
     string out;
     vector<AlphabetSymbol>::iterator it;
 
     for (it = this->alphaString.begin(); it != this->alphaString.end(); ++it) {
-        out.append(it->stringify());
+        out.append(it->str());
     }
     return out;
 }

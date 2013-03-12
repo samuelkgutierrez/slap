@@ -29,7 +29,7 @@ public:
     State(const std::string &alphaSymbol);
     ~State(void);
     State(const State &other);
-    std::string stringify(void);
+    std::string str(void);
     friend bool operator== (const State &s1, const State &s2);
     friend bool operator< (const State &s1, const State &s2);
 };

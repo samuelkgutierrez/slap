@@ -145,7 +145,7 @@ parseSingleTransition(char *start,
         if (0 == part || 3 == part) {
             State tmpState(sym);
             /* is this a valid state? */
-            if (states->end() == states->find(tmpState.stringify())) {
+            if (states->end() == states->find(tmpState.str())) {
                 string eStr = "invalid state detected during transition parse."
                               " \'" + sym + "\' is not a valid state. "
                               "cannot continue.";
@@ -443,7 +443,6 @@ FSMInputParser::parse(char *cInputStr)
     pos = this->parseAcceptStates(pos);
     /* /// parse transitions /// */
     pos = this->parseTransitions(pos);
-
 
     /* XXX add check for EOF and make sure no garbage is left */
 }

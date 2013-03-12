@@ -43,8 +43,8 @@ FSMTransition::FSMTransition(const FSMTransition &other)
 string
 FSMTransition::str(void)
 {
-    string ret(this->from.stringify() + " " +
-               this->alphaSymbol.stringify() + " " +
-               this->to.stringify());
+    string ret(this->from.str() + " " +
+               this->alphaSymbol.str() + " " +
+               this->to.str());
     return ret;
 }

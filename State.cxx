@@ -43,7 +43,7 @@ State::State(const State &other) :
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-State::stringify(void)
+State::str(void)
 {
     return this->symbol;
 }

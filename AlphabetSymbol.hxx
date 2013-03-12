@@ -30,7 +30,7 @@ public:
     /* copy constructor */
     AlphabetSymbol(const AlphabetSymbol &other);
     AlphabetSymbol(const std::string &strSymbol);
-    std::string stringify(void);
+    std::string str(void);
     friend std::ostream &operator<<(std::ostream &out,
                                     const AlphabetSymbol &sym);
 };

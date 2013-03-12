@@ -39,7 +39,7 @@ AlphabetSymbol::AlphabetSymbol(const AlphabetSymbol &other) :
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-AlphabetSymbol::stringify(void)
+AlphabetSymbol::str(void)
 {
     return this->symbol;
 }
