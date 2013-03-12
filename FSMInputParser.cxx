@@ -119,14 +119,16 @@ static char *
 parseSingleTransition(char *start,
                       Alphabet *alphabet,
                       set<State> *states,
-                      map<string, FSMTransition> *transitionTable)
+                      multimap<State, FSMTransition> *transTab)
 {
     char *cptr = start;
     /* C string length of item */
     int wordLen = 0;
     /* transition part number */
     int part = 0;
+    /* states */
     State state1, state2;
+    /* input symbol */
     AlphabetSymbol input;
 
     /* general transition form     */
@@ -198,9 +200,9 @@ parseSingleTransition(char *start,
         throw SLAPException(SLAP_WHERE, eStr);
     }
     /* at this point, we should have a complete and valid transition, so add it
-     * to the map of transitions that we are maintaining */
-    transitionTable->insert(make_pair("asdf",
-                                      FSMTransition(state1, input, state2)));
+     * to the multimap of transitions that we are maintaining */
+    transTab->insert(make_pair(state1, FSMTransition(state1, input, state2)));
+
     return cptr;
 }
 
@@ -216,7 +218,7 @@ transitionsParse(string id,
                  char *listStart,
                  Alphabet *alphabet,
                  set<State> *states,
-                 map<string, FSMTransition> *transitionTable)
+                 multimap<State, FSMTransition> *transitionTable)
 {
     /* char pointer */
     char *cptr = NULL;
@@ -342,7 +344,7 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
     this->stateSet = new set<State>();
     this->initStateSet = new set<State>();
     this->acceptStateSet = new set<State>();
-    this->transitionTable = new map<string, FSMTransition>();
+    this->transitionTable = new multimap<State, FSMTransition>();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -441,6 +443,7 @@ FSMInputParser::parse(char *cInputStr)
     pos = this->parseAcceptStates(pos);
     /* /// parse transitions /// */
     pos = this->parseTransitions(pos);
+
 
     /* XXX add check for EOF and make sure no garbage is left */
 }

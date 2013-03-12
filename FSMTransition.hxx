@@ -21,6 +21,8 @@
 #include "AlphabetSymbol.hxx"
 #include "State.hxx"
 
+#include <string>
+
 class FSMTransition {
 private:
     State from;
@@ -34,6 +36,7 @@ public:
                   const State &to);
     FSMTransition(const FSMTransition &other);
     ~FSMTransition(void) { }
+    std::string str(void);
 };
 
 #endif

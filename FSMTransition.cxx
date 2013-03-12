@@ -17,6 +17,8 @@
 
 #include "FSMTransition.hxx"
 
+using namespace std;
+
 FSMTransition::FSMTransition(const State &from,
                              const AlphabetSymbol &alphaSymbol,
                              const State &to)
@@ -35,4 +37,14 @@ FSMTransition::FSMTransition(const FSMTransition &other)
     this->from = other.from;
     this->alphaSymbol = other.alphaSymbol;
     this->to = other.to;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+string
+FSMTransition::str(void)
+{
+    string ret(this->from.stringify() + " " +
+               this->alphaSymbol.stringify() + " " +
+               this->to.stringify());
+    return ret;
 }
