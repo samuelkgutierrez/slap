@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 
+/* VVV makes C++ programmers :-( */
 #define FSMTransitionTable std::multimap<State, FSMTransition>
 
 class FSMTransition {

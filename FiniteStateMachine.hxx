@@ -23,12 +23,12 @@
 #include "FSMTransition.hxx"
 #include "State.hxx"
 
-#include <map>
-
 class FiniteStateMachine {
 private:
     FiniteStateMachine(void);
 protected:
+    FSMTransitionTable *transitionTable;
+
     virtual State move(const State &state, const AlphabetSymbol &symbol);
 public:
     virtual int accepts(const AlphabetString &alphaString) = 0;
