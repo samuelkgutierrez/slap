@@ -20,7 +20,10 @@
 
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
+#include "FSMTransition.hxx"
 #include "State.hxx"
+
+#include <map>
 
 class FiniteStateMachine {
 private:

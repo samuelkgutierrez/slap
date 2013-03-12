@@ -22,6 +22,9 @@
 #include "State.hxx"
 
 #include <string>
+#include <map>
+
+#define FSMTransitionTable std::multimap<State, FSMTransition>
 
 class FSMTransition {
 private:

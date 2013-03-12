@@ -119,7 +119,7 @@ static char *
 parseSingleTransition(char *start,
                       Alphabet *alphabet,
                       set<State> *states,
-                      multimap<State, FSMTransition> *transTab)
+                      FSMTransitionTable *transTab)
 {
     char *cptr = start;
     /* C string length of item */
@@ -218,7 +218,7 @@ transitionsParse(string id,
                  char *listStart,
                  Alphabet *alphabet,
                  set<State> *states,
-                 multimap<State, FSMTransition> *transitionTable)
+                 FSMTransitionTable *transitionTable)
 {
     /* char pointer */
     char *cptr = NULL;
@@ -344,7 +344,7 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
     this->stateSet = new set<State>();
     this->initStateSet = new set<State>();
     this->acceptStateSet = new set<State>();
-    this->transitionTable = new multimap<State, FSMTransition>();
+    this->transitionTable = new FSMTransitionTable();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -448,8 +448,8 @@ FSMInputParser::parse(char *cInputStr)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-multimap<State, FSMTransition> *
+FSMTransitionTable *
 FSMInputParser::getNewTransitionTable(void)
 {
-    return new multimap<State, FSMTransition>(*this->transitionTable);
+    return new FSMTransitionTable(*this->transitionTable);
 }
