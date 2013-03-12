@@ -16,16 +16,16 @@
  */
 
 #ifndef STATE_INCLUDED
-#define STATE_INCLUDED 
+#define STATE_INCLUDED
 
 #include "AlphabetSymbol.hxx"
 
 class State {
 private:
     std::string symbol;
-    State(void);
 protected:
 public:
+    State(void) { }
     State(const std::string &alphaSymbol);
     ~State(void);
     State(const State &other);

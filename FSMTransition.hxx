@@ -23,11 +23,17 @@
 
 class FSMTransition {
 private:
+    State from;
+    AlphabetSymbol alphaSymbol;
+    State to;
+    FSMTransition(void);
 protected:
 public:
     FSMTransition(const State &from,
                   const AlphabetSymbol &alphaSymbol,
                   const State &to);
+    FSMTransition(const FSMTransition &other);
+    ~FSMTransition(void) { }
 };
 
 #endif

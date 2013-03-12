@@ -20,9 +20,11 @@
 
 #include "Alphabet.hxx"
 #include "State.hxx"
+#include "FSMTransition.hxx"
 
 #include <string>
 #include <set>
+#include <map>
 
 class FSMInputParser {
 private:
@@ -36,18 +38,27 @@ private:
     std::set<State> *acceptStateSet;
     /* the start state */
     std::set<State> *initStateSet;
+    /* map of transitioins */
+    std::map<std::string, FSMTransition> *transitionTable;
 
     FSMInputParser(void);
+
     void parse(char *cInputStr);
+
     char *parseStates(char *startPos);
+
     char *parseInitState(char *startPos);
+
     char *parseAcceptStates(char *startPos);
+
     char *parseTransitions(char *startPos);
 protected:
 public:
     FSMInputParser(const std::string &fileToParse,
                    Alphabet *newAlpha);
+
     ~FSMInputParser(void);
+
     void parse(void);
 };
 

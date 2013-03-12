@@ -118,14 +118,16 @@ parseStart(string id,
 static char *
 parseSingleTransition(char *start,
                       Alphabet *alphabet,
-                      set<State> *states)
+                      set<State> *states,
+                      map<string, FSMTransition> *transitionTable)
 {
     char *cptr = start;
     /* C string length of item */
     int wordLen = 0;
     /* transition part number */
     int part = 0;
-    string state1, input, state2;
+    State state1, state2;
+    AlphabetSymbol input;
 
     /* general transition form     */
     /* 0      1         2   3      */
@@ -149,10 +151,10 @@ parseSingleTransition(char *start,
             }
             /* else, it is valid */
             if (0 == part) {
-                state1 = sym;
+                state1 = tmpState;
             }
             else {
-                state2 = sym;
+                state2 = tmpState;
             }
         }
         /* parsing 'alphaSym */
@@ -172,7 +174,7 @@ parseSingleTransition(char *start,
                 throw SLAPException(SLAP_WHERE, eStr);
             }
             /* else, good to go */
-            input = sym;
+            input = tmpAlphaSym;
         }
         /* parsing --> */
         else if (2 == part) {
@@ -195,8 +197,10 @@ parseSingleTransition(char *start,
                       "cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
-    /* XXX RM */
-    cout << state1 << " " << input << " " << state2 << endl;
+    /* at this point, we should have a complete and valid transition, so add it
+     * to the map of transitions that we are maintaining */
+    transitionTable->insert(make_pair("asdf",
+                                      FSMTransition(state1, input, state2)));
     return cptr;
 }
 
@@ -211,7 +215,8 @@ transitionsParse(string id,
                  char *endKeyword,
                  char *listStart,
                  Alphabet *alphabet,
-                 set<State> *states)
+                 set<State> *states,
+                 map<string, FSMTransition> *transitionTable)
 {
     /* char pointer */
     char *cptr = NULL;
@@ -239,7 +244,7 @@ transitionsParse(string id,
             return (char *)(cptr + strlen(endKeyword));
         }
         /* now start parsing a single transition */
-        cptr = parseSingleTransition(cptr, alphabet, states);
+        cptr = parseSingleTransition(cptr, alphabet, states, transitionTable);
         /* if we are here, then no exceptions were encountered in parse */
         ++nItems;
     }
@@ -337,6 +342,7 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
     this->stateSet = new set<State>();
     this->initStateSet = new set<State>();
     this->acceptStateSet = new set<State>();
+    this->transitionTable = new map<string, FSMTransition>();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -346,6 +352,7 @@ FSMInputParser::~FSMInputParser(void)
     delete this->stateSet;
     delete this->initStateSet;
     delete this->acceptStateSet;
+    delete this->transitionTable;
     delete[] this->cInputStr;
 }
 
@@ -407,7 +414,8 @@ FSMInputParser::parseTransitions(char *startPos)
                             (char *)TRANSITIONS_END_KEYWORD,
                             startPos,
                             this->alphabet,
-                            this->stateSet);
+                            this->stateSet,
+                            this->transitionTable);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

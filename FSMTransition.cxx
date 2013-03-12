@@ -17,4 +17,22 @@
 
 #include "FSMTransition.hxx"
 
+FSMTransition::FSMTransition(const State &from,
+                             const AlphabetSymbol &alphaSymbol,
+                             const State &to)
+{
+    this->from = from;
+    this->alphaSymbol = alphaSymbol;
+    this->to = to;
+}
 
+/* ////////////////////////////////////////////////////////////////////////// */
+/**
+ * copy constructor.
+ */
+FSMTransition::FSMTransition(const FSMTransition &other)
+{
+    this->from = other.from;
+    this->alphaSymbol = other.alphaSymbol;
+    this->to = other.to;
+}

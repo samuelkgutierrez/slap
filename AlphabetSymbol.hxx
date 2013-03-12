@@ -24,9 +24,9 @@
 class AlphabetSymbol {
 private:
     std::string symbol;
-    AlphabetSymbol(void);
 protected:
 public:
+    AlphabetSymbol(void) { }
     /* copy constructor */
     AlphabetSymbol(const AlphabetSymbol &other);
     AlphabetSymbol(const std::string &strSymbol);
