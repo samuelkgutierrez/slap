@@ -446,3 +446,10 @@ FSMInputParser::parse(char *cInputStr)
 
     /* XXX add check for EOF and make sure no garbage is left */
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+multimap<State, FSMTransition> *
+FSMInputParser::getNewTransitionTable(void)
+{
+    return new multimap<State, FSMTransition>(*this->transitionTable);
+}

@@ -38,7 +38,7 @@ private:
     std::set<State> *acceptStateSet;
     /* the start state */
     std::set<State> *initStateSet;
-    /* map of transitioins */
+    /* map of transitions */
     std::multimap<State, FSMTransition> *transitionTable;
 
     FSMInputParser(void);
@@ -60,6 +60,7 @@ public:
     ~FSMInputParser(void);
 
     void parse(void);
+    std::multimap<State, FSMTransition> *getNewTransitionTable(void);
 };
 
 #endif

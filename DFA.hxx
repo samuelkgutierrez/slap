@@ -16,10 +16,9 @@
  */
 
 #ifndef DFA_INCLUDED
-#define DFA_INCLUDED 
+#define DFA_INCLUDED
 
-#include "State.hxx"
-#include "AlphabetString.hxx"
+#include "FSMTransition.hxx"
 #include "FiniteStateMachine.hxx"
 
 class DFA : public FiniteStateMachine {
@@ -27,10 +26,6 @@ private:
     DFA(void);
 protected:
 public:
-    int addState(const State &state);
-    bool addTransition(const State &from,
-                       const AlphabetSymbol &symbol,
-                       const State &to);
     virtual int accepts(const AlphabetString &alphaString);
 };
 

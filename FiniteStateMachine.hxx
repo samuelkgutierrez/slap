@@ -16,7 +16,7 @@
  */
 
 #ifndef FINITE_STATE_MACHINE_INCLUDED
-#define FINITE_STATE_MACHINE_INCLUDED 
+#define FINITE_STATE_MACHINE_INCLUDED
 
 #include "AlphabetSymbol.hxx"
 #include "AlphabetString.hxx"
@@ -28,10 +28,6 @@ private:
 protected:
     virtual State move(const State &state, const AlphabetSymbol &symbol);
 public:
-    virtual int addState(const State &state) = 0;
-    virtual bool addTransition(const State &from,
-                               const AlphabetSymbol &symbol,
-                               const State &to) = 0;
     virtual int accepts(const AlphabetString &alphaString) = 0;
 };
 

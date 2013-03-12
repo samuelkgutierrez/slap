@@ -43,8 +43,6 @@ dfaXListBool(const string &dfaInPath,
         inputParser = new FSMInputParser(dfaInPath,
                                          alphaParser->getNewAlphabet());
         inputParser->parse();
-
-
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

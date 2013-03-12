@@ -31,10 +31,9 @@ AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
 /**
  * copy constructor.
  */
-AlphabetSymbol::AlphabetSymbol(const AlphabetSymbol &other) :
-    symbol(other.symbol)
+AlphabetSymbol::AlphabetSymbol(const AlphabetSymbol &other)
 {
-    ;
+    this->symbol = other.symbol;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

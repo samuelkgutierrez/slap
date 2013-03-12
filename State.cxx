@@ -35,10 +35,9 @@ State::~State(void)
 /**
  * copy constructor.
  */
-State::State(const State &other) :
-    symbol(other.symbol)
+State::State(const State &other)
 {
-    ;
+    this->symbol = other.symbol;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
