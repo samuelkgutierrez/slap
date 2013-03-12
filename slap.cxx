@@ -15,12 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Constants.hxx"
 #include "SLAPException.hxx"
-#include "AlphabetSymbol.hxx"
-#include "AlphabetString.hxx"
 #include "AlphabetParser.hxx"
 #include "FSMInputParser.hxx"
+#include "FSMTransitionTable.hxx"
 #include "State.hxx"
 
 #include <cstdlib>
@@ -28,9 +26,40 @@
 #include <iostream>
 #include <string>
 
-#include <unistd.h>
-
 using namespace std;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static bool
+dfaXListBool(const string &dfaInPath,
+             const string &inputPath)
+{
+    FSMInputParser *inputParser = NULL;
+    AlphabetParser *alphaParser = NULL;
+    FSMTransitionTable *transTable = NULL;
+
+    try {
+        alphaParser = new AlphabetParser(dfaInPath);
+        alphaParser->parse();
+
+        inputParser = new FSMInputParser(dfaInPath,
+                                         alphaParser->getNewAlphabet());
+        inputParser->parse();
+
+#if 0
+        transTable = new FSMTransitionTable(alphaParser->getNewAlphabet(),
+#endif
+                                            
+                                             
+    }
+    catch (SLAPException &e) {
+        cerr << e.what() << endl;
+        return false;
+    }
+
+    delete inputParser;
+    delete alphaParser;
+    return true;
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 #if 0
@@ -46,17 +75,8 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    FSMInputParser *inputParser = NULL;
-
-    try {
-        inputParser = new FSMInputParser("./tests/dfa1.txt");
-    }
-    catch (SLAPException &e) {
-        cerr << e.what() << endl;
-        return EXIT_FAILURE;
-    }
-
-    delete inputParser;
-
+    bool accepts = false;
+    accepts = dfaXListBool("./tests/dfa1.txt", "./tests/dfa1-test-input.txt");
+    cout << "accepts: " << accepts << endl;
     return EXIT_SUCCESS;
 }

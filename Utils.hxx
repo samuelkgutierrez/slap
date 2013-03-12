@@ -19,6 +19,7 @@
 #define UTILS_INCLUDED
 
 #include <string>
+#include <fstream>
 
 class Utils {
 private:
@@ -27,12 +28,18 @@ private:
 protected:
 public:
     static char *getNewCString(const std::string &str);
+
     static bool strictlyCStr(char *inStart,
                              char *strBegin,
                              int strLen);
+
     static char *getListStart(char *inStart,
                               char *beginKeyword,
                               char *endKeyword);
+
+    static std::string int2string(int i);
+
+    static std::string bufferFile(std::ifstream &fin);
 };
 
 #endif

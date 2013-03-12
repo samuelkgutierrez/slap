@@ -20,11 +20,9 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-State::State(const string &alphaSymbol, bool start = false, bool accept = false)
+State::State(const string &alphaSymbol)
 {
     this->symbol = alphaSymbol;
-    this->startState = start;
-    this->acceptState = accept;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -34,15 +32,22 @@ State::~State(void)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-bool
-State::accept(void)
+string
+State::stringify(void)
 {
-    return this->acceptState;
+    return this->symbol;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-State::start(void)
+operator== (const State &s1, const State &s2)
 {
-    return this->startState;
+    return s1.symbol == s2.symbol;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+operator< (const State &s1, const State &s2)
+{
+    return s1.symbol < s2.symbol;
 }

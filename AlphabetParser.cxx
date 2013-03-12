@@ -22,11 +22,13 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <cstdio>
 
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 #define ALPHABET_START_KEYWORD "alphabet"
 #define ALPHABET_END_KEYWORD   "end"
@@ -34,19 +36,53 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetParser::~AlphabetParser(void)
+AlphabetParser::AlphabetParser(const string &fileToParse)
 {
-    ;
+    string inputStr;
+    ifstream file(fileToParse.c_str());
+
+    /* problem opening the file */
+    if (!file.is_open()) {
+        int err = errno;
+        string eStr = "cannot open " + fileToParse +
+                      ". " + strerror(err) + ".\n";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* buffer the file */
+    inputStr = Utils::bufferFile(file);
+    /* close the file */
+    file.close();
+
+    /* /// setup private member containers /// */
+    /* convert to C string because it's easier to mess with C strings */
+    this->cInputStr = Utils::getNewCString(inputStr);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetParser::AlphabetParser(char *input)
+AlphabetParser::~AlphabetParser(void)
+{
+    delete[] this->cInputStr;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/* this should be called AFTER parse */
+Alphabet *
+AlphabetParser::getNewAlphabet(void)
+{
+    /* caller is responsible for cleanup */
+    return new Alphabet(this->alphabet);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+AlphabetParser::parse(void)
 {
     char *alphaBegin = NULL;
     char *alphaEnd = NULL;
     char *cptr = NULL;
     int symLength = 0;
     bool haveAlpha = false;
+    char *input = this->cInputStr;
 
     /* find beginning of alphabet */
     alphaBegin = Utils::getListStart(input,
@@ -99,12 +135,4 @@ AlphabetParser::AlphabetParser(char *input)
         }
         cptr += symLength;
     }
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-Alphabet *
-AlphabetParser::getNewAlphabet(void)
-{
-    /* caller is responsible for cleanup */
-    return new Alphabet(this->alphabet);
 }

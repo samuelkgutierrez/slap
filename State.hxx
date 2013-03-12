@@ -23,15 +23,14 @@
 class State {
 private:
     std::string symbol;
-    bool startState;
-    bool acceptState;
     State(void);
 protected:
 public:
+    State(const std::string &alphaSymbol);
     ~State(void);
-    State(const std::string &alphaSymbol, bool start, bool accept);
-    bool accept(void);
-    bool start(void);
+    std::string stringify(void);
+    friend bool operator== (const State &s1, const State &s2);
+    friend bool operator< (const State &s1, const State &s2);
 };
 
 #endif

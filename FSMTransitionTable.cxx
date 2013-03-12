@@ -15,27 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ALPHABET_PARSER_INCLUDED
-#define ALPHABET_PARSER_INCLUDED
+#include "FSMTransitionTable.hxx"
 
-#include "Alphabet.hxx"
 
-#include <string>
-#include <set>
-
-class AlphabetParser {
-private:
-    /* buffer that holds input text */
-    char *cInputStr;
-    /* set containing compete alphabet */
-    std::set<std::string> alphabet;
-    AlphabetParser(void);
-protected:
-public:
-    AlphabetParser(const std::string &fileToParse);
-    ~AlphabetParser(void);
-    Alphabet *getNewAlphabet(void);
-    void parse(void);
-};
-
-#endif

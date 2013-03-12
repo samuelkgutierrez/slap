@@ -15,13 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* parses slap input */
-
 #include "Constants.hxx"
-#include "FSMInputParser.hxx"
-#include "SLAPException.hxx"
-#include "AlphabetParser.hxx"
 #include "Utils.hxx"
+#include "SLAPException.hxx"
+#include "FSMInputParser.hxx"
+#include "State.hxx"
 
 #include <iostream>
 #include <fstream>
@@ -36,27 +34,28 @@
 #define STATES_END_KEYWORD          "end;"
 #define INITIAL_STATE_START_KEYWORD "initial"
 #define ACCEPT_STATE_START_KEYWORD  "accept"
+#define ACCEPT_STATE_END_KEYWORD    "end;"
+#define TRANSITIONS_START_KEYWORD   "transitions"
+#define TRANSITIONS_END_KEYWORD     "end;"
+#define TRANSITION_ARROW            "-->"
 
-using namespace std;
+/* number of "parts" within a single transition specification */
+#define NUM_TRANSITION_PARTS 4
 
+/* finite state machine types */
 enum FSMType {
     DFA,
     NFA,
     UNKNOWN
 };
 
-/* ////////////////////////////////////////////////////////////////////////// */
-static string
-bufferFile(ifstream &fin)
-{
-    string input, line;
+using namespace std;
 
-    while (fin.good()) {
-        getline(fin, line);
-        input += (line + "\n");
-    }
-    return input;
-}
+/* ////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////////////// */
+/* private utility functions */
+/* ////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////////////// */
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static FSMType
@@ -67,10 +66,9 @@ determineFSMTypeFromInput(char *input)
     validTypes[DFA] = "dfa";
     validTypes[NFA] = "nfa";
     char *typeStart = NULL;
+    map<FSMType, string>::iterator it;
 
-    for (map<FSMType, string>::iterator it = validTypes.begin();
-         it != validTypes.end();
-         ++it) {
+    for (it = validTypes.begin(); it != validTypes.end(); ++it) {
         if (NULL != (typeStart = strstr(input, it->second.c_str()))) {
             /* now make sure that we are just dealing with a valid keyword */
             if (Utils::strictlyCStr(input, typeStart,
@@ -83,12 +81,243 @@ determineFSMTypeFromInput(char *input)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-FSMInputParser::FSMInputParser(const string &fileToParse)
+/* *start and *end will always be valid if no exception is encountered */
+static void
+parseStart(string id,
+           char *startKeyword,
+           char *endKeyword,
+           char *listStart,
+           char **start,
+           char **end)
 {
-    char *cInputStr = NULL;
+    char *cptr = NULL, *listEnd = NULL;
+    /* get start of list */
+    if (NULL == (cptr = Utils::getListStart(listStart,
+                                            startKeyword,
+                                            endKeyword))) {
+        string eStr = "cannot find \'" + string(startKeyword) +
+                      "\' begin/end. cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* make sure we have a valid end */
+    if (NULL == (listEnd = strstr(cptr, endKeyword)) ||
+        !Utils::strictlyCStr(listStart, listEnd, strlen(endKeyword))) {
+        string eStr = id + " end not found... cannot continue";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* if we are here, then all is well */
+    *start = cptr;
+    *end = listEnd;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/* this routine assumes that all is well with the input, so only a minor level
+ * of input checking is performed. this should only be called within
+ * transitionsParse. also, it is assumed that start is at the beginning of a
+ * single transition list, so prep should be done by the caller. */
+static char *
+parseSingleTransition(char *start,
+                      Alphabet *alphabet,
+                      set<State> *states)
+{
+    char *cptr = start;
+    /* C string length of item */
+    int wordLen = 0;
+    /* transition part number */
+    int part = 0;
+    string state1, input, state2;
+
+    /* general transition form */
+    /* 0      1         2   3      */
+    /* state1 'alphaSym --> state2 */
+
+    while ('\0' != *cptr && part < NUM_TRANSITION_PARTS) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        wordLen = strcspn(cptr, SLAP_WHITESPACE);
+        string sym = string(cptr, wordLen);
+        /* parsing state1 or state2 */
+        if (0 == part || 3 == part) {
+            State tmpState(sym);
+            /* is this a valid state? */
+            if (states->end() == states->find(tmpState.stringify())) {
+                string eStr = "invalid state detected during transition parse."
+                              " \'" + sym + "\' is not a valid state. "
+                              "cannot continue.";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* else, it is valid */
+            if (0 == part) {
+                state1 = sym;
+            }
+            else {
+                state2 = sym;
+            }
+        }
+        /* parsing 'alphaSym */
+        else if (1 == part) {
+            AlphabetSymbol tmpAlphaSym(sym);
+            if ('\'' != *cptr) {
+                string eStr = "invalid input detected during transition parse."
+                              " expected \' at symbol start, but found " +
+                              string(cptr, 1) + ". cannot continue.";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* else make sure it is a valid symbol */
+            if (!alphabet->isMember(tmpAlphaSym)) {
+                string eStr = "invalid symbol detected during transition parse."
+                              " \'" + sym + "\' is not a valid symbol. "
+                              "cannot continue.";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* else, good to go */
+            input = sym;
+        }
+        /* parsing --> */
+        else if (2 == part) {
+            if (TRANSITION_ARROW != sym) {
+                string eStr = "invalid symbol detected during transition parse."
+                              " expected \'" TRANSITION_ARROW "\' but got \'" +
+                              sym + "\' cannot continue.";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* else, we are cool */
+        }
+        /* move passed parsed input */
+        cptr += wordLen;
+        /* update part */
+        ++part;
+    }
+    /* last bit of sanity to make sure that we got all the parts */
+    if (NUM_TRANSITION_PARTS != part) {
+        string eStr = "incomplete parse detected during transition parse. "
+                      "cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* XXX RM */
+    cout << state1 << " " << input << " " << state2 << endl;
+    return cptr;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/**
+ * parses transition lists of the form: transition t1 t2 ... end end and returns
+ * end position.
+ */
+static char *
+transitionsParse(string id,
+                 char *startKeyword,
+                 char *endKeyword,
+                 char *listStart,
+                 Alphabet *alphabet,
+                 set<State> *states)
+{
+    /* char pointer */
+    char *cptr = NULL;
+    /* end of the state input */
+    char *listEnd = NULL;
+    /* # items inserted */
+    int nItems = 0;
+
+    /* start parse */
+    parseStart(id, startKeyword, endKeyword, listStart, &cptr, &listEnd);
+    /* move passed the start keyword before we start parsing */
+    cptr += strlen(startKeyword);
+    /* start parsing loop */
+    while ('\0' != *cptr) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* done parsing */
+        if (cptr == listEnd) {
+            /* make sure we have at least one item */
+            if (0 == nItems) {
+                string eStr = "no " + id + "s found... cannot continue";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* capture end of state parse */
+            return (char *)(cptr + strlen(endKeyword));
+        }
+        /* now start parsing a single transition */
+        cptr = parseSingleTransition(cptr, alphabet, states);
+        /* if we are here, then no exceptions were encountered in parse */
+        ++nItems;
+    }
+    /* if we are here, then something weird happened */
+    return (char *)NULL;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/**
+ * parses lists in the form: start i1 i2 ... in end and returns end position.
+ */
+static char *
+listParse(string id,
+          char *startKeyword,
+          char *endKeyword,
+          char *listStart,
+          set<State> *targetSet,
+          int insertLimit)
+{
+    /* char pointer */
+    char *cptr = NULL;
+    /* end of the state input */
+    char *listEnd = NULL;
+    /* C string length of item */
+    int wordLen = 0;
+    /* # items inserted */
+    int nItems = 0;
+
+    /* start parse */
+    parseStart(id, startKeyword, endKeyword, listStart, &cptr, &listEnd);
+    /* move passed the start keyword before we start parsing */
+    cptr += strlen(startKeyword);
+    /* start parsing loop */
+    while ('\0' != *cptr) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        wordLen = strcspn(cptr, SLAP_WHITESPACE);
+        /* done parsing */
+        if (cptr == listEnd) {
+            /* make sure we have at least one item */
+            if (0 == nItems) {
+                string eStr = "no " + id + "s found... cannot continue";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+            /* capture end of state parse */
+            return (char *)(cptr + strlen(endKeyword));
+        }
+        /* make sure this item already isn't in our set */
+        if (!targetSet->insert(State(string(cptr, wordLen))).second) {
+            string eStr = "duplicate " + id + " \"" + string(cptr, wordLen) +
+                          "\" found. cannot continue...";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
+        /* insert successful */
+        else {
+            ++nItems;
+            if (-1 != insertLimit && nItems > insertLimit) {
+                string maxIStr = Utils::int2string(insertLimit);
+                string eStr = "more than " + maxIStr + " item " +
+                              "found in " + id + " parse. cannot continue.";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+        }
+        cptr += wordLen;
+    }
+    /* if we are here, then something weird happened */
+    return (char *)NULL;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+FSMInputParser::FSMInputParser(const string &fileToParse,
+                               Alphabet *newAlpha)
+{
     string inputStr;
     ifstream file(fileToParse.c_str());
 
+    /* problem opening the file */
     if (!file.is_open()) {
         int err = errno;
         string eStr = "cannot open " + fileToParse +
@@ -96,138 +325,89 @@ FSMInputParser::FSMInputParser(const string &fileToParse)
         throw SLAPException(SLAP_WHERE, eStr);
     }
     /* buffer the file */
-    inputStr = bufferFile(file);
+    inputStr = Utils::bufferFile(file);
     /* close the file */
     file.close();
-    /* convert to C string because it's easier to mess with C strings */
-    cInputStr = Utils::getNewCString(inputStr);
 
+    /* /// setup private member containers /// */
     /* first get the alphabet - all FSM input will have one of these */
-    this->alphaParser = new AlphabetParser(cInputStr);
-    this->alphabet = alphaParser->getNewAlphabet();
-
-    /* now parse the finite state machine (FSM) description */
-    this->parse(cInputStr);
-
-    delete[] cInputStr;
+    this->alphabet = newAlpha;
+    /* convert to C string because it's easier to mess with C strings */
+    this->cInputStr = Utils::getNewCString(inputStr);
+    this->stateSet = new set<State>();
+    this->initStateSet = new set<State>();
+    this->acceptStateSet = new set<State>();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 FSMInputParser::~FSMInputParser(void)
 {
-    delete this->alphaParser;
     delete this->alphabet;
+    delete this->stateSet;
+    delete this->initStateSet;
+    delete this->acceptStateSet;
+    delete[] this->cInputStr;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static void
-stateParse(char *stateStart, char **end)
+void
+FSMInputParser::parse(void)
 {
-    /* start passed the start keyword */
-    char *cptr = (stateStart + strlen(STATES_START_KEYWORD));
-    /* end of the state input */
-    char *stateEnd = strstr(stateStart, STATES_END_KEYWORD);
-    bool haveState = false;
-    int stateLen = 0;
-
-    if (NULL == stateEnd ||
-        !Utils::strictlyCStr(stateStart, stateEnd, strlen(STATES_END_KEYWORD))) {
-        string eStr = "state end not found... cannot continue";
-        throw SLAPException(SLAP_WHERE, eStr);
-    }
-    while ('\0' != *cptr) {
-        /* skip all the white space and get starting position */
-        cptr += strspn(cptr, SLAP_WHITESPACE);
-        /* find extent of word */
-        stateLen = strcspn(cptr, SLAP_WHITESPACE);
-        /* done parsing */
-        if (cptr == stateEnd) {
-            /* make sure we have at least one alphabet symbol */
-            if (!haveState) {
-                string eStr = "no states found... cannot continue";
-                throw SLAPException(SLAP_WHERE, eStr);
-            }
-            /* capture end of state parse */
-            *end = cptr + strlen(STATES_END_KEYWORD);
-            break;
-        }
-        /* XXX add addition to to set */
-        cout << string(cptr, stateLen) << endl;
-        haveState = true;
-#if 0
-        /* make sure this symbol already isn't in our set */
-        if (!this->alphabet.insert(string(cptr, symLength)).second) {
-            string eStr = "duplicate symbol \"" + string(cptr, symLength) +
-                          "\" found. cannot continue...";
-            throw SLAPException(SLAP_WHERE, eStr);
-        }
-        else {
-            haveAlpha = true;
-        }
-#endif
-        cptr += stateLen;
-    }
+    /* now parse the finite state machine (FSM) description */
+    this->parse(this->cInputStr);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static void
-initialStateParse(char *stateStart, char **end)
+char *
+FSMInputParser::parseStates(char *startPos)
 {
-    /* start passed the start keyword */
-    char *cptr = (stateStart + strlen(INITIAL_STATE_START_KEYWORD));
-    /* end of the state input */
-    char *stateEnd = strstr(stateStart, ACCEPT_STATE_START_KEYWORD);
-    bool haveState = false;
-    int stateLen = 0;
 
-    if (NULL == stateEnd ||
-        !Utils::strictlyCStr(stateStart, stateEnd,
-                             strlen(ACCEPT_STATE_START_KEYWORD))) {
-        string eStr = "initial state end not found... cannot continue";
-        throw SLAPException(SLAP_WHERE, eStr);
-    }
-    while ('\0' != *cptr) {
-        /* skip all the white space and get starting position */
-        cptr += strspn(cptr, SLAP_WHITESPACE);
-        /* find extent of word */
-        stateLen = strcspn(cptr, SLAP_WHITESPACE);
-        if (haveState) {
-            if (ACCEPT_STATE_START_KEYWORD !=
-                string(cptr, strlen(ACCEPT_STATE_START_KEYWORD))) {
-                string eStr = "multiple start states detected. "
-                              "cannot continue.";
-                throw SLAPException(SLAP_WHERE, eStr);
-            }
-            /* done parsing */
-            *end = cptr + strlen(ACCEPT_STATE_START_KEYWORD);
-            break;
-        }
-        /* at the end */
-        else if (cptr == stateEnd) {
-            break;
-        }
-        else {
-            /* XXX add addition to to set */
-            cout << "start: " << string(cptr, stateLen) << endl;
-            haveState = true;
-        }
-#if 0
-        /* make sure this symbol already isn't in our set */
-        if (!this->alphabet.insert(string(cptr, symLength)).second) {
-            string eStr = "duplicate symbol \"" + string(cptr, symLength) +
-                          "\" found. cannot continue...";
-            throw SLAPException(SLAP_WHERE, eStr);
-        }
-        else {
-            haveAlpha = true;
-        }
-#endif
-        cptr += stateLen;
-    }
-    /* last bit of sanity */
-    if (!haveState) {
-        throw SLAPException(SLAP_WHERE, "no initial state. cannot continue.");
-    }
+    return listParse("state",
+                     (char *)STATES_START_KEYWORD,
+                     (char *)STATES_END_KEYWORD,
+                     startPos,
+                     this->stateSet,
+                     -1);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+char *
+FSMInputParser::parseInitState(char *startPos)
+{
+    char *pos = listParse("initial",
+                          (char *)INITIAL_STATE_START_KEYWORD,
+                          (char *)ACCEPT_STATE_START_KEYWORD,
+                          startPos,
+                          this->initStateSet,
+                          1);
+    /* need to rewind a bit before we return because the end of this list is the
+     * start of accept and listParse returns a pos at the end of the end keyword
+     */
+    return (char *)(pos - strlen(ACCEPT_STATE_START_KEYWORD));
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+char *
+FSMInputParser::parseAcceptStates(char *startPos)
+{
+    return listParse("accept",
+                     (char *)ACCEPT_STATE_START_KEYWORD,
+                     (char *)ACCEPT_STATE_END_KEYWORD,
+                     startPos,
+                     this->acceptStateSet,
+                     -1);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+char *
+FSMInputParser::parseTransitions(char *startPos)
+{
+    return transitionsParse("transition",
+                            (char *)TRANSITIONS_START_KEYWORD,
+                            (char *)TRANSITIONS_END_KEYWORD,
+                            startPos,
+                            this->alphabet,
+                            this->stateSet);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -245,27 +425,14 @@ FSMInputParser::parse(char *cInputStr)
                       "cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
-
     /* /// parse states /// */
-    if (NULL == (pos = Utils::getListStart(pos,
-                                           (char *)STATES_START_KEYWORD,
-                                           (char *)STATES_END_KEYWORD))) {
-        string eStr = "cannot find \'" STATES_START_KEYWORD "\' begin. "
-                      "cannot continue.";
-        throw SLAPException(SLAP_WHERE, eStr);
-    }
-    stateParse(pos, &pos);
-
-    /* /// parse initial state */
-    if (NULL == (pos =
-        Utils::getListStart(pos,
-                            (char *)INITIAL_STATE_START_KEYWORD,
-                            (char *)ACCEPT_STATE_START_KEYWORD))) {
-        string eStr = "cannot find \'" INITIAL_STATE_START_KEYWORD"\' begin. "
-                      "cannot continue.";
-        throw SLAPException(SLAP_WHERE, eStr);
-    }
-    initialStateParse(pos, &pos);
-
+    pos = this->parseStates(pos);
+    /* /// parse initial state /// */
+    pos = this->parseInitState(pos);
     /* /// parse accept states /// */
+    pos = this->parseAcceptStates(pos);
+    /* /// parse transitions /// */
+    pos = this->parseTransitions(pos);
+
+    /* XXX add check for EOF and make sure no garbage is left */
 }

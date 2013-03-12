@@ -19,7 +19,9 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <cstdio>
+#include <algorithm>
 
 #include <string.h>
 #include <ctype.h>
@@ -33,7 +35,7 @@ Utils::getNewCString(const string &str)
     char *lineBuf = new char[str.size() + 1];
     lineBuf[str.size()] = '\0';
     memmove(lineBuf, str.c_str(), str.size());
-    /* caller is responsible to call delete[] */
+    /* caller is responsible for calling delete[] */
     return lineBuf;
 }
 
@@ -82,4 +84,27 @@ Utils::getListStart(char *inStart,
         return cptr;
     }
     return (char *)NULL;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+string
+Utils::int2string(int i)
+{
+    char tmpBuf[32];
+    fill_n(tmpBuf, sizeof(tmpBuf), '\0');
+    snprintf(tmpBuf, sizeof(tmpBuf) - 1, "%d", i);
+    return string(tmpBuf);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+string
+Utils::bufferFile(ifstream &fin)
+{
+    string input, line;
+
+    while (fin.good()) {
+        getline(fin, line);
+        input += (line + "\n");
+    }
+    return input;
 }

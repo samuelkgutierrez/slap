@@ -1,1 +1,2 @@
 make sure that start and ends are balanced in inputs
+maybe we aren't going to have any accept states, so allow that
