@@ -25,7 +25,9 @@ class Utils {
 private:
     Utils(void);
     ~Utils(void);
+
 protected:
+
 public:
     static char *getNewCString(const std::string &str);
 

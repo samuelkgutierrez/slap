@@ -117,6 +117,7 @@ AlphabetParser::parse(void)
                 string eStr = "no alphabet symbols found... cannot continue";
                 throw SLAPException(SLAP_WHERE, eStr);
             }
+            /* if we are here, then all is well and we are done */
             break;
         }
         /* if not dealing with a new alphabet symbol, bail */

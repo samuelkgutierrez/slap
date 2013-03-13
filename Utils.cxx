@@ -33,6 +33,7 @@ char *
 Utils::getNewCString(const string &str)
 {
     char *lineBuf = new char[str.size() + 1];
+
     lineBuf[str.size()] = '\0';
     memmove(lineBuf, str.c_str(), str.size());
     /* caller is responsible for calling delete[] */
@@ -91,6 +92,7 @@ string
 Utils::int2string(int i)
 {
     char tmpBuf[32];
+
     fill_n(tmpBuf, sizeof(tmpBuf), '\0');
     snprintf(tmpBuf, sizeof(tmpBuf) - 1, "%d", i);
     return string(tmpBuf);
