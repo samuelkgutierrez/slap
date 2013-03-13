@@ -89,7 +89,7 @@ AlphabetParser::parse(void)
                                      (char *)ALPHABET_START_KEYWORD,
                                      (char *)ALPHABET_END_KEYWORD);
     if (NULL == alphaBegin) {
-        string eStr = "cannot find beginning of alphabet specification. "
+        string eStr = "cannot find beginning/end of alphabet specification. "
                       "cannot continue input parsing...";
         throw SLAPException(SLAP_WHERE, eStr);
     }
@@ -125,7 +125,8 @@ AlphabetParser::parse(void)
             throw SLAPException(SLAP_WHERE, eStr);
         }
         /* make sure this symbol already isn't in our set */
-        if (!this->alphabet.insert(string(cptr, symLength)).second) {
+        /* +1/-1 to skip over '... we don't want those in our alphabet */
+        if (!this->alphabet.insert(string(cptr + 1, symLength - 1)).second) {
             string eStr = "duplicate symbol \"" + string(cptr, symLength) +
                           "\" found. cannot continue...";
             throw SLAPException(SLAP_WHERE, eStr);

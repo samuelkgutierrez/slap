@@ -118,7 +118,7 @@ parseStart(string id,
 static char *
 parseSingleTransition(char *start,
                       Alphabet *alphabet,
-                      set<State> *states,
+                      StateSet *states,
                       FSMTransitionTable *transTab)
 {
     char *cptr = start;
@@ -161,6 +161,7 @@ parseSingleTransition(char *start,
         }
         /* parsing 'alphaSym */
         else if (1 == part) {
+            sym.erase(sym.begin(), sym.begin() + 1);
             AlphabetSymbol tmpAlphaSym(sym);
             if ('\'' != *cptr) {
                 string eStr = "invalid input detected during transition parse."
@@ -217,7 +218,7 @@ transitionsParse(string id,
                  char *endKeyword,
                  char *listStart,
                  Alphabet *alphabet,
-                 set<State> *states,
+                 StateSet *states,
                  FSMTransitionTable *transitionTable)
 {
     /* char pointer */
@@ -263,7 +264,7 @@ listParse(string id,
           char *startKeyword,
           char *endKeyword,
           char *listStart,
-          set<State> *targetSet,
+          StateSet *targetSet,
           int insertLimit)
 {
     /* char pointer */
@@ -341,9 +342,9 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
     this->alphabet = newAlpha;
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = Utils::getNewCString(inputStr);
-    this->stateSet = new set<State>();
-    this->initStateSet = new set<State>();
-    this->acceptStateSet = new set<State>();
+    this->stateSet = new StateSet();
+    this->initStateSet = new StateSet();
+    this->acceptStateSet = new StateSet();
     this->transitionTable = new FSMTransitionTable();
 }
 
@@ -452,4 +453,25 @@ FSMTransitionTable *
 FSMInputParser::getNewTransitionTable(void)
 {
     return new FSMTransitionTable(*this->transitionTable);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+StateSet *
+FSMInputParser::getNewAcceptStates(void)
+{
+    return new StateSet(*this->acceptStateSet);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State
+FSMInputParser::getStartState(void)
+{
+    /* one last bit of sanity. make sure that we only have one start state. */
+    if (1 != this->initStateSet->size()) {
+        string eStr = "more than one start state detected while returning "
+                      "start state. cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* else, return the one item in the set */
+    return *this->initStateSet->begin();
 }

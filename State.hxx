@@ -20,18 +20,36 @@
 
 #include "AlphabetSymbol.hxx"
 
+#include <iostream>
+#include <set>
+
+#define StateSet std::set<State>
+
 class State {
 private:
-    std::string symbol;
+    std::string name;
+
 protected:
+
 public:
-    State(void) { }
+    State(void);
+
     State(const std::string &alphaSymbol);
-    ~State(void);
+
+    ~State(void) { }
+
     State(const State &other);
+
     std::string str(void);
+
     friend bool operator== (const State &s1, const State &s2);
+
     friend bool operator< (const State &s1, const State &s2);
+
+    friend std::ostream &operator<<(std::ostream &out,
+                                    const State &state);
+
+    static State StateInvalid(void);
 };
 
 #endif

@@ -38,9 +38,18 @@ public:
     FSMTransition(const State &from,
                   const AlphabetSymbol &alphaSymbol,
                   const State &to);
+
     FSMTransition(const FSMTransition &other);
+
     ~FSMTransition(void) { }
+
     std::string str(void);
+
+    State getFrom(void);
+
+    State getTo(void);
+
+    AlphabetSymbol getInput(void);
 };
 
 #endif

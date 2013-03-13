@@ -15,26 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-#include <cstdio>
-
-#include "SLAPException.hxx"
-#include "Utils.hxx"
-
-using namespace std;
+#include "HopcroftDFAMinimizer.hxx"
 
 /* ////////////////////////////////////////////////////////////////////////// */
-SLAPException::SLAPException(string fileName,
-                             int lineNo,
-                             const string &errMsg)
+DFA *
+HopcroftDFAMinimizer::minimize(DFA &targetDFA)
 {
-    string lineNoStr = Utils::int2string(lineNo);
-    whatString = "[" + fileName + " " + lineNoStr + "] " + errMsg;
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-const char *
-SLAPException::what(void) const throw()
-{
-    return this->whatString.c_str();
+    return NULL;
 }

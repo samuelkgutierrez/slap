@@ -20,17 +20,28 @@
 
 #include <string>
 #include <ostream>
+#include <vector>
+
+#define AlphabetString std::vector<AlphabetSymbol>
 
 class AlphabetSymbol {
 private:
     std::string symbol;
+
 protected:
+
 public:
     AlphabetSymbol(void) { }
     /* copy constructor */
     AlphabetSymbol(const AlphabetSymbol &other);
+    /* construct AlphabetSymbol from string */
     AlphabetSymbol(const std::string &strSymbol);
+    /* get string representation of AlphabetSymbol instance */
     std::string str(void);
+
+    friend bool operator==(const AlphabetSymbol &s1,
+                           const AlphabetSymbol &s2);
+
     friend std::ostream &operator<<(std::ostream &out,
                                     const AlphabetSymbol &sym);
 };

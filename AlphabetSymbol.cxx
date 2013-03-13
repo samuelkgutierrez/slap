@@ -50,3 +50,11 @@ operator<<(ostream &out, const AlphabetSymbol &sym)
     out << sym.symbol;
     return out;
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+operator== (const AlphabetSymbol &s1,
+            const AlphabetSymbol &s2)
+{
+    return s1.symbol == s2.symbol;
+}

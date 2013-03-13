@@ -17,18 +17,20 @@
 
 #include "State.hxx"
 
+#define STATE_INVALID_STR "___XXX___0xDEADBEEF__XXX___"
+
 using namespace std;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State::State(void)
+{
+    this->name = STATE_INVALID_STR;
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 State::State(const string &alphaSymbol)
 {
-    this->symbol = alphaSymbol;
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-State::~State(void)
-{
-    ;
+    this->name = alphaSymbol;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -37,26 +39,41 @@ State::~State(void)
  */
 State::State(const State &other)
 {
-    this->symbol = other.symbol;
+    this->name = other.name;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State
+State::StateInvalid(void)
+{
+    return State(STATE_INVALID_STR);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
 State::str(void)
 {
-    return this->symbol;
+    return this->name;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-operator== (const State &s1, const State &s2)
+operator==(const State &s1, const State &s2)
 {
-    return s1.symbol == s2.symbol;
+    return s1.name == s2.name;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-operator< (const State &s1, const State &s2)
+operator<(const State &s1, const State &s2)
 {
-    return s1.symbol < s2.symbol;
+    return s1.name < s2.name;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+ostream &
+operator<<(ostream &out, const State &state)
+{
+    out << state.name;
+    return out;
 }

@@ -18,15 +18,31 @@
 #ifndef DFA_INCLUDED
 #define DFA_INCLUDED
 
+#include "Alphabet.hxx"
+#include "State.hxx"
 #include "FSMTransition.hxx"
 #include "FiniteStateMachine.hxx"
 
 class DFA : public FiniteStateMachine {
 private:
     DFA(void);
+    /* returns next state based on input */
+    State move(const State &cur,
+               const AlphabetSymbol &in);
 protected:
 public:
-    virtual int accepts(const AlphabetString &alphaString);
+    DFA(Alphabet *newAlphabet,
+        FSMTransitionTable *newTransitionTable,
+        State startState,
+        StateSet *newAcceptStates);
+
+    ~DFA(void) { }
+    /* copy contructor */
+    DFA(const DFA &other);
+    /* returns whether or not the string is accepted by the DFA */
+    bool accepts(AlphabetString &alphaString);
+    /* minimizes the given DFA and returns a new, minimized DFA */
+    DFA *minimize(DFA &targetDFA);
 };
 
 #endif

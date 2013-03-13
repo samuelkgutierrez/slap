@@ -30,6 +30,12 @@ Alphabet::Alphabet(const set<string> &alphaSet)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+Alphabet::Alphabet(const Alphabet &other)
+{
+    this->alphabet = other.alphabet;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 bool
 Alphabet::isMember(AlphabetSymbol &symbol)
 {

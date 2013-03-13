@@ -27,13 +27,20 @@
 class Alphabet {
 private:
     Alphabet(void);
+
     std::set<std::string> alphabet;
 protected:
+
 public:
     Alphabet(const std::set<std::string> &alphaSet);
+
+    Alphabet(const Alphabet &other);
+
     bool isMember(AlphabetSymbol &symbol);
+
     friend std::ostream &operator<<(std::ostream &out,
                                     const Alphabet &a);
+
     friend std::ostream &operator<<(std::ostream &out,
                                     const Alphabet *a);
 };

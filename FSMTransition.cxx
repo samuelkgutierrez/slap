@@ -49,3 +49,23 @@ FSMTransition::str(void)
                this->to.str());
     return ret;
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State
+FSMTransition::getFrom(void)
+{
+    return this->from;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State
+FSMTransition::getTo(void)
+{
+    return this->to;
+}
+/* ////////////////////////////////////////////////////////////////////////// */
+AlphabetSymbol
+FSMTransition::getInput(void)
+{
+    return this->alphaSymbol;
+}

@@ -15,17 +15,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "AlphabetSymbol.hxx"
-#include "AlphabetString.hxx"
 #include "FiniteStateMachine.hxx"
+#include "AlphabetSymbol.hxx"
 
-#if 0
+using namespace std;
+
 /* ////////////////////////////////////////////////////////////////////////// */
-State
-State::State move(const State &state, const AlphabetSymbol &symbol)
+FiniteStateMachine::FiniteStateMachine(Alphabet *newAlphabet,
+                                       FSMTransitionTable *newTransitionTable,
+                                       State startState,
+                                       StateSet *newAcceptStates)
 {
-    /* XXX this is where we will just use the transition table. the loop over
-     * symbols will be in the accepts routine. also need to think about adding
-     * special states: invalid, for example */
+    this->alphabet = newAlphabet;
+    this->transitionTable = newTransitionTable;
+    this->startState = startState;
+    this->acceptStates = newAcceptStates;
 }
-#endif
+
+/* ////////////////////////////////////////////////////////////////////////// */
+FiniteStateMachine::FiniteStateMachine(const FiniteStateMachine &other)
+{
+    this->beVerbose = other.beVerbose;
+    this->alphabet = new Alphabet(*other.alphabet);
+    this->transitionTable = new FSMTransitionTable(*other.transitionTable);
+    this->startState = other.startState;
+    this->acceptStates = new StateSet(*other.acceptStates);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+FiniteStateMachine::~FiniteStateMachine(void)
+{
+    delete this->alphabet;
+    delete this->transitionTable;
+    delete this->acceptStates;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+FiniteStateMachine::acceptState(const State &state)
+{
+    return this->acceptStates->find(state) != this->acceptStates->end();
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+FiniteStateMachine::verbose(bool beVerbose)
+{
+    this->beVerbose = beVerbose;
+}

@@ -28,7 +28,8 @@ private:
 protected:
 public:
     ~SLAPException(void) throw() { }
-    SLAPException(const char *fileName,
+
+    SLAPException(std::string fileName,
                   int lineNo,
                   const std::string &errMsg);
 

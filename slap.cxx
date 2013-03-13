@@ -20,6 +20,8 @@
 #include "FSMInputParser.hxx"
 #include "FSMTransition.hxx"
 #include "State.hxx"
+#include "FiniteStateMachine.hxx"
+#include "DFA.hxx"
 
 #include <cstdlib>
 #include <cstdio>
@@ -35,6 +37,22 @@ dfaXListBool(const string &dfaInPath,
 {
     FSMInputParser *inputParser = NULL;
     AlphabetParser *alphaParser = NULL;
+    FiniteStateMachine *fsm = NULL;
+    bool accepts = false;
+    /* XXX TODO read from file */
+    AlphabetString input;
+    AlphabetSymbol a("a");
+    AlphabetSymbol b("b");
+    AlphabetSymbol c("c");
+
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(b);
+    input.push_back(c);
+    input.push_back(c);
 
     try {
         alphaParser = new AlphabetParser(dfaInPath);
@@ -43,6 +61,14 @@ dfaXListBool(const string &dfaInPath,
         inputParser = new FSMInputParser(dfaInPath,
                                          alphaParser->getNewAlphabet());
         inputParser->parse();
+
+        fsm = new DFA(alphaParser->getNewAlphabet(),
+                      inputParser->getNewTransitionTable(),
+                      inputParser->getStartState(),
+                      inputParser->getNewAcceptStates());
+        fsm->verbose(true);
+        accepts = fsm->accepts(input);
+
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
@@ -51,7 +77,8 @@ dfaXListBool(const string &dfaInPath,
 
     delete inputParser;
     delete alphaParser;
-    return true;
+    delete fsm;
+    return accepts;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

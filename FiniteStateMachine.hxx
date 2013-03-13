@@ -18,20 +18,36 @@
 #ifndef FINITE_STATE_MACHINE_INCLUDED
 #define FINITE_STATE_MACHINE_INCLUDED
 
-#include "AlphabetSymbol.hxx"
-#include "AlphabetString.hxx"
+#include "Alphabet.hxx"
 #include "FSMTransition.hxx"
 #include "State.hxx"
 
 class FiniteStateMachine {
 private:
     FiniteStateMachine(void);
-protected:
-    FSMTransitionTable *transitionTable;
 
-    virtual State move(const State &state, const AlphabetSymbol &symbol);
+protected:
+    bool beVerbose;
+    Alphabet *alphabet;
+    FSMTransitionTable *transitionTable;
+    State startState;
+    StateSet *acceptStates;
+
+    bool acceptState(const State &state);
+
 public:
-    virtual int accepts(const AlphabetString &alphaString) = 0;
+    FiniteStateMachine(Alphabet *newAlphabet,
+                       FSMTransitionTable *newTransitionTable,
+                       State startState,
+                       StateSet *newAcceptStates);
+
+    FiniteStateMachine(const FiniteStateMachine &other);
+
+    ~FiniteStateMachine(void);
+
+    void verbose(bool beVerbose);
+
+    virtual bool accepts(AlphabetString &alphaString) = 0;
 };
 
 #endif
