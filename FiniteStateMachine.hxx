@@ -43,7 +43,7 @@ public:
 
     FiniteStateMachine(const FiniteStateMachine &other);
 
-    ~FiniteStateMachine(void);
+    virtual ~FiniteStateMachine(void);
 
     void verbose(bool beVerbose);
 
