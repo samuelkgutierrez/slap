@@ -186,7 +186,7 @@ go(AlphabetString alphabet,
             SoS t = p;
             for (y = p.begin(); y != p.end(); ++y) {
                 StateSet xIy = getStateIntersection(x, *y);
-                StateSet xMy = getStateDifference(x, *y);
+                StateSet xMy = getStateDifference(*y, x);
                 /* for which X ∩ Y is nonempty do */
                 if (!xIy.empty()) {
                     /* replace Y in P by the two sets X ∩ Y and Y \ X */
@@ -196,9 +196,9 @@ go(AlphabetString alphabet,
                     /* if Y is in W */
                     if (w.end() != w.find(*y)) {
                         /* replace Y in W by the same two sets */
-                        w.erase(y);
                         w.insert(xIy);
                         w.insert(xMy);
+                        w.erase(w.find(*y));
                     }
                     else if (xIy.size() <= xMy.size()) {
                         w.insert(xIy);
