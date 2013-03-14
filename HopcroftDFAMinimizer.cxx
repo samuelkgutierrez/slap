@@ -222,7 +222,7 @@ go(AlphabetString alphabet,
                 StateSet xIy = getStateIntersection(x, *y);
                 StateSet yMx = getStateDifference(*y, x);
                 /* for which X ∩ Y is nonempty do */
-                if (!xIy.empty()) {
+                if (!xIy.empty() && t.find(xIy) == t.end()) {
                     /* replace Y in P by the two sets X ∩ Y and Y \ X */
                     t.insert(xIy);
                     t.insert(yMx);

@@ -103,7 +103,7 @@ int
 main(int argc, char **argv)
 {
     bool accepts = false;
-    accepts = dfaXListBool("./tests/dfa1.txt", "./tests/dfa1-test-input.txt");
+    accepts = dfaXListBool("./tests/dfa2.txt", "./tests/dfa1-test-input.txt");
     cout << "accepts: " << accepts << endl;
     return EXIT_SUCCESS;
 }
