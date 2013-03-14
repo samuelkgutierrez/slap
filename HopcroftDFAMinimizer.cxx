@@ -101,6 +101,42 @@ groupConsistent(SoS g)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static StateSet
+getStatesThatCLeadsTo(FSMTransitionTable transTab,
+                      const AlphabetSymbol &c)
+{
+    StateSet stateSet;
+    FSMTransitionTable::iterator it;
+
+    for (it = transTab.begin(); it != transTab.end(); ++it) {
+        if (c == it->second.getInput()) {
+            stateSet.insert(it->second.getTo());
+        }
+    }
+    if (verbose) {
+        cout << "### " << c << " leads to ###" << endl;
+        echoSet(&stateSet);
+        cout << "############################" << endl;
+    }
+    return stateSet;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+StateSet
+getStateIntersection(StateSet s1,
+                     StateSet s2)
+{
+    StateSet inter;
+
+    set_intersection(s1.begin(),
+                     s1.end(),
+                     s2.begin(),
+                     s2.end(),
+                     inserter(inter, inter.end()));
+    return inter;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 static void
 go(AlphabetString alphabet,
    FSMTransitionTable *transTab,
@@ -111,9 +147,18 @@ go(AlphabetString alphabet,
 
     // while w is not empty
     for (alphaIt = alphabet.begin(); alphaIt != alphabet.end(); ++alphaIt) {
-        cout << *alphaIt << endl;
+        StateSet X = getStatesThatCLeadsTo(*transTab, *alphaIt);
     }
-    
+#if 0
+    AlphabetSymbol a("a");
+    AlphabetSymbol b("a");
+    StateSet X = getStatesThatCLeadsTo(*transTab, a);
+    StateSet Y = getStatesThatCLeadsTo(*transTab, b);
+    StateSet Z = getStateIntersection(X, Y);
+    echoSet(&Z);
+    cout << "empty: " << Z.empty() << endl;
+#endif
+
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -133,7 +178,7 @@ HopcroftDFAMinimizer::minimize(DFA &targetDFA,
     StateSet *finalStates = targetDFA.getNewAcceptStates();
     /* all states that are not accept states: S - F */
     StateSet *sf = new StateSet();
- 
+
     set_difference(allStates->begin(),
                    allStates->end(),
                    finalStates->begin(),
@@ -142,7 +187,7 @@ HopcroftDFAMinimizer::minimize(DFA &targetDFA,
 
     if (verbose) {
         cout << "### starting DFA minimization ###" << endl;
-        
+
         cout << "### starting with ###" << endl;
         cout << "--- all states (S) ---" << endl;
         echoSet(allStates);
