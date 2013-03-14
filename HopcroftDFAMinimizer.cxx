@@ -183,15 +183,16 @@ go(AlphabetString alphabet,
              * state in A */
             StateSet x = getStatesWhereCLeadsToA(*transTab, *alphaIt, a);
             /* for each set Y in P */
-            SoS tmpP = p;
-            for (y = tmpP.begin(); y != tmpP.end(); ++y) {
+            SoS t = p;
+            for (y = p.begin(); y != p.end(); ++y) {
                 StateSet xIy = getStateIntersection(x, *y);
                 StateSet xMy = getStateDifference(x, *y);
                 /* for which X ∩ Y is nonempty do */
                 if (!xIy.empty()) {
                     /* replace Y in P by the two sets X ∩ Y and Y \ X */
-                    tmpP.insert(xIy);
-                    tmpP.insert(xMy);
+                    t.insert(xIy);
+                    t.insert(xMy);
+                    t.erase(t.find(*y));
                     /* if Y is in W */
                     if (w.end() != w.find(*y)) {
                         /* replace Y in W by the same two sets */
@@ -205,10 +206,9 @@ go(AlphabetString alphabet,
                     else {
                         w.insert(xMy);
                     }
-                    tmpP.erase(y);
                 }
             }
-        p = tmpP;
+            p = t;
         }
     }
 #if 0
