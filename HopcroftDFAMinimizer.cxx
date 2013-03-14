@@ -186,41 +186,38 @@ go(AlphabetString alphabet,
             SoS t = p;
             for (y = p.begin(); y != p.end(); ++y) {
                 StateSet xIy = getStateIntersection(x, *y);
-                StateSet xMy = getStateDifference(*y, x);
+                StateSet yMx = getStateDifference(*y, x);
                 /* for which X ∩ Y is nonempty do */
                 if (!xIy.empty()) {
                     /* replace Y in P by the two sets X ∩ Y and Y \ X */
                     t.insert(xIy);
-                    t.insert(xMy);
+                    t.insert(yMx);
                     t.erase(t.find(*y));
                     /* if Y is in W */
                     if (w.end() != w.find(*y)) {
                         /* replace Y in W by the same two sets */
                         w.insert(xIy);
-                        w.insert(xMy);
+                        w.insert(yMx);
                         w.erase(w.find(*y));
                     }
-                    else if (xIy.size() <= xMy.size()) {
+                    else if (xIy.size() <= yMx.size()) {
                         w.insert(xIy);
                     }
                     else {
-                        w.insert(xMy);
+                        w.insert(yMx);
                     }
                 }
             }
             p = t;
         }
     }
-#if 0
-    AlphabetSymbol a("a");
-    AlphabetSymbol b("a");
-    StateSet X = getStatesThatCLeadsTo(*transTab, a);
-    StateSet Y = getStatesThatCLeadsTo(*transTab, b);
-    StateSet Z = getStateIntersection(X, Y);
-    echoSet(&Z);
-    cout << "empty: " << Z.empty() << endl;
-#endif
-
+    for (y = p.begin(); y != p.end(); ++y) {
+        StateSet f = *y;
+        cout << "STATE SET" << endl;
+        echoSet(&f);
+        cout << "#########" << endl;
+    }
+    
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
