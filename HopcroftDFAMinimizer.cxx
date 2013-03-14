@@ -198,29 +198,28 @@ go(AlphabetString alphabet,
     /* populate P and W */
     p.insert(*f);
     p.insert(*sf);
-    //w =  p;
-    w.insert(*f);
+    w =  p;
 
     while (!w.empty()) {
-        /* choose and remove a set A from W */
+        /* select and remove S from W */
         wIt = w.begin();
-        StateSet a = *wIt;
+        StateSet s = *wIt;
         w.erase(wIt);
         if (verbose) {
             cout << "IN MAIN LOOP... WORKING ON SET" << endl;
-            echoSet(&a);
+            echoSet(&s);
             cout << "##############################" << endl;
         }
         /* for each c in ∑ do */
         for (alphaIt = alphabet.begin(); alphaIt != alphabet.end(); ++alphaIt) {
             /* let X be the set of states for which a transition on c leads to a
              * state in A */
-            StateSet x = getStatesWhereCLeadsToA(*transTab, *alphaIt, a);
+            StateSet x = getStatesWhereCLeadsToA(*transTab, *alphaIt, s);
             /* for each set Y in P */
             SoS t = p;
             for (y = p.begin(); y != p.end(); ++y) {
-                StateSet xIy = getStateIntersection(x, *y);
-                StateSet yMx = getStateDifference(*y, x);
+                StateSet xIy = getStateIntersection(*y, x);
+                StateSet yMx = getStateDifference(*y, xIy);
                 /* for which X ∩ Y is nonempty do */
                 if (!xIy.empty() && t.find(xIy) == t.end()) {
                     /* replace Y in P by the two sets X ∩ Y and Y \ X */
