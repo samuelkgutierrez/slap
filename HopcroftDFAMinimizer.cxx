@@ -103,6 +103,23 @@ groupConsistent(SoS g)
 /* ////////////////////////////////////////////////////////////////////////// */
 static
 StateSet
+getStateUnion(StateSet s1,
+              StateSet s2)
+{
+    StateSet inter;
+    StateSet a, b;
+
+    set_union(s1.begin(),
+              s1.end(),
+              s2.begin(),
+              s2.end(),
+              inserter(inter, inter.end()));
+    return inter;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static
+StateSet
 getStateIntersection(StateSet s1,
                      StateSet s2)
 {
@@ -143,21 +160,25 @@ getStatesWhereCLeadsToA(FSMTransitionTable transTab,
     FSMTransitionTable::iterator it;
     StateSet::iterator sit;
 
+    if (verbose) {
+        cout << "### " << c << " ###" << endl; 
+    }
+
     for (sit = a.begin(); sit != a.end(); ++sit) {
         State s = *sit;
         for (it = transTab.begin(); it != transTab.end(); ++it) {
             if (c == it->second.getInput() && s == it->second.getTo()) {
-                //stateSet.insert(it->second.getTo());
+                if (verbose) {
+                    cout << it->first << " " << it->second.getInput()
+                         << " --> " << it->second.getTo() << endl;
+                         
+                }
                 stateSet.insert(it->first);
             }
         }
     }
- 
-    //stateSetInA = getStateIntersection(stateSet, a);
     if (verbose) {
-        cout << "### " << c << " leads to ###" << endl;
-        echoSet(&stateSet);
-        cout << "############################" << endl;
+        cout << "######################################" << endl;
     }
     return stateSet;
 }
@@ -185,9 +206,11 @@ go(AlphabetString alphabet,
         wIt = w.begin();
         StateSet a = *wIt;
         w.erase(wIt);
-        cout << "ASDFASDFASDF" << endl;
-        echoSet(&a);
-        cout << "ASDFASDFASDFASDFASDFASDF" << endl;
+        if (verbose) {
+            cout << "IN MAIN LOOP... WORKING ON SET" << endl;
+            echoSet(&a);
+            cout << "##############################" << endl;
+        }
         /* for each c in ∑ do */
         for (alphaIt = alphabet.begin(); alphaIt != alphabet.end(); ++alphaIt) {
             /* let X be the set of states for which a transition on c leads to a
