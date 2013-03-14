@@ -101,27 +101,7 @@ groupConsistent(SoS g)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static StateSet
-getStatesThatCLeadsTo(FSMTransitionTable transTab,
-                      const AlphabetSymbol &c)
-{
-    StateSet stateSet;
-    FSMTransitionTable::iterator it;
-
-    for (it = transTab.begin(); it != transTab.end(); ++it) {
-        if (c == it->second.getInput()) {
-            stateSet.insert(it->second.getTo());
-        }
-    }
-    if (verbose) {
-        cout << "### " << c << " leads to ###" << endl;
-        echoSet(&stateSet);
-        cout << "############################" << endl;
-    }
-    return stateSet;
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
+static
 StateSet
 getStateIntersection(StateSet s1,
                      StateSet s2)
@@ -137,17 +117,99 @@ getStateIntersection(StateSet s1,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static
+StateSet
+getStateDifference(StateSet s1,
+                   StateSet s2)
+{
+    StateSet inter;
+
+    set_difference(s1.begin(),
+                   s1.end(),
+                   s2.begin(),
+                   s2.end(),
+                   inserter(inter, inter.end()));
+    return inter;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static StateSet
+getStatesWhereCLeadsToA(FSMTransitionTable transTab,
+                        const AlphabetSymbol &c,
+                        const StateSet &a)
+{
+    StateSet stateSet, stateSetInA;
+    FSMTransitionTable::iterator it;
+
+    for (it = transTab.begin(); it != transTab.end(); ++it) {
+        if (c == it->second.getInput()) {
+            stateSet.insert(it->second.getTo());
+        }
+    }
+    stateSetInA = getStateIntersection(stateSet, a);
+    if (verbose) {
+        cout << "### " << c << " leads to ###" << endl;
+        echoSet(&stateSetInA);
+        cout << "############################" << endl;
+    }
+    return stateSet;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 static void
 go(AlphabetString alphabet,
    FSMTransitionTable *transTab,
    StateSet *sf,
    StateSet *f)
 {
+    SoS::iterator wIt, y;
     AlphabetString::iterator alphaIt;
+    SoS p;
+    SoS w;
 
-    // while w is not empty
-    for (alphaIt = alphabet.begin(); alphaIt != alphabet.end(); ++alphaIt) {
-        StateSet X = getStatesThatCLeadsTo(*transTab, *alphaIt);
+    /* populate P and W */
+    p.insert(*sf);
+    p.insert(*f);
+    w.insert(*f);
+
+    while (!w.empty()) {
+        /* choose and remove a set A from W */
+        wIt = w.begin();
+        StateSet a = *wIt;
+        w.erase(wIt);
+        /* for each c in ∑ do */
+        for (alphaIt = alphabet.begin(); alphaIt != alphabet.end(); ++alphaIt) {
+            /* let X be the set of states for which a transition on c leads to a
+             * state in A */
+            StateSet x = getStatesWhereCLeadsToA(*transTab, *alphaIt, a);
+            /* for each set Y in P */
+            SoS tmpP = p;
+            for (y = tmpP.begin(); y != tmpP.end(); ++y) {
+                StateSet xIy = getStateIntersection(x, *y);
+                StateSet xMy = getStateDifference(x, *y);
+                /* for which X ∩ Y is nonempty do */
+                if (!xIy.empty()) {
+                    /* replace Y in P by the two sets X ∩ Y and Y \ X */
+                    tmpP.insert(xIy);
+                    tmpP.insert(xMy);
+                    /* if Y is in W */
+                    if (w.end() != w.find(*y)) {
+                        /* replace Y in W by the same two sets */
+                        w.erase(y);
+                        w.insert(xIy);
+                        w.insert(xMy);
+                    }
+                    else if (xIy.size() <= xMy.size()) {
+                        w.insert(xIy);
+                    }
+                    else {
+                        w.insert(xMy);
+                    }
+                    tmpP.erase(y);
+                }
+            }
+        p = tmpP;
+        }
     }
 #if 0
     AlphabetSymbol a("a");
