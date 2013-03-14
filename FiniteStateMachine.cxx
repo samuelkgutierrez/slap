@@ -21,13 +21,15 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-FiniteStateMachine::FiniteStateMachine(Alphabet *newAlphabet,
+FiniteStateMachine::FiniteStateMachine(AlphabetString alpha,
                                        FSMTransitionTable *newTransitionTable,
+                                       StateSet *newAllStates,
                                        State startState,
                                        StateSet *newAcceptStates)
 {
-    this->alphabet = newAlphabet;
+    this->alphabet = alpha;
     this->transitionTable = newTransitionTable;
+    this->allStates = newAllStates;
     this->startState = startState;
     this->acceptStates = newAcceptStates;
 }
@@ -36,8 +38,9 @@ FiniteStateMachine::FiniteStateMachine(Alphabet *newAlphabet,
 FiniteStateMachine::FiniteStateMachine(const FiniteStateMachine &other)
 {
     this->beVerbose = other.beVerbose;
-    this->alphabet = new Alphabet(*other.alphabet);
+    this->alphabet = other.alphabet;
     this->transitionTable = new FSMTransitionTable(*other.transitionTable);
+    this->allStates = new StateSet(*other.allStates);
     this->startState = other.startState;
     this->acceptStates = new StateSet(*other.acceptStates);
 }
@@ -45,8 +48,8 @@ FiniteStateMachine::FiniteStateMachine(const FiniteStateMachine &other)
 /* ////////////////////////////////////////////////////////////////////////// */
 FiniteStateMachine::~FiniteStateMachine(void)
 {
-    delete this->alphabet;
     delete this->transitionTable;
+    delete this->allStates;
     delete this->acceptStates;
 }
 
@@ -62,4 +65,38 @@ void
 FiniteStateMachine::verbose(bool beVerbose)
 {
     this->beVerbose = beVerbose;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+FSMTransitionTable *
+FiniteStateMachine::getNewTransitionTable(void)
+{
+    return new FSMTransitionTable(*this->transitionTable);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+StateSet *
+FiniteStateMachine::getNewAcceptStates(void)
+{
+    return new StateSet(*this->acceptStates);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+StateSet *
+FiniteStateMachine::getNewAllStates(void)
+{
+    return new StateSet(*this->allStates);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+State
+FiniteStateMachine::getStartState(void)
+{
+    return this->startState;
+}
+/* ////////////////////////////////////////////////////////////////////////// */
+AlphabetString
+FiniteStateMachine::getAlphabet(void)
+{
+    return this->alphabet;
 }

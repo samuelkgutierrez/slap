@@ -29,14 +29,12 @@
 
 class FSMTransition {
 private:
-    State from;
     AlphabetSymbol alphaSymbol;
     State to;
     FSMTransition(void);
 protected:
 public:
-    FSMTransition(const State &from,
-                  const AlphabetSymbol &alphaSymbol,
+    FSMTransition(const AlphabetSymbol &alphaSymbol,
                   const State &to);
 
     FSMTransition(const FSMTransition &other);
@@ -45,11 +43,15 @@ public:
 
     std::string str(void);
 
-    State getFrom(void);
+    AlphabetSymbol getInput(void);
 
     State getTo(void);
 
-    AlphabetSymbol getInput(void);
+    friend bool operator==(const FSMTransition &t1,
+                           const FSMTransition &t2);
+
+    friend bool operator<(const FSMTransition &t1,
+                          const FSMTransition &t2);
 };
 
 #endif

@@ -42,9 +42,9 @@ public:
 
     std::string str(void);
 
-    friend bool operator== (const State &s1, const State &s2);
+    friend bool operator==(const State &s1, const State &s2);
 
-    friend bool operator< (const State &s1, const State &s2);
+    friend bool operator<(const State &s1, const State &s2);
 
     friend std::ostream &operator<<(std::ostream &out,
                                     const State &state);

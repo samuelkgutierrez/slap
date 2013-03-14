@@ -19,7 +19,15 @@
 
 #include "AlphabetSymbol.hxx"
 
+#define ALPHABET_SYMBOL_INVALID_STR "___XXX___0xFOOBAZ__XXX___"
+
 using namespace std;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+AlphabetSymbol::AlphabetSymbol(void)
+{
+    this->symbol = ALPHABET_SYMBOL_INVALID_STR;
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
@@ -53,8 +61,16 @@ operator<<(ostream &out, const AlphabetSymbol &sym)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-operator== (const AlphabetSymbol &s1,
-            const AlphabetSymbol &s2)
+operator==(const AlphabetSymbol &s1,
+           const AlphabetSymbol &s2)
 {
     return s1.symbol == s2.symbol;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+operator<(const AlphabetSymbol &s1,
+          const AlphabetSymbol &s2)
+{
+    return s1.symbol < s2.symbol;
 }

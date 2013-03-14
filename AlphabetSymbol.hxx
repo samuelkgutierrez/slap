@@ -31,7 +31,7 @@ private:
 protected:
 
 public:
-    AlphabetSymbol(void) { }
+    AlphabetSymbol(void);
     /* copy constructor */
     AlphabetSymbol(const AlphabetSymbol &other);
     /* construct AlphabetSymbol from string */
@@ -41,6 +41,9 @@ public:
 
     friend bool operator==(const AlphabetSymbol &s1,
                            const AlphabetSymbol &s2);
+
+    friend bool operator<(const AlphabetSymbol &s1,
+                          const AlphabetSymbol &s2);
 
     friend std::ostream &operator<<(std::ostream &out,
                                     const AlphabetSymbol &sym);

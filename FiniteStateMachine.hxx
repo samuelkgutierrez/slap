@@ -19,6 +19,7 @@
 #define FINITE_STATE_MACHINE_INCLUDED
 
 #include "Alphabet.hxx"
+#include "AlphabetSymbol.hxx"
 #include "FSMTransition.hxx"
 #include "State.hxx"
 
@@ -28,16 +29,18 @@ private:
 
 protected:
     bool beVerbose;
-    Alphabet *alphabet;
+    AlphabetString alphabet;
     FSMTransitionTable *transitionTable;
     State startState;
     StateSet *acceptStates;
+    StateSet *allStates;
 
     bool acceptState(const State &state);
 
 public:
-    FiniteStateMachine(Alphabet *newAlphabet,
+    FiniteStateMachine(AlphabetString alpha,
                        FSMTransitionTable *newTransitionTable,
+                       StateSet *newAllStates,
                        State startState,
                        StateSet *newAcceptStates);
 
@@ -46,6 +49,16 @@ public:
     virtual ~FiniteStateMachine(void);
 
     void verbose(bool beVerbose);
+
+    AlphabetString getAlphabet(void);
+
+    FSMTransitionTable *getNewTransitionTable(void);
+
+    StateSet *getNewAllStates(void);
+
+    StateSet *getNewAcceptStates(void);
+
+    State getStartState(void);
 
     virtual bool accepts(AlphabetString &alphaString) = 0;
 };

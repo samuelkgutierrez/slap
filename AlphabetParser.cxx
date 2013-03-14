@@ -66,11 +66,16 @@ AlphabetParser::~AlphabetParser(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* this should be called AFTER parse */
-Alphabet *
-AlphabetParser::getNewAlphabet(void)
+AlphabetString
+AlphabetParser::getAlphabet(void)
 {
-    /* caller is responsible for cleanup */
-    return new Alphabet(this->alphabet);
+    AlphabetString as;
+    set<string>::iterator it;
+
+    for (it = this->alphabet.begin(); it != this->alphabet.end(); ++it) {
+        as.push_back(AlphabetSymbol(*it));
+    }
+    return as;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

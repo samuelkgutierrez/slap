@@ -30,7 +30,9 @@ public:
 
     ~HopcroftDFAMinimizer(void) { }
     /* returns a new, minimized DFA from targetDFA */
-    static DFA *minimize(DFA &targetDFA);
+    /* XXX change default to false */
+    static DFA *minimize(DFA &targetDFA,
+                         bool beVerbose = true);
 };
 
 #endif

@@ -117,7 +117,7 @@ parseStart(string id,
  * single transition list, so prep should be done by the caller. */
 static char *
 parseSingleTransition(char *start,
-                      Alphabet *alphabet,
+                      AlphabetString &alphabet,
                       StateSet *states,
                       FSMTransitionTable *transTab)
 {
@@ -170,7 +170,8 @@ parseSingleTransition(char *start,
                 throw SLAPException(SLAP_WHERE, eStr);
             }
             /* else make sure it is a valid symbol */
-            if (!alphabet->isMember(tmpAlphaSym)) {
+            if (alphabet.end() ==
+                find(alphabet.begin(), alphabet.end(), tmpAlphaSym)) {
                 string eStr = "invalid symbol detected during transition parse."
                               " \'" + sym + "\' is not a valid symbol. "
                               "cannot continue.";
@@ -202,7 +203,7 @@ parseSingleTransition(char *start,
     }
     /* at this point, we should have a complete and valid transition, so add it
      * to the multimap of transitions that we are maintaining */
-    transTab->insert(make_pair(state1, FSMTransition(state1, input, state2)));
+    transTab->insert(make_pair(state1, FSMTransition(input, state2)));
 
     return cptr;
 }
@@ -217,7 +218,7 @@ transitionsParse(string id,
                  char *startKeyword,
                  char *endKeyword,
                  char *listStart,
-                 Alphabet *alphabet,
+                 AlphabetString &alphabet,
                  StateSet *states,
                  FSMTransitionTable *transitionTable)
 {
@@ -320,7 +321,7 @@ listParse(string id,
 
 /* ////////////////////////////////////////////////////////////////////////// */
 FSMInputParser::FSMInputParser(const string &fileToParse,
-                               Alphabet *newAlpha)
+                               AlphabetString alpha)
 {
     string inputStr;
     ifstream file(fileToParse.c_str());
@@ -339,7 +340,7 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
 
     /* /// setup private member containers /// */
     /* first get the alphabet - all FSM input will have one of these */
-    this->alphabet = newAlpha;
+    this->alphabet = alpha;
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = Utils::getNewCString(inputStr);
     this->stateSet = new StateSet();
@@ -351,7 +352,6 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
 /* ////////////////////////////////////////////////////////////////////////// */
 FSMInputParser::~FSMInputParser(void)
 {
-    delete this->alphabet;
     delete this->stateSet;
     delete this->initStateSet;
     delete this->acceptStateSet;
@@ -460,6 +460,13 @@ StateSet *
 FSMInputParser::getNewAcceptStates(void)
 {
     return new StateSet(*this->acceptStateSet);
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+StateSet *
+FSMInputParser::getNewAllStates(void)
+{
+    return new StateSet(*this->stateSet);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

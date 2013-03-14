@@ -34,7 +34,7 @@ protected:
 public:
     AlphabetParser(const std::string &fileToParse);
     ~AlphabetParser(void);
-    Alphabet *getNewAlphabet(void);
+    AlphabetString getAlphabet(void);
     void parse(void);
 };
 

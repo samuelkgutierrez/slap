@@ -16,10 +16,147 @@
  */
 
 #include "HopcroftDFAMinimizer.hxx"
+#include "State.hxx"
+#include "FSMTransition.hxx"
+
+#include <iostream>
+#include <algorithm>
+#include <set>
+
+/* set of sets --- help! */
+#define SoS set<StateSet>
+
+using namespace std;
+
+/**
+ * a dfa minimizer that uses Hopcroft's algorithm.
+ */
+
+bool verbose = false;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+echoSet(StateSet *target)
+{
+    StateSet::iterator it;
+
+    for (it = target->begin(); it != target->end(); ++it) {
+        cout << *it << endl;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+echoTransitionSet(set<FSMTransition> t)
+{
+    set<FSMTransition>::iterator it;
+
+    for (it = t.begin(); it != t.end(); ++it) {
+        FSMTransition tmp = *it;
+        cout << tmp.getInput() << " " << tmp.getTo() << endl;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static bool
+statesConsistent(FSMTransitionTable *transTab,
+                 State s1,
+                 State s2)
+{
+    FSMTransitionTable tt;
+    FSMTransitionTable::iterator it;
+    set<FSMTransition> set1, set2;
+    bool consistent = false;
+
+    tt = FSMTransitionTable(*transTab);
+    while (tt.end() != (it = tt.find(s1))) {
+        set1.insert(it->second);
+        tt.erase(it);
+    }
+    tt = FSMTransitionTable(*transTab);
+    while (tt.end() != (it = tt.find(s2))) {
+        set2.insert(it->second);
+        tt.erase(it);
+    }
+    consistent = set1 == set2;
+
+    if (verbose) {
+        cout << "### checking consistency ###" << endl;
+        cout << "- " << s1 << endl;
+        echoTransitionSet(set1);
+        cout << "- " << s2 << endl;
+        echoTransitionSet(set2);
+        cout << "consistent: " << consistent << endl;
+        cout << "############################" << endl;
+    }
+
+    return consistent;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static bool
+groupConsistent(SoS g)
+{
+    return true;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+go(AlphabetString alphabet,
+   FSMTransitionTable *transTab,
+   StateSet *sf,
+   StateSet *f)
+{
+    AlphabetString::iterator alphaIt;
+
+    // while w is not empty
+    for (alphaIt = alphabet.begin(); alphaIt != alphabet.end(); ++alphaIt) {
+        cout << *alphaIt << endl;
+    }
+    
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 DFA *
-HopcroftDFAMinimizer::minimize(DFA &targetDFA)
+HopcroftDFAMinimizer::minimize(DFA &targetDFA,
+                               bool beVerbose)
 {
-    return NULL;
+    /* set some global state */
+    verbose = beVerbose;
+    /* our alphabet */
+    AlphabetString alphabet = targetDFA.getAlphabet();
+    /* construct a new transition table that we can play with */
+    FSMTransitionTable *transitionTable = targetDFA.getNewTransitionTable();
+    /* first state with two sets: final states and everything else */
+    StateSet *allStates = targetDFA.getNewAllStates();
+    /* all final states */
+    StateSet *finalStates = targetDFA.getNewAcceptStates();
+    /* all states that are not accept states: S - F */
+    StateSet *sf = new StateSet();
+ 
+    set_difference(allStates->begin(),
+                   allStates->end(),
+                   finalStates->begin(),
+                   finalStates->end(),
+                   inserter(*sf, sf->end()));
+
+    if (verbose) {
+        cout << "### starting DFA minimization ###" << endl;
+        
+        cout << "### starting with ###" << endl;
+        cout << "--- all states (S) ---" << endl;
+        echoSet(allStates);
+
+        cout << "--- accept states (F) ---" << endl;
+        echoSet(finalStates);
+
+        cout << "--- S - F ---" << endl;
+        echoSet(sf);
+        cout << "#####################" << endl;
+    }
+
+    go(alphabet, transitionTable, sf, finalStates);
+
+    /* XXX */
+    return new DFA(targetDFA);
 }

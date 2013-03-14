@@ -23,12 +23,14 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-DFA::DFA(Alphabet *newAlphabet,
+DFA::DFA(AlphabetString alpha,
          FSMTransitionTable *newTransitionTable,
+         StateSet *newAllStates,
          State startState,
          StateSet *newAcceptStates) :
-     FiniteStateMachine(newAlphabet,
+     FiniteStateMachine(alpha,
                         newTransitionTable,
+                        newAllStates,
                         startState,
                         newAcceptStates)
 {
@@ -36,26 +38,33 @@ DFA::DFA(Alphabet *newAlphabet,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+DFA::DFA(const DFA &other) :
+     FiniteStateMachine(other)
+ {
+     ;
+ }
+
+/* ////////////////////////////////////////////////////////////////////////// */
 State
-DFA::move(const State &cur,
+DFA::move(FSMTransitionTable transTabCopy,
+          const State &cur,
           const AlphabetSymbol &in)
 {
     FSMTransitionTable::iterator it;
 
-    while (this->transitionTable->end() !=
-           (it = this->transitionTable->find(cur))) {
+    while (transTabCopy.end() != (it = transTabCopy.find(cur))) {
         if (in == it->second.getInput()) {
             break;
         }
         /* else delete the entry and try again */
-        this->transitionTable->erase(it);
+        transTabCopy.erase(it);
     }
     /* didn't find a valid transition */
-    if (it == this->transitionTable->end()) {
+    if (it == transTabCopy.end()) {
         return State::StateInvalid();
     }
     if (this->beVerbose) {
-        cout << it->second.getFrom() << " "
+        cout << cur << " "
              << it->second.getInput() << " --> "
              << it->second.getTo() << endl;
     }
@@ -65,9 +74,9 @@ DFA::move(const State &cur,
 
 /* ////////////////////////////////////////////////////////////////////////// */
 DFA *
-DFA::minimize(DFA &targetDFA)
+DFA::minimize(void)
 {
-    return HopcroftDFAMinimizer::minimize(targetDFA);
+    return HopcroftDFAMinimizer::minimize(*this);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -82,7 +91,7 @@ DFA::accepts(AlphabetString &alphaString)
         if (invalidState == cur) {
             return false;
         }
-        cur = move(cur, *it);
+        cur = move(*this->transitionTable, cur, *it);
     }
     /* if we are here, then return if the current state is an accept state */
     return this->acceptState(cur);

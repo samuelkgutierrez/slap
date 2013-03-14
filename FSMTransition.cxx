@@ -20,11 +20,9 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-FSMTransition::FSMTransition(const State &from,
-                             const AlphabetSymbol &alphaSymbol,
+FSMTransition::FSMTransition(const AlphabetSymbol &alphaSymbol,
                              const State &to)
 {
-    this->from = from;
     this->alphaSymbol = alphaSymbol;
     this->to = to;
 }
@@ -35,7 +33,6 @@ FSMTransition::FSMTransition(const State &from,
  */
 FSMTransition::FSMTransition(const FSMTransition &other)
 {
-    this->from = other.from;
     this->alphaSymbol = other.alphaSymbol;
     this->to = other.to;
 }
@@ -44,17 +41,9 @@ FSMTransition::FSMTransition(const FSMTransition &other)
 string
 FSMTransition::str(void)
 {
-    string ret(this->from.str() + " " +
-               this->alphaSymbol.str() + " " +
+    string ret(this->alphaSymbol.str() + " " +
                this->to.str());
     return ret;
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-State
-FSMTransition::getFrom(void)
-{
-    return this->from;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -68,4 +57,20 @@ AlphabetSymbol
 FSMTransition::getInput(void)
 {
     return this->alphaSymbol;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+operator==(const FSMTransition &t1,
+           const FSMTransition &t2)
+{
+    return t1.alphaSymbol == t2.alphaSymbol && t1.to == t2.to;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+operator<(const FSMTransition &t1,
+          const FSMTransition &t2)
+{
+    return (t1.alphaSymbol < t2.alphaSymbol) && (t1.to < t2.to);
 }

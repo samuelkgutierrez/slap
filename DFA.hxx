@@ -19,6 +19,7 @@
 #define DFA_INCLUDED
 
 #include "Alphabet.hxx"
+#include "AlphabetSymbol.hxx"
 #include "State.hxx"
 #include "FSMTransition.hxx"
 #include "FiniteStateMachine.hxx"
@@ -27,12 +28,14 @@ class DFA : public FiniteStateMachine {
 private:
     DFA(void);
     /* returns next state based on input */
-    State move(const State &cur,
+    State move(FSMTransitionTable transTabCopy, 
+               const State &cur,
                const AlphabetSymbol &in);
 protected:
 public:
-    DFA(Alphabet *newAlphabet,
+    DFA(AlphabetString alpha,
         FSMTransitionTable *newTransitionTable,
+        StateSet *newAllStates,
         State startState,
         StateSet *newAcceptStates);
 
@@ -41,8 +44,8 @@ public:
     DFA(const DFA &other);
     /* returns whether or not the string is accepted by the DFA */
     bool accepts(AlphabetString &alphaString);
-    /* minimizes the given DFA and returns a new, minimized DFA */
-    DFA *minimize(DFA &targetDFA);
+    /* minimizes the DFA and returns a new, minimized DFA */
+    DFA *minimize(void);
 };
 
 #endif
