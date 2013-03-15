@@ -208,7 +208,6 @@ merge(SoS &P,
 {
     SoS::iterator ssi;
     StateSet startSet;
-    bool foundStart = false;
 
     if (verbose) {
         cout << endl <<
@@ -216,26 +215,17 @@ merge(SoS &P,
              << endl;
         cout << "   $ looking for start state" << endl;
     }
-    startSet.insert(start);
+    startSet = getStateSetStateIn(P, start);
     /* start better be by itself */
-    if (P.end() != (ssi = P.find(startSet))) {
+    if (startSet.size() == 1) {
         if (verbose) {
             cout << "   $ found it" << endl;
-            echoSet(*ssi);
-            cout << "   $ making sure there is only one" << endl;
+            echoSet(startSet);
         }
-        if (1 != ssi->size()) {
-            throw SLAPException(SLAP_WHERE, "i <3 dfas");
-        }
-        else {
-            if (verbose) cout << "   $ yup" << endl;
-        }
-        foundStart = true;
     }
-    if (!foundStart) {
+    else {
         throw SLAPException(SLAP_WHERE, "i <3 dfas");
     }
-
     /* now let's construct a new transition table based on the start state */
     if (verbose) {
         cout <<
@@ -243,16 +233,25 @@ merge(SoS &P,
              << endl;
     }
 
-    /* /// start building the DFA /// */
+    /* /// start building up the DFA pieces /// */
     /* init stuff we know */
+    /* start state is okay */
     State minStart = start;
+    /* alphabet isn't going to change across the minimization */
     AlphabetString minAlphabet = alphabet;
     /* the rest we'll fill in next */
     FSMTransitionTable minTransTab;
+    /* accept states for min DFA */
     StateSet minAcceptStates;
+    /* all states within the min DFA */
     StateSet minAllStates;
 
-    /* get accept states */
+    if (verbose) {
+        cout <<
+        "   $ HopcroftDFAMinimizer: building accept state set $$$$$$$$$$$$$$$$$"
+             << endl;
+    }
+    /* /// get accept states /// */
     for (StateSet::iterator ssi = acceptStates.begin();
          ssi != acceptStates.end();
          ++ssi) {
@@ -262,7 +261,12 @@ merge(SoS &P,
             minAcceptStates = getStateUnion(minAcceptStates, newAccepts);
         }
     }
-    echoSet(minAcceptStates);
+    if (verbose) {
+        echoSet(minAcceptStates);
+        cout <<
+        "   $ HopcroftDFAMinimizer: done building accept state set $$$$$$$$$$$$"
+             << endl;
+    }
 
     if (verbose) {
         cout << endl <<
@@ -409,6 +413,7 @@ HopcroftDFAMinimizer::minimize(DFA targetDFA,
     }
     catch (SLAPException &e) {
         /* just return the orig because i just don't trust this code... */
+        cout << "DOH!!!!!!!!!!!!!!!!!!!!!!" << endl;
     }
 
     /* XXX */
