@@ -195,12 +195,15 @@ merge(SoS &P,
                 if (verbose) cout << "   $ yup" << endl;
             }
             /* now remove it, and we'll start the construction from here */
-            P.erase(ssi);
             foundStart = true;
         }
     }
     if (!foundStart) {
         throw SLAPException(SLAP_WHERE, "i <3 dfas");
+    }
+    else {
+        /* remove the start set */
+        P.erase(ss);
     }
 
     /* now let's construct a new transition table based on the start state */
