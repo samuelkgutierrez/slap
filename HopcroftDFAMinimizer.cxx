@@ -173,7 +173,8 @@ merge(SoS &P,
       const FSMTransitionTable &transTab,
       const State &start)
 {
-    StateSet ss;
+    SoS::iterator ssi;
+    StateSet startSet;
     bool foundStart = false;
 
     if (verbose) {
@@ -185,30 +186,27 @@ merge(SoS &P,
     if (verbose) {
         cout << "   $ looking for start state" << endl;
     }
-    for (SoS::iterator ssi = P.begin(); ssi != P.end(); ++ssi) {
-        if (ssi->end() != ssi->find(start)) {
-            ss = *ssi;
-            if (verbose) {
-                cout << "   $ found it" << endl;
-                echoSet(ss);
-                cout << "   $ making sure there is only one" << endl;
-            }
-            if (1 != ss.size()) {
-                throw SLAPException(SLAP_WHERE, "i <3 dfas");
-            }
-            else {
-                if (verbose) cout << "   $ yup" << endl;
-            }
-            /* now remove it, and we'll start the construction from here */
-            foundStart = true;
+    startSet.insert(start);
+    if (P.end() != (ssi = P.find(startSet))) {
+        if (verbose) {
+            cout << "   $ found it" << endl;
+            echoSet(*ssi);
+            cout << "   $ making sure there is only one" << endl;
         }
+        if (1 != ssi->size()) {
+            throw SLAPException(SLAP_WHERE, "i <3 dfas");
+        }
+        else {
+            if (verbose) cout << "   $ yup" << endl;
+        }
+        foundStart = true;
     }
     if (!foundStart) {
         throw SLAPException(SLAP_WHERE, "i <3 dfas");
     }
     else {
-        /* remove the start set from the group */
-        P.erase(ss);
+        /* now remove it, and we'll start the construction from here */
+        P.erase(ssi);
     }
 
     /* now let's construct a new transition table based on the start state */
