@@ -23,16 +23,16 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-DFA::DFA(AlphabetString alpha,
-         FSMTransitionTable *newTransitionTable,
-         StateSet *newAllStates,
-         State startState,
-         StateSet *newAcceptStates) :
+DFA::DFA(const AlphabetString &alpha,
+         const FSMTransitionTable &transitionTab,
+         const StateSet &allStates,
+         const State &startState,
+         const StateSet &acceptStates) :
      FiniteStateMachine(alpha,
-                        newTransitionTable,
-                        newAllStates,
+                        transitionTab,
+                        allStates,
                         startState,
-                        newAcceptStates)
+                        acceptStates)
 {
     ;
 }
@@ -40,9 +40,9 @@ DFA::DFA(AlphabetString alpha,
 /* ////////////////////////////////////////////////////////////////////////// */
 DFA::DFA(const DFA &other) :
      FiniteStateMachine(other)
- {
+{
      ;
- }
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 State
@@ -81,9 +81,9 @@ DFA::minimize(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-DFA::accepts(AlphabetString &alphaString)
+DFA::accepts(const AlphabetString &alphaString)
 {
-    AlphabetString::iterator it;
+    AlphabetString::const_iterator it;
     State cur = this->startState;
     State invalidState = State::StateInvalid();
 
@@ -91,7 +91,7 @@ DFA::accepts(AlphabetString &alphaString)
         if (invalidState == cur) {
             return false;
         }
-        cur = move(*this->transitionTable, cur, *it);
+        cur = move(this->transitionTable, cur, *it);
     }
     /* if we are here, then return if the current state is an accept state */
     return this->acceptState(cur);

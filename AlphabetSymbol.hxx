@@ -38,6 +38,8 @@ public:
     AlphabetSymbol(const std::string &strSymbol);
     /* get string representation of AlphabetSymbol instance */
     std::string str(void);
+    /* returns an epsilon symbol */
+    static AlphabetSymbol getEpsilon(void);
 
     friend bool operator==(const AlphabetSymbol &s1,
                            const AlphabetSymbol &s2);

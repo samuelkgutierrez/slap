@@ -42,13 +42,6 @@
 /* number of "parts" within a single transition specification */
 #define NUM_TRANSITION_PARTS 4
 
-/* finite state machine types */
-enum FSMType {
-    DFA,
-    NFA,
-    UNKNOWN
-};
-
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -58,15 +51,15 @@ using namespace std;
 /* ////////////////////////////////////////////////////////////////////////// */
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static FSMType
+static FSMInputParser::FSMType
 determineFSMTypeFromInput(char *input)
 {
-    map<FSMType, string> validTypes;
+    map<FSMInputParser::FSMType, string> validTypes;
     /* populate with valid types */
-    validTypes[DFA] = "dfa";
-    validTypes[NFA] = "nfa";
+    validTypes[FSMInputParser::DFA] = "dfa";
+    validTypes[FSMInputParser::NFA] = "nfa";
     char *typeStart = NULL;
-    map<FSMType, string>::iterator it;
+    map<FSMInputParser::FSMType, string>::iterator it;
 
     for (it = validTypes.begin(); it != validTypes.end(); ++it) {
         if (NULL != (typeStart = strstr(input, it->second.c_str()))) {
@@ -77,7 +70,7 @@ determineFSMTypeFromInput(char *input)
             }
         }
     }
-    return UNKNOWN;
+    return FSMInputParser::UNKNOWN;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -111,15 +104,102 @@ parseStart(string id,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* this routine assumes that all is well with the input, so only a minor level
- * of input checking is performed. this should only be called within
- * transitionsParse. also, it is assumed that start is at the beginning of a
- * single transition list, so prep should be done by the caller. */
 static char *
-parseSingleTransition(char *start,
-                      AlphabetString &alphabet,
-                      StateSet *states,
-                      FSMTransitionTable *transTab)
+parseDFAInputList(FSMInputParser::FSMType fsmType,
+                  char *start,
+                  const AlphabetString &alphabet,
+                  AlphabetString &resultList)
+{
+    /* we are dealing with: 'alphaSym1 'alphaSym2 '... alphaSymN */
+    char *cptr = start;
+    int wordLen = 0;
+    string inputStr;
+    AlphabetSymbol tmpAlphaSym;
+
+    /* skip all the white space and get starting position */
+    cptr += strspn(cptr, SLAP_WHITESPACE);
+    /* find extent of word */
+    wordLen = strcspn(cptr, SLAP_WHITESPACE);
+    /* create string */
+    inputStr = string(cptr, wordLen);
+    /* remove the ' */
+    inputStr.erase(inputStr.begin(), inputStr.begin() + 1);
+    /* create the symbol */
+    tmpAlphaSym = AlphabetSymbol(inputStr);
+    /* sanity */
+    if ('\'' != *cptr) {
+        string eStr = "invalid input detected during transition parse."
+            " expected \' at symbol start, but found " +
+            string(cptr, 1) + ". cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* else make sure it is a valid symbol */
+    if (alphabet.end() == find(alphabet.begin(), alphabet.end(), tmpAlphaSym)) {
+        string eStr = "invalid symbol detected during transition parse."
+            " \'" + inputStr+ "\' is not a valid symbol. "
+            "cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* else, good to go */
+    resultList.push_back(tmpAlphaSym);
+    return cptr;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static char *
+parseNFAInputList(FSMInputParser::FSMType fsmType,
+               char *start,
+               const AlphabetString &alphabet,
+               AlphabetString &resultList)
+{
+    /* we are dealing with: 'alphaSym1 'alphaSym2 '... alphaSymN */
+    char *cptr = start;
+    int wordLen = 0;
+    string inputStr;
+    AlphabetSymbol tmpAlphaSym;
+
+    while ('\0' != *cptr) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        wordLen = strcspn(cptr, SLAP_WHITESPACE);
+        /* create the string */
+        inputStr = string(cptr, wordLen);
+        /* remove the ' */
+        inputStr.erase(inputStr.begin(), inputStr.begin() + 1);
+        /* create the symbol */
+        tmpAlphaSym = AlphabetSymbol(inputStr);
+        /* done! */
+        if ('\'' != *cptr) {
+            /* rewind, so the caller can start at the next part of the parse */
+            if (resultList.empty()) {
+                resultList.push_back(AlphabetSymbol::getEpsilon());
+            }
+            return (char *)cptr - wordLen;
+        }
+        /* else new input symbol */
+        /* else make sure it is a valid symbol */
+        if (alphabet.end() ==
+                find(alphabet.begin(), alphabet.end(), tmpAlphaSym)) {
+            string eStr = "invalid symbol detected during transition parse."
+                " \'" + inputStr+ "\' is not a valid symbol. "
+                "cannot continue.";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
+        /* else, good to go */
+        resultList.push_back(tmpAlphaSym);
+        cptr += wordLen;
+    }
+    return cptr;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static char *
+parseSingleTransition(FSMInputParser::FSMType fsmType,
+                      char *start,
+                      const AlphabetString &alphabet,
+                      const StateSet &states,
+                      FSMTransitionTable &transTab)
 {
     char *cptr = start;
     /* C string length of item */
@@ -128,12 +208,12 @@ parseSingleTransition(char *start,
     int part = 0;
     /* states */
     State state1, state2;
-    /* input symbol */
-    AlphabetSymbol input;
+    /* input symbols */
+    AlphabetString inputs;
 
-    /* general transition form     */
-    /* 0      1         2   3      */
-    /* state1 'alphaSym --> state2 */
+    /* general transition form                      */
+    /* 0      1                          2   3      */
+    /* state1 'alphaSymA 'alphaSymB '... --> state2 */
 
     while ('\0' != *cptr && part < NUM_TRANSITION_PARTS) {
         /* skip all the white space and get starting position */
@@ -145,7 +225,7 @@ parseSingleTransition(char *start,
         if (0 == part || 3 == part) {
             State tmpState(sym);
             /* is this a valid state? */
-            if (states->end() == states->find(tmpState.str())) {
+            if (states.end() == states.find(tmpState.str())) {
                 string eStr = "invalid state detected during transition parse."
                               " \'" + sym + "\' is not a valid state. "
                               "cannot continue.";
@@ -159,26 +239,19 @@ parseSingleTransition(char *start,
                 state2 = tmpState;
             }
         }
-        /* parsing 'alphaSym */
+        /* parsing 'alphaSym list */
         else if (1 == part) {
-            sym.erase(sym.begin(), sym.begin() + 1);
-            AlphabetSymbol tmpAlphaSym(sym);
-            if ('\'' != *cptr) {
-                string eStr = "invalid input detected during transition parse."
-                              " expected \' at symbol start, but found " +
-                              string(cptr, 1) + ". cannot continue.";
+            if (FSMInputParser::DFA == fsmType) {
+                cptr = parseDFAInputList(fsmType, cptr, alphabet, inputs);
+            }
+            else if (FSMInputParser::NFA == fsmType) {
+                cptr = parseNFAInputList(fsmType, cptr, alphabet, inputs);
+            }
+            else {
+                string eStr = "invalid finite state machine type during "
+                              "transition parse. cannot continue.";
                 throw SLAPException(SLAP_WHERE, eStr);
             }
-            /* else make sure it is a valid symbol */
-            if (alphabet.end() ==
-                find(alphabet.begin(), alphabet.end(), tmpAlphaSym)) {
-                string eStr = "invalid symbol detected during transition parse."
-                              " \'" + sym + "\' is not a valid symbol. "
-                              "cannot continue.";
-                throw SLAPException(SLAP_WHERE, eStr);
-            }
-            /* else, good to go */
-            input = tmpAlphaSym;
         }
         /* parsing --> */
         else if (2 == part) {
@@ -201,9 +274,19 @@ parseSingleTransition(char *start,
                       "cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
-    /* at this point, we should have a complete and valid transition, so add it
-     * to the multimap of transitions that we are maintaining */
-    transTab->insert(make_pair(state1, FSMTransition(input, state2)));
+    if (FSMInputParser::DFA == fsmType && 1 != inputs.size()) {
+        string eStr = "input inconsistency. dfa type detected, but found " +
+                      Utils::int2string((int)inputs.size()) + " transitions " +
+                      "to a state.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
+    /* at this point, we should have a complete and valid transition, so add
+     * them to the multimap of transitions that we are maintaining */
+    for (AlphabetString::iterator aIt = inputs.begin();
+         aIt != inputs.end();
+         ++aIt) {
+        transTab.insert(make_pair(state1, FSMTransition(*aIt, state2)));
+    }
 
     return cptr;
 }
@@ -214,13 +297,14 @@ parseSingleTransition(char *start,
  * end position.
  */
 static char *
-transitionsParse(string id,
+transitionsParse(FSMInputParser::FSMType fsmType,
+                 string id,
                  char *startKeyword,
                  char *endKeyword,
                  char *listStart,
-                 AlphabetString &alphabet,
-                 StateSet *states,
-                 FSMTransitionTable *transitionTable)
+                 const AlphabetString &alphabet,
+                 const StateSet &states,
+                 FSMTransitionTable &transitionTable)
 {
     /* char pointer */
     char *cptr = NULL;
@@ -248,7 +332,11 @@ transitionsParse(string id,
             return (char *)(cptr + strlen(endKeyword));
         }
         /* now start parsing a single transition */
-        cptr = parseSingleTransition(cptr, alphabet, states, transitionTable);
+        cptr = parseSingleTransition(fsmType,
+                                     cptr,
+                                     alphabet,
+                                     states,
+                                     transitionTable);
         /* if we are here, then no exceptions were encountered in parse */
         ++nItems;
     }
@@ -265,7 +353,7 @@ listParse(string id,
           char *startKeyword,
           char *endKeyword,
           char *listStart,
-          StateSet *targetSet,
+          StateSet &targetSet,
           int insertLimit)
 {
     /* char pointer */
@@ -298,7 +386,7 @@ listParse(string id,
             return (char *)(cptr + strlen(endKeyword));
         }
         /* make sure this item already isn't in our set */
-        if (!targetSet->insert(State(string(cptr, wordLen))).second) {
+        if (!targetSet.insert(State(string(cptr, wordLen))).second) {
             string eStr = "duplicate " + id + " \"" + string(cptr, wordLen) +
                           "\" found. cannot continue...";
             throw SLAPException(SLAP_WHERE, eStr);
@@ -321,7 +409,7 @@ listParse(string id,
 
 /* ////////////////////////////////////////////////////////////////////////// */
 FSMInputParser::FSMInputParser(const string &fileToParse,
-                               AlphabetString alpha)
+                               const AlphabetString &alpha)
 {
     string inputStr;
     ifstream file(fileToParse.c_str());
@@ -343,19 +431,11 @@ FSMInputParser::FSMInputParser(const string &fileToParse,
     this->alphabet = alpha;
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = Utils::getNewCString(inputStr);
-    this->stateSet = new StateSet();
-    this->initStateSet = new StateSet();
-    this->acceptStateSet = new StateSet();
-    this->transitionTable = new FSMTransitionTable();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 FSMInputParser::~FSMInputParser(void)
 {
-    delete this->stateSet;
-    delete this->initStateSet;
-    delete this->acceptStateSet;
-    delete this->transitionTable;
     delete[] this->cInputStr;
 }
 
@@ -410,9 +490,11 @@ FSMInputParser::parseAcceptStates(char *startPos)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 char *
-FSMInputParser::parseTransitions(char *startPos)
+FSMInputParser::parseTransitions(char *startPos,
+                                 FSMType fsmType)
 {
-    return transitionsParse("transition",
+    return transitionsParse(fsmType,
+                            "transition",
                             (char *)TRANSITIONS_START_KEYWORD,
                             (char *)TRANSITIONS_END_KEYWORD,
                             startPos,
@@ -443,30 +525,30 @@ FSMInputParser::parse(char *cInputStr)
     /* /// parse accept states /// */
     pos = this->parseAcceptStates(pos);
     /* /// parse transitions /// */
-    pos = this->parseTransitions(pos);
+    pos = this->parseTransitions(pos, type);
 
     /* XXX add check for EOF and make sure no garbage is left */
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-FSMTransitionTable *
-FSMInputParser::getNewTransitionTable(void)
+FSMTransitionTable
+FSMInputParser::getTransitionTable(void)
 {
-    return new FSMTransitionTable(*this->transitionTable);
+    return this->transitionTable;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-StateSet *
-FSMInputParser::getNewAcceptStates(void)
+StateSet
+FSMInputParser::getAcceptStates(void)
 {
-    return new StateSet(*this->acceptStateSet);
+    return this->acceptStateSet;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-StateSet *
-FSMInputParser::getNewAllStates(void)
+StateSet
+FSMInputParser::getAllStates(void)
 {
-    return new StateSet(*this->stateSet);
+    return this->stateSet;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -474,11 +556,11 @@ State
 FSMInputParser::getStartState(void)
 {
     /* one last bit of sanity. make sure that we only have one start state. */
-    if (1 != this->initStateSet->size()) {
+    if (1 != this->initStateSet.size()) {
         string eStr = "more than one start state detected while returning "
                       "start state. cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
     /* else, return the one item in the set */
-    return *this->initStateSet->begin();
+    return *this->initStateSet.begin();
 }

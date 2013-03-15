@@ -20,6 +20,8 @@
 #include "AlphabetSymbol.hxx"
 
 #define ALPHABET_SYMBOL_INVALID_STR "___XXX___0xFOOBAZ__XXX___"
+/* safe to have ' at epsilon start because parser always removes them */
+#define ALPHABET_SYMBOL_EPSILON_STR "'epsilon"
 
 using namespace std;
 
@@ -33,6 +35,13 @@ AlphabetSymbol::AlphabetSymbol(void)
 AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
 {
     this->symbol = strSymbol;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+AlphabetSymbol
+AlphabetSymbol::getEpsilon(void)
+{
+    return AlphabetSymbol(ALPHABET_SYMBOL_EPSILON_STR);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

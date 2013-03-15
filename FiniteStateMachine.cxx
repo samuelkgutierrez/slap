@@ -21,17 +21,17 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-FiniteStateMachine::FiniteStateMachine(AlphabetString alpha,
-                                       FSMTransitionTable *newTransitionTable,
-                                       StateSet *newAllStates,
-                                       State startState,
-                                       StateSet *newAcceptStates)
+FiniteStateMachine::FiniteStateMachine(const AlphabetString &alpha,
+                                       const FSMTransitionTable &transitionTab,
+                                       const StateSet &allStates,
+                                       const State &startState,
+                                       const StateSet &acceptStates)
 {
     this->alphabet = alpha;
-    this->transitionTable = newTransitionTable;
-    this->allStates = newAllStates;
+    this->transitionTable = transitionTab;
+    this->allStates = allStates;
     this->startState = startState;
-    this->acceptStates = newAcceptStates;
+    this->acceptStates = acceptStates;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -39,25 +39,23 @@ FiniteStateMachine::FiniteStateMachine(const FiniteStateMachine &other)
 {
     this->beVerbose = other.beVerbose;
     this->alphabet = other.alphabet;
-    this->transitionTable = new FSMTransitionTable(*other.transitionTable);
-    this->allStates = new StateSet(*other.allStates);
+    this->transitionTable = other.transitionTable;
+    this->allStates = other.allStates;
     this->startState = other.startState;
-    this->acceptStates = new StateSet(*other.acceptStates);
+    this->acceptStates = other.acceptStates;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 FiniteStateMachine::~FiniteStateMachine(void)
 {
-    delete this->transitionTable;
-    delete this->allStates;
-    delete this->acceptStates;
+    ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
 FiniteStateMachine::acceptState(const State &state)
 {
-    return this->acceptStates->find(state) != this->acceptStates->end();
+    return this->acceptStates.find(state) != this->acceptStates.end();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -68,24 +66,24 @@ FiniteStateMachine::verbose(bool beVerbose)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-FSMTransitionTable *
-FiniteStateMachine::getNewTransitionTable(void)
+FSMTransitionTable
+FiniteStateMachine::getTransitionTable(void)
 {
-    return new FSMTransitionTable(*this->transitionTable);
+    return this->transitionTable;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-StateSet *
-FiniteStateMachine::getNewAcceptStates(void)
+StateSet
+FiniteStateMachine::getAcceptStates(void)
 {
-    return new StateSet(*this->acceptStates);
+    return this->acceptStates;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-StateSet *
-FiniteStateMachine::getNewAllStates(void)
+StateSet
+FiniteStateMachine::getAllStates(void)
 {
-    return new StateSet(*this->allStates);
+    return this->allStates;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

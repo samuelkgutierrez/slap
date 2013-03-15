@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DFA_INCLUDED
-#define DFA_INCLUDED
+#ifndef NFA_INCLUDED
+#define NFA_INCLUDED
 
 #include "Alphabet.hxx"
 #include "AlphabetSymbol.hxx"
@@ -24,28 +24,23 @@
 #include "FSMTransition.hxx"
 #include "FiniteStateMachine.hxx"
 
-class DFA : public FiniteStateMachine {
+class NFA : public FiniteStateMachine {
 private:
-    DFA(void);
-    /* returns next state based on input */
-    State move(FSMTransitionTable transTabCopy,
-               const State &cur,
-               const AlphabetSymbol &in);
+    NFA(void);
+
 protected:
 public:
-    DFA(const AlphabetString &alpha,
+    NFA(const AlphabetString &alpha,
         const FSMTransitionTable &transitionTab,
         const StateSet &allStates,
         const State &startState,
         const StateSet &acceptStates);
 
-    ~DFA(void) { }
+    ~NFA(void) { }
     /* copy contructor */
-    DFA(const DFA &other);
+    NFA(const NFA &other);
     /* returns whether or not the string is accepted by the DFA */
     bool accepts(const AlphabetString &alphaString);
-    /* minimizes the DFA and returns a new, minimized DFA */
-    DFA *minimize(void);
 };
 
 #endif

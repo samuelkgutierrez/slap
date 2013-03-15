@@ -21,6 +21,7 @@
 #include "FSMTransition.hxx"
 #include "State.hxx"
 #include "FiniteStateMachine.hxx"
+#include "NFA.hxx"
 #include "DFA.hxx"
 
 #include <cstdlib>
@@ -51,9 +52,20 @@ dfaXListBool(const string &dfaInPath,
     input.push_back(a);
     input.push_back(a);
     input.push_back(a);
-    input.push_back(b);
-    input.push_back(c);
-    input.push_back(c);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    cout <<
+    "##########################################################################"
+    << endl << "### dfaXListBool: " << dfaInPath << endl
+    << "### input: " << endl;
+    for (unsigned int i = 0; i < input.size(); ++i) {
+        cout << input[i];
+    }
+    cout << endl <<
+    "##########################################################################"
+    << endl;
 
     try {
         alphaParser = new AlphabetParser(dfaInPath);
@@ -64,10 +76,10 @@ dfaXListBool(const string &dfaInPath,
         inputParser->parse();
 
         fsm = new DFA(alphaParser->getAlphabet(),
-                      inputParser->getNewTransitionTable(),
-                      inputParser->getNewAllStates(),
+                      inputParser->getTransitionTable(),
+                      inputParser->getAllStates(),
                       inputParser->getStartState(),
-                      inputParser->getNewAcceptStates());
+                      inputParser->getAcceptStates());
         fsm->verbose(true);
         cout << "ORIG" << endl;
         accepts = fsm->accepts(input);
@@ -75,6 +87,71 @@ dfaXListBool(const string &dfaInPath,
         minFSM = fsm->minimize();
         minFSM->verbose(true);
         accepts = minFSM->accepts(input);
+        cout << "accepts: " << accepts << endl;
+    }
+    catch (SLAPException &e) {
+        cerr << e.what() << endl;
+        return false;
+    }
+
+    delete inputParser;
+    delete alphaParser;
+    delete fsm;
+    return accepts;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static bool
+nfaXListBool(const string &nfaInPath,
+             const string &inputPath)
+{
+    FSMInputParser *inputParser = NULL;
+    AlphabetParser *alphaParser = NULL;
+    NFA *fsm = NULL;
+    bool accepts = false;
+    /* XXX TODO read from file */
+    AlphabetString input;
+    AlphabetSymbol a("a");
+    AlphabetSymbol b("b");
+    AlphabetSymbol c("c");
+
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    cout <<
+    "##########################################################################"
+    << endl << "### nfaXListBool: " << nfaInPath << endl
+    << "### input: " << endl;
+    for (unsigned int i = 0; i < input.size(); ++i) {
+        cout << input[i];
+    }
+    cout << endl <<
+    "##########################################################################"
+    << endl;
+
+    try {
+        alphaParser = new AlphabetParser(nfaInPath);
+        alphaParser->parse();
+
+        inputParser = new FSMInputParser(nfaInPath,
+                                         alphaParser->getAlphabet());
+        inputParser->parse();
+
+        fsm = new NFA(alphaParser->getAlphabet(),
+                      inputParser->getTransitionTable(),
+                      inputParser->getAllStates(),
+                      inputParser->getStartState(),
+                      inputParser->getAcceptStates());
+        fsm->verbose(true);
+        cout << "ORIG" << endl;
+        accepts = fsm->accepts(input);
         cout << "accepts: " << accepts << endl;
     }
     catch (SLAPException &e) {
@@ -103,7 +180,10 @@ int
 main(int argc, char **argv)
 {
     bool accepts = false;
-    accepts = dfaXListBool("./tests/dfa5.txt", "./tests/dfa1-test-input.txt");
+    accepts = dfaXListBool("./tests/dfa2.txt", "./tests/dfa1-test-input.txt");
+    cout << "accepts: " << accepts << endl;
+
+    accepts = nfaXListBool("./tests/nfa1.txt", "./tests/dfa1-test-input.txt");
     cout << "accepts: " << accepts << endl;
     return EXIT_SUCCESS;
 }

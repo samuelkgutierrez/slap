@@ -30,19 +30,19 @@ private:
 protected:
     bool beVerbose;
     AlphabetString alphabet;
-    FSMTransitionTable *transitionTable;
+    FSMTransitionTable transitionTable;
     State startState;
-    StateSet *acceptStates;
-    StateSet *allStates;
+    StateSet acceptStates;
+    StateSet allStates;
 
     bool acceptState(const State &state);
 
 public:
-    FiniteStateMachine(AlphabetString alpha,
-                       FSMTransitionTable *newTransitionTable,
-                       StateSet *newAllStates,
-                       State startState,
-                       StateSet *newAcceptStates);
+    FiniteStateMachine(const AlphabetString &alpha,
+                       const FSMTransitionTable &transitionTab,
+                       const StateSet &allStates,
+                       const State &startState,
+                       const StateSet &acceptStates);
 
     FiniteStateMachine(const FiniteStateMachine &other);
 
@@ -52,15 +52,15 @@ public:
 
     AlphabetString getAlphabet(void);
 
-    FSMTransitionTable *getNewTransitionTable(void);
+    FSMTransitionTable getTransitionTable(void);
 
-    StateSet *getNewAllStates(void);
+    StateSet getAllStates(void);
 
-    StateSet *getNewAcceptStates(void);
+    StateSet getAcceptStates(void);
 
     State getStartState(void);
 
-    virtual bool accepts(AlphabetString &alphaString) = 0;
+    virtual bool accepts(const AlphabetString &alphaString) = 0;
 };
 
 #endif
