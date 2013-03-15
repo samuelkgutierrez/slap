@@ -153,6 +153,7 @@ getStatesWhereCLeadsToA(const FSMTransitionTable &transTab,
     return stateSet;
 }
 
+#if 0
 /* ////////////////////////////////////////////////////////////////////////// */
 /* returns {s1, s2, ..., sn} that contains a set of states that 'a' can reach on
  * a transition on c */
@@ -182,6 +183,7 @@ getStatesReachableByAonC(const FSMTransitionTable &transTab,
     }
     return stateSet;
 }
+#endif
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static StateSet
@@ -427,10 +429,8 @@ HopcroftDFAMinimizer::minimize(DFA targetDFA,
         go(alphabet, transitionTable, start, sf, finalStates);
     }
     catch (SLAPException &e) {
-        /* just return the orig because i just don't trust this code... */
-        cout << "DOH!!!!!!!!!!!!!!!!!!!!!!" << endl;
+        return new DFA(targetDFA);
     }
-
     /* XXX */
     return new DFA(targetDFA);
 }

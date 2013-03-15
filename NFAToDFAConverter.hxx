@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PARSER_INCLUDED
-#define PARSER_INCLUDED
+#ifndef NFA_TO_DFACONVERTER_INCLUDED
+#define NFA_TO_DFACONVERTER_INCLUDED
 
 #include <string>
 
-class Parser {
+class NFAToDFAConverter {
 private:
 protected:
 public:
