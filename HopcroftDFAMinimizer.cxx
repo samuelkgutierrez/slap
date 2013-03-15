@@ -70,41 +70,15 @@ echoTransitionSet(set<FSMTransition> t)
         cout << tmp.getInput() << " " << tmp.getTo() << endl;
     }
 }
-
-/* ////////////////////////////////////////////////////////////////////////// */
-static bool
-groupConsistent(FSMTransitionTable tab,
-                SoS g)
-{
-    SoS::iterator gIt;
-    StateSet::iterator sIt, tIt;
-    StateSet stateSet;
-
-    /* make sure all state pairs are consisten within each S in the group g */
-    for (gIt = g.begin(); gIt != g.end(); ++gIt) {
-        stateSet = *gIt;
-        for (sIt = stateSet.begin(); sIt != stateSet.end(); ++sIt) {
-            for (tIt = sIt; tIt != stateSet.end(); ++tIt) {
-                State x = *sIt, y = *tIt;
-                if (!(x == y)) {
-                    ;
-                }
-            }
-        }
-    }
-
-    return true;
-}
 #endif
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static
 StateSet
-getStateIntersection(StateSet s1,
-                     StateSet s2)
+getStateIntersection(const StateSet &s1,
+                     const StateSet &s2)
 {
     StateSet inter;
-    StateSet a, b;
 
     set_intersection(s1.begin(),
                      s1.end(),
@@ -117,17 +91,17 @@ getStateIntersection(StateSet s1,
 /* ////////////////////////////////////////////////////////////////////////// */
 static
 StateSet
-getStateDifference(StateSet s1,
-                   StateSet s2)
+getStateDifference(const StateSet &s1,
+                   const StateSet &s2)
 {
-    StateSet inter;
+    StateSet diff;
 
     set_difference(s1.begin(),
                    s1.end(),
                    s2.begin(),
                    s2.end(),
-                   inserter(inter, inter.end()));
-    return inter;
+                   inserter(diff, diff.end()));
+    return diff;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -306,7 +280,7 @@ go(AlphabetString alphabet,
 
 /* ////////////////////////////////////////////////////////////////////////// */
 DFA *
-HopcroftDFAMinimizer::minimize(DFA &targetDFA,
+HopcroftDFAMinimizer::minimize(DFA targetDFA,
                                bool beVerbose)
 {
     /* set some global state */
