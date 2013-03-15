@@ -31,9 +31,10 @@ class FSMTransition {
 private:
     AlphabetSymbol alphaSymbol;
     State to;
-    FSMTransition(void);
 protected:
 public:
+    FSMTransition(void) { }
+
     FSMTransition(const AlphabetSymbol &alphaSymbol,
                   const State &to);
 

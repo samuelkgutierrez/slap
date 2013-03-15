@@ -199,6 +199,18 @@ getStateSetStateIn(const SoS &group,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static FSMTransitionTable
+buildTransitionsFromStart(const FSMTransitionTable &transTab,
+                          const StateSet &startSet)
+{
+    FSMTransitionTable retTransTab;
+    FSMTransition transition;
+
+    return retTransTab;
+
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 static void
 merge(SoS &P,
       const AlphabetString &alphabet,
@@ -245,6 +257,8 @@ merge(SoS &P,
     StateSet minAcceptStates;
     /* all states within the min DFA */
     StateSet minAllStates;
+    /* used to build up final transition table */
+    FSMTransitionTable tmpTransTab;
 
     if (verbose) {
         cout <<
@@ -267,7 +281,8 @@ merge(SoS &P,
         "   $ HopcroftDFAMinimizer: done building accept state set $$$$$$$$$$$$"
              << endl;
     }
-
+    /* build the transition table from the start set */
+    minTransTab = buildTransitionsFromStart(transTab, startSet);
     if (verbose) {
         cout << endl <<
         "   $ HopcroftDFAMinimizer: done with equivalence class merge $$$$$$$$$"
