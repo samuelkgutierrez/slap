@@ -110,7 +110,7 @@ getStatesWhereCLeadsToA(const FSMTransitionTable &transTab,
                         const AlphabetSymbol &c,
                         const StateSet &a)
 {
-    StateSet stateSet, stateSetInA;
+    StateSet stateSet;
     FSMTransitionTable::const_iterator it;
     StateSet::iterator sit;
 
@@ -138,8 +138,39 @@ getStatesWhereCLeadsToA(const FSMTransitionTable &transTab,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+/* returns {s1, s2, ..., sn} that contains a set of states that 'a' can reach on
+ * a transition on c */
+static StateSet
+getStatesReachableByAonC(const FSMTransitionTable &transTab,
+                         const State &a,
+                         const AlphabetSymbol &c)
+{
+    StateSet stateSet;
+    FSMTransitionTable myTransTab = transTab;
+    FSMTransitionTable::iterator it;
+
+    if (verbose) {
+        cout << "   $ finding valid delta(" << a << ", " << c << ") " << endl;
+    }
+    while (myTransTab.end() != (it = myTransTab.find(a))) {
+        if (verbose) {
+            cout << "   $ " << it->first << " "
+                 << it->second.getInput() << " --> "
+                 << it->second.getTo() << endl;
+        }
+        stateSet.insert(it->second.getTo());
+        myTransTab.erase(it);
+    }
+    if (verbose) {
+        cout << "   $" << endl;
+    }
+    return stateSet;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 static void
 merge(SoS &P,
+      const FSMTransitionTable &transTab,
       const State &start)
 {
     StateSet ss;
@@ -181,6 +212,16 @@ merge(SoS &P,
     }
 
     /* now let's construct a new transition table based on the start state */
+    if (verbose) {
+        cout <<
+        "   $ HopcroftDFAMinimizer: starting to build new DFA from start $$$$$$"
+             << endl;
+    }
+
+        AlphabetSymbol c = transTab.find(start)->second.getInput();
+                                                          /* A      C */
+        StateSet curSet = getStatesReachableByAonC(transTab, start, c);
+        echoSet(curSet);
 
     if (verbose) {
         cout << endl <<
@@ -275,7 +316,7 @@ go(AlphabetString alphabet,
              << endl;
         }
     /* now merge the darn things */
-    merge(p, start);
+    merge(p, transTab, start);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
