@@ -132,12 +132,12 @@ getStateDifference(StateSet s1,
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static StateSet
-getStatesWhereCLeadsToA(FSMTransitionTable transTab,
+getStatesWhereCLeadsToA(const FSMTransitionTable &transTab,
                         const AlphabetSymbol &c,
                         const StateSet &a)
 {
     StateSet stateSet, stateSetInA;
-    FSMTransitionTable::iterator it;
+    FSMTransitionTable::const_iterator it;
     StateSet::iterator sit;
 
     if (verbose) {
@@ -218,7 +218,7 @@ merge(SoS &P,
 /* ////////////////////////////////////////////////////////////////////////// */
 static void
 go(AlphabetString alphabet,
-   FSMTransitionTable transTab,
+   const FSMTransitionTable &transTab,
    const State start,
    const StateSet &sf,
    const StateSet &f)

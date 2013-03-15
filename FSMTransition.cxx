@@ -39,7 +39,7 @@ FSMTransition::FSMTransition(const FSMTransition &other)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-FSMTransition::str(void)
+FSMTransition::str(void) const
 {
     string ret(this->alphaSymbol.str() + " " +
                this->to.str());
@@ -48,13 +48,13 @@ FSMTransition::str(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 State
-FSMTransition::getTo(void)
+FSMTransition::getTo(void) const
 {
     return this->to;
 }
 /* ////////////////////////////////////////////////////////////////////////// */
 AlphabetSymbol
-FSMTransition::getInput(void)
+FSMTransition::getInput(void) const
 {
     return this->alphaSymbol;
 }

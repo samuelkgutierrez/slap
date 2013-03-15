@@ -41,11 +41,11 @@ public:
 
     ~FSMTransition(void) { }
 
-    std::string str(void);
+    std::string str(void) const;
 
-    AlphabetSymbol getInput(void);
+    AlphabetSymbol getInput(void) const;
 
-    State getTo(void);
+    State getTo(void) const;
 
     friend bool operator==(const FSMTransition &t1,
                            const FSMTransition &t2);
