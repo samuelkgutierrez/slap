@@ -75,6 +75,22 @@ echoTransitionSet(set<FSMTransition> t)
 /* ////////////////////////////////////////////////////////////////////////// */
 static
 StateSet
+getStateUnion(const StateSet &s1,
+              const StateSet &s2)
+{
+    StateSet u;
+
+    set_union(s1.begin(),
+              s1.end(),
+              s2.begin(),
+              s2.end(),
+              inserter(u, u.end()));
+    return u;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static
+StateSet
 getStateIntersection(const StateSet &s1,
                      const StateSet &s2)
 {
@@ -168,10 +184,27 @@ getStatesReachableByAonC(const FSMTransitionTable &transTab,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static StateSet
+getStateSetStateIn(const SoS &group,
+                   const State &state)
+{
+    StateSet empty;
+    for (SoS::const_iterator git = group.begin(); group.end() != git; ++git) {
+        StateSet ss = *git;
+        if (ss.end() != ss.find(state)) {
+            return ss;
+        }
+    }
+    return empty;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 static void
 merge(SoS &P,
+      const AlphabetString &alphabet,
       const FSMTransitionTable &transTab,
-      const State &start)
+      const State &start,
+      const StateSet &acceptStates)
 {
     SoS::iterator ssi;
     StateSet startSet;
@@ -181,12 +214,10 @@ merge(SoS &P,
         cout << endl <<
         "   $ HopcroftDFAMinimizer: starting equivalence class merge $$$$$$$$$$"
              << endl;
-    }
-
-    if (verbose) {
         cout << "   $ looking for start state" << endl;
     }
     startSet.insert(start);
+    /* start better be by itself */
     if (P.end() != (ssi = P.find(startSet))) {
         if (verbose) {
             cout << "   $ found it" << endl;
@@ -204,10 +235,6 @@ merge(SoS &P,
     if (!foundStart) {
         throw SLAPException(SLAP_WHERE, "i <3 dfas");
     }
-    else {
-        /* now remove it, and we'll start the construction from here */
-        P.erase(ssi);
-    }
 
     /* now let's construct a new transition table based on the start state */
     if (verbose) {
@@ -216,10 +243,26 @@ merge(SoS &P,
              << endl;
     }
 
-        AlphabetSymbol c = transTab.find(start)->second.getInput();
-                                                          /* A      C */
-        StateSet curSet = getStatesReachableByAonC(transTab, start, c);
-        echoSet(curSet);
+    /* /// start building the DFA /// */
+    /* init stuff we know */
+    State minStart = start;
+    AlphabetString minAlphabet = alphabet;
+    /* the rest we'll fill in next */
+    FSMTransitionTable minTransTab;
+    StateSet minAcceptStates;
+    StateSet minAllStates;
+
+    /* get accept states */
+    for (StateSet::iterator ssi = acceptStates.begin();
+         ssi != acceptStates.end();
+         ++ssi) {
+        StateSet newAccepts;
+        newAccepts = getStateSetStateIn(P, *ssi);
+        if (newAccepts.size() > 0) {
+            minAcceptStates = getStateUnion(minAcceptStates, newAccepts);
+        }
+    }
+    echoSet(minAcceptStates);
 
     if (verbose) {
         cout << endl <<
@@ -232,7 +275,7 @@ merge(SoS &P,
 static void
 go(AlphabetString alphabet,
    const FSMTransitionTable &transTab,
-   const State start,
+   const State &start,
    const StateSet &sf,
    const StateSet &f)
 {
@@ -314,7 +357,7 @@ go(AlphabetString alphabet,
              << endl;
         }
     /* now merge the darn things */
-    merge(p, transTab, start);
+    merge(p, alphabet, transTab, start, f);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

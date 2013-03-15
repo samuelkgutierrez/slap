@@ -40,13 +40,13 @@ public:
     std::string str(void) const;
     /* returns an epsilon symbol */
     static AlphabetSymbol getEpsilon(void);
-
+    /* == */
     friend bool operator==(const AlphabetSymbol &s1,
                            const AlphabetSymbol &s2);
-
+    /* < */
     friend bool operator<(const AlphabetSymbol &s1,
                           const AlphabetSymbol &s2);
-
+    /* << */
     friend std::ostream &operator<<(std::ostream &out,
                                     const AlphabetSymbol &sym);
 };
