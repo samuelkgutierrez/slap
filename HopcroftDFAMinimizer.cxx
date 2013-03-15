@@ -202,7 +202,7 @@ merge(SoS &P,
         throw SLAPException(SLAP_WHERE, "i <3 dfas");
     }
     else {
-        /* remove the start set */
+        /* remove the start set from the group */
         P.erase(ss);
     }
 
@@ -223,8 +223,8 @@ go(AlphabetString alphabet,
    const StateSet &sf,
    const StateSet &f)
 {
-    SoS::iterator wIt, y;
     AlphabetString::iterator alphaIt;
+    SoS::iterator wIt, y;
     SoS p;
     SoS w;
 
@@ -257,26 +257,26 @@ go(AlphabetString alphabet,
             /* for each set Y in P */
             SoS t = p;
             for (y = p.begin(); y != p.end(); ++y) {
-                StateSet xIy = getStateIntersection(*y, x);
-                StateSet yMx = getStateDifference(*y, xIy);
+                StateSet yIx = getStateIntersection(*y, x);
+                StateSet yMyIx = getStateDifference(*y, yIx);
                 /* for which X ∩ Y is nonempty and not in P */
-                if (!xIy.empty() && t.find(xIy) == t.end()) {
+                if (!yIx.empty() && t.find(yIx) == t.end()) {
                     /* replace Y in P by the two sets X ∩ Y and Y \ X */
-                    t.insert(xIy);
-                    t.insert(yMx);
+                    t.insert(yIx);
+                    t.insert(yMyIx);
                     t.erase(t.find(*y));
                     /* if Y is in W */
                     if (w.end() != w.find(*y)) {
                         /* replace Y in W by the same two sets */
-                        w.insert(xIy);
-                        w.insert(yMx);
+                        w.insert(yIx);
+                        w.insert(yMyIx);
                         w.erase(w.find(*y));
                     }
-                    else if (xIy.size() <= yMx.size()) {
-                        w.insert(xIy);
+                    else if (yIx.size() <= yMyIx.size()) {
+                        w.insert(yIx);
                     }
                     else {
-                        w.insert(yMx);
+                        w.insert(yMyIx);
                     }
                 }
             }
