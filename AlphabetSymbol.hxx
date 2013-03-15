@@ -37,7 +37,7 @@ public:
     /* construct AlphabetSymbol from string */
     AlphabetSymbol(const std::string &strSymbol);
     /* get string representation of AlphabetSymbol instance */
-    std::string str(void);
+    std::string str(void) const;
     /* returns an epsilon symbol */
     static AlphabetSymbol getEpsilon(void);
 

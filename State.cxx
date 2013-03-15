@@ -51,7 +51,7 @@ State::StateInvalid(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-State::str(void)
+State::str(void) const
 {
     return this->name;
 }

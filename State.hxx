@@ -40,7 +40,7 @@ public:
 
     State(const State &other);
 
-    std::string str(void);
+    std::string str(void) const;
 
     friend bool operator==(const State &s1, const State &s2);
 

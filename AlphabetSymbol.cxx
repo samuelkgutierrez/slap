@@ -55,7 +55,7 @@ AlphabetSymbol::AlphabetSymbol(const AlphabetSymbol &other)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 string
-AlphabetSymbol::str(void)
+AlphabetSymbol::str(void) const
 {
     return this->symbol;
 }
