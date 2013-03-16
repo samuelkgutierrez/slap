@@ -221,7 +221,6 @@ nfa2dfa(const string &nfaInPath,
 
         converter = NFAToDFAConverter(*fsm);
         converter.verbose(true);
-
         dfa = converter.getDFA();
     }
     catch (SLAPException &e) {
@@ -259,5 +258,6 @@ main(int argc, char **argv)
     cout <<
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         <<endl;
+    nfa2dfa("./tests/nfa1.txt", "asdf");
     return EXIT_SUCCESS;
 }

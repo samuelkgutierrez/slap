@@ -39,7 +39,7 @@ public:
     /* get string representation of AlphabetSymbol instance */
     std::string str(void) const;
     /* returns an epsilon symbol */
-    static AlphabetSymbol getEpsilon(void);
+    static AlphabetSymbol epsilon(void);
     /* == */
     friend bool operator==(const AlphabetSymbol &s1,
                            const AlphabetSymbol &s2);

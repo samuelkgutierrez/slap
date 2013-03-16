@@ -29,11 +29,13 @@ private:
 
     NFA nfa;
 
+    StateSet eClosureT(StateSet T);
+
 protected:
 public:
-    NFAToDFAConverter(void);
+    NFAToDFAConverter(void) { }
 
-    ~NFAToDFAConverter(void);
+    ~NFAToDFAConverter(void) { }
 
     NFAToDFAConverter(const NFA &nfa);
 

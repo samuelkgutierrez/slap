@@ -173,7 +173,7 @@ parseNFAInputList(FSMInputParser::FSMType fsmType,
         if ('\'' != *cptr) {
             /* rewind, so the caller can start at the next part of the parse */
             if (resultList.empty()) {
-                resultList.push_back(AlphabetSymbol::getEpsilon());
+                resultList.push_back(AlphabetSymbol::epsilon());
             }
             return (char *)cptr - wordLen;
         }

@@ -39,7 +39,7 @@ AlphabetSymbol::AlphabetSymbol(const std::string &strSymbol)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 AlphabetSymbol
-AlphabetSymbol::getEpsilon(void)
+AlphabetSymbol::epsilon(void)
 {
     return AlphabetSymbol(ALPHABET_SYMBOL_EPSILON_STR);
 }
