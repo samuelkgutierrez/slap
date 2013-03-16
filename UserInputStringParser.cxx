@@ -54,16 +54,14 @@ UserInputStringParser::UserInputStringParser(const string &fileToParse)
     /* start building the strings */
     while (file.good()) {
         getline(file, line);
-        AlphabetString input;
-        input.push_back(line);
-        this->inputs.push_back(input);
+        this->inputs.push_back(AlphabetSymbol(line));
     }
     /* close the file */
     file.close();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-AlphabetStrings
+AlphabetString
 UserInputStringParser::getInputs(void) const
 {
     return this->inputs;

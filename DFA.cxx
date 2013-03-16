@@ -52,6 +52,8 @@ DFA::move(FSMTransitionTable transTabCopy,
 {
     FSMTransitionTable::iterator it;
 
+    cout << "   D move on: " << in << endl;
+
     while (transTabCopy.end() != (it = transTabCopy.find(cur))) {
         if (in == it->second.getInput()) {
             break;
@@ -86,6 +88,11 @@ DFA::accepts(const AlphabetString &alphaString)
     AlphabetString::const_iterator it;
     State cur = this->startState;
     State invalidState = State::StateInvalid();
+
+    if (this->beVerbose) {
+        cout << "   D starting machine at state: " << this->startState.str()
+             << endl;
+    }
 
     for (it = alphaString.begin(); it != alphaString.end(); ++it) {
         if (invalidState == cur) {

@@ -23,7 +23,6 @@
 #include <vector>
 
 #define AlphabetString std::vector<AlphabetSymbol>
-#define AlphabetStrings std::vector<AlphabetString>
 
 class AlphabetSymbol {
 private:

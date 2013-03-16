@@ -49,10 +49,8 @@ nfa2dfa(const string &nfaInPath,
     "##########################################################################"
     << endl << "### nfa2dfa: " << nfaInPath << endl
     << "### input: " << endl;
-    for (AlphabetString::const_iterator elem = input.begin();
-         input.end() != elem;
-         ++elem) {
-        cout << elem->str() << endl;
+    for (unsigned int i = 0; i < input.size(); ++i) {
+        cout << input[i];
     }
     cout << endl <<
     "##########################################################################"
@@ -73,16 +71,15 @@ nfa2dfa(const string &nfaInPath,
                       inputParser->getAllStates(),
                       inputParser->getStartState(),
                       inputParser->getAcceptStates());
-        fsm->verbose(false);
+        fsm->verbose(true);
         accepts = fsm->accepts(input);
-        cout << "accepts: " << accepts << endl;
+        cout << "nfa accepts input: " << accepts << endl;
 
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
         return false;
     }
-
     delete inputParser;
     delete alphaParser;
     delete fsm;
@@ -117,13 +114,16 @@ main(int argc, char **argv)
     }
     try {
         UserInputStringParser inputParser(inputsFile);
-        AlphabetStrings inputs = inputParser.getInputs();
-        for (AlphabetStrings::const_iterator alphaString = inputs.begin();
-             inputs.end() != alphaString;
-             ++alphaString) {
-            cout << "CCCCCCCCCCCCCCCCCCCCCC" << endl;
-            nfa2dfa(nfaSpec, *alphaString);
+        AlphabetString inputs = inputParser.getInputs();
+        AlphabetSymbol alphaSym  = *inputs.begin();
+        string symStr = alphaSym.str();
+        AlphabetString parts;
+        for (unsigned long c = 0; c < symStr.length(); ++c) {
+            char *cp = &symStr[c];
+            cout << "P|" << *cp << "|" << endl;
+            parts.push_back(AlphabetSymbol(string(cp, 1)));
         }
+        nfa2dfa(nfaSpec, parts);
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
