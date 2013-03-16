@@ -211,16 +211,23 @@ NFAToDFAConverter::getDFA(void)
             cout << "   X NAME CHANGE " << dfaStateNum[a] << " is:" <<endl;
             echoSet(a);
             cout << "   X" << endl;
-            dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
+            if (next.size() == 0) {
+                continue;
+            }
+            else {
+                dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
+            }
         }
     }
 
+    cout << "0000000000000000000000000" << endl;
     for (FSMTransitionTable::iterator it = dfaTransTab.begin();
         it != dfaTransTab.end();
         ++it) {
         cout << it->first << " " << it->second.getInput() << " --> "
              << it->second.getTo() << endl;
     }
+    cout << "0000000000000000000000000" << endl;
 
     if (this->beVerbose) {
         cout <<
