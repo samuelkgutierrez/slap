@@ -259,6 +259,6 @@ main(int argc, char **argv)
     cout <<
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         <<endl;
-    accepts = nfa2dfa("./tests/nfa3.txt", "asdf");
+    accepts = nfa2dfa("./tests/nfa2.txt", "asdf");
     return EXIT_SUCCESS;
 }

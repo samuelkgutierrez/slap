@@ -36,15 +36,22 @@ echoSet(const StateSet &target,
 {
     StateSet::const_iterator it;
     string pad;
+    bool first = true;
 
     for (int i = 0; i < numSpaces; ++i) {
         pad.append(" ");
     }
-
-    cout << pad;
+    cout << pad << "{";
     for (it = target.begin(); it != target.end(); ++it) {
-        cout << *it << " ";
+        if (!first) {
+            cout << ", ";
+        }
+        else {
+            first = false;
+        }
+        cout << *it;
     }
+    cout << "}";
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
