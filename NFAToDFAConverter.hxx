@@ -18,12 +18,22 @@
 #ifndef NFA_TO_DFACONVERTER_INCLUDED
 #define NFA_TO_DFACONVERTER_INCLUDED
 
+#include "DFA.hxx"
+#include "NFA.hxx"
+
 #include <string>
 
 class NFAToDFAConverter {
 private:
+    DFA dfa;
+    NFA nfa;
+
+    NFAToDFAConverter(void);
+    ~NFAToDFAConverter(void);
 protected:
 public:
+    NFAToDFAConverter(const DFA &dfa, const NFA &nfa);
+    DFA getDFA(void);
 };
 
 #endif

@@ -16,3 +16,17 @@
  */
 
 #include "NFAToDFAConverter.hxx"
+
+/* ////////////////////////////////////////////////////////////////////////// */
+NFAToDFAConverter::NFAToDFAConverter(const DFA &dfa, const NFA &nfa)
+{
+    this->dfa = dfa;
+    this->nfa = nfa;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+DFA
+NFAToDFAConverter::getDFA(void)
+{
+    return dfa;
+}

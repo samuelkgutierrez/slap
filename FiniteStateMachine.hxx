@@ -25,7 +25,6 @@
 
 class FiniteStateMachine {
 private:
-    FiniteStateMachine(void);
 
 protected:
     bool beVerbose;
@@ -38,6 +37,8 @@ protected:
     bool acceptState(const State &state);
 
 public:
+    FiniteStateMachine(void) { }
+
     FiniteStateMachine(const AlphabetString &alpha,
                        const FSMTransitionTable &transitionTab,
                        const StateSet &allStates,

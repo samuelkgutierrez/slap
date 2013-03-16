@@ -26,10 +26,11 @@
 
 class NFA : public FiniteStateMachine {
 private:
-    NFA(void);
 
 protected:
 public:
+    NFA(void) { }
+
     NFA(const AlphabetString &alpha,
         const FSMTransitionTable &transitionTab,
         const StateSet &allStates,

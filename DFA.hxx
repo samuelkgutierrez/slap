@@ -26,13 +26,13 @@
 
 class DFA : public FiniteStateMachine {
 private:
-    DFA(void);
     /* returns next state based on input */
     State move(FSMTransitionTable transTabCopy,
                const State &cur,
                const AlphabetSymbol &in);
 protected:
 public:
+    DFA(void) { }
     DFA(const AlphabetString &alpha,
         const FSMTransitionTable &transitionTab,
         const StateSet &allStates,
