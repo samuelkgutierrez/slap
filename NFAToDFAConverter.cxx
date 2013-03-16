@@ -51,7 +51,7 @@ static State
 getNewState(void)
 {
     static int stateName = 0;
-    return State(Utils::int2string(stateName));
+    return State(Utils::int2string(stateName++));
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -62,7 +62,7 @@ NFAToDFAConverter::eClosureT(StateSet T)
 {
     State state;
     stack<State> stateStack;
-    StateSet eClosure;
+    StateSet eClosure = T;
     FSMTransitionTable transTab = this->nfa.getTransitionTable();
     FSMTransitionTable::iterator u;
 
