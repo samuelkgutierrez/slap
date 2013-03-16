@@ -13,31 +13,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SHELL  = /bin/sh
+EXTRA_DIST = \
+AUTHORS README COPYRIGHT autogen
 
-.SUFFIXES:
-.SUFFIXES: .cxx .hxx .o
-.PHONY: clean all
+bin_PROGRAMS = slap
 
-TARGET = slap
-
-CXX = g++
-CXXFLAGS = -Wall -g -O0
-RM = /bin/rm -rf
-
-SOURCES = $(wildcard *.cxx)
-OBJS = $(SOURCES:.cxx=.o)
-
-all: $(TARGET)
-
--include $(OBJS:.o=.d)
-
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
-
-clean:
-	$(RM) *.o $(TARGET) $(TARGET).dSYM *.d
-
-%.o: %.cxx
-	$(CXX) -c $(CXXFLAGS) $< -o $@
-	@$(CXX) -MM $(CXXFLAGS) $< > $*.d
+slap_SOURCES = \
+Constants.hxx \
+Alphabet.cxx Alphabet.hxx \
+AlphabetParser.cxx AlphabetParser.hxx \
+AlphabetSymbol.cxx AlphabetSymbol.hxx \
+DFA.cxx DFA.hxx \
+FSMInputParser.cxx FSMInputParser.hxx \
+FSMTransition.cxx FSMTransition.hxx \
+FiniteStateMachine.cxx FiniteStateMachine.hxx \
+HopcroftDFAMinimizer.cxx HopcroftDFAMinimizer.hxx \
+NFA.cxx NFA.hxx \
+NFAToDFAConverter.cxx NFAToDFAConverter.hxx \
+Parser.cxx Parser.hxx \
+PrefixRegExParser.cxx PrefixRegExParser.hxx \
+SLAPException.cxx SLAPException.hxx \
+State.cxx State.hxx \
+Utils.cxx Utils.hxx \
+slap.cxx
