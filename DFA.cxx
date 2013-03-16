@@ -97,18 +97,4 @@ DFA::accepts(const AlphabetString &alphaString)
     return this->acceptState(cur);
 }
 
-/* ////////////////////////////////////////////////////////////////////////// */
-void
-DFA::setStart(const State &s)
-{
-    this->startState = s;
-}
 
-/* ////////////////////////////////////////////////////////////////////////// */
-void
-DFA::addFinalStates(const StateSet &f)
-{
-    for (StateSet::const_iterator s = f.begin(); s != f.end(); ++s) {
-        this->acceptStates.insert(*s);
-    }
-}

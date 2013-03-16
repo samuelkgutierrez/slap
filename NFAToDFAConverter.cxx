@@ -139,6 +139,8 @@ NFAToDFAConverter::getDFA(void)
     map<StateSet, State> dfaStateNum;
     StateSet dfaFinalStates;
     StateSet nfaFinalStates(this->nfa.getAcceptStates());
+    AlphabetString alphabet(this->nfa.getAlphabet());
+    FSMTransitionTable nfaTransitionTable;
 
     if (this->beVerbose) {
         cout <<
@@ -170,6 +172,18 @@ NFAToDFAConverter::getDFA(void)
                 echoSet(commonFinal);
             }
             dfa.addFinalStates(commonFinal);
+        }
+        for (AlphabetString::iterator input = alphabet.begin();
+             input != alphabet.end();
+             ++input) {
+            StateSet reachable =
+                this->nfa.getStatesReachableByTransition(a, *input);
+            StateSet next = eClosureT(reachable);
+            if (unmarkedStates.end() == unmarkedStates.find(next) &&
+                markedStates.end() == markedStates.find(next)) {
+                unmarkedStates.insert(next);
+                dfaStateNum[next] = getNewState();
+            }
         }
     }
 

@@ -42,6 +42,9 @@ public:
     NFA(const NFA &other);
     /* returns whether or not the string is accepted by the DFA */
     bool accepts(const AlphabetString &alphaString);
+    /* returns a set of states that are reachable from s on input */
+    StateSet getStatesReachableByTransition(const StateSet &s,
+                                            const AlphabetSymbol &input) const;
 };
 
 #endif

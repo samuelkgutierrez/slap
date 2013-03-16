@@ -60,7 +60,11 @@ public:
     StateSet getAcceptStates(void);
 
     State getStartState(void);
-
+    /* sets DFA start state */
+    void setStart(const State &s);
+    /* adds final states from set f */
+    void addFinalStates(const StateSet &f);
+    /* returns true if the alphaString is accepted by the machine */
     virtual bool accepts(const AlphabetString &alphaString) = 0;
 };
 

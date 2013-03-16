@@ -98,3 +98,20 @@ FiniteStateMachine::getAlphabet(void)
 {
     return this->alphabet;
 }
+
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+FiniteStateMachine::addFinalStates(const StateSet &f)
+{
+    for (StateSet::const_iterator s = f.begin(); s != f.end(); ++s) {
+        this->acceptStates.insert(*s);
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+FiniteStateMachine::setStart(const State &s)
+{
+    this->startState = s;
+}

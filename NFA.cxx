@@ -59,3 +59,23 @@ NFA::accepts(const AlphabetString &alphaString)
     }
     return true;
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+StateSet
+NFA::getStatesReachableByTransition(const StateSet &s,
+                                    const AlphabetSymbol &input) const
+{
+    StateSet reachable;
+    FSMTransitionTable copy = this->transitionTable;
+    FSMTransitionTable::iterator it;
+    
+    for (StateSet::const_iterator state = s.begin();
+         state != s.end();
+         ++state) {
+        while (copy.end() != (it = copy.find(*state))) {
+            reachable.insert(it->second.getTo());
+            copy.erase(it);
+        }
+    }
+    return reachable;
+}

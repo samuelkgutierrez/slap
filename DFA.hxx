@@ -46,9 +46,6 @@ public:
     bool accepts(const AlphabetString &alphaString);
     /* minimizes the DFA and returns a new, minimized DFA */
     DFA *minimize(void);
-    /* sets DFA start state */
-    void setStart(const State &s);
-    void addFinalStates(const StateSet &f);
 };
 
 #endif
