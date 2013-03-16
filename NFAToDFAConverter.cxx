@@ -168,7 +168,6 @@ NFAToDFAConverter::getDFA(void)
         unmarkedStates.erase(unmarkedStates.begin());
         markedStates.insert(a);
         StateSet commonFinal;
-        cout << "XXXXXXXXXXXXXXXX" << endl;
         if (containsNFAFinalState(nfaFinalStates, a, commonFinal)) {
             if (this->beVerbose) {
                 cout << "   X found common final states" << endl;
@@ -181,7 +180,21 @@ NFAToDFAConverter::getDFA(void)
              ++input) {
             StateSet reachable =
                 this->nfa.getStatesReachableByTransition(a, *input);
+            if (this->beVerbose) {
+                cout << "   X states reachable by " << *input << endl;
+                cout << "   X (S)" << endl;
+                echoSet(a);
+                cout << "   X" << endl;
+                cout << "   X reachable" << endl;
+                echoSet(reachable);
+                cout << "   X";
+            }
             StateSet next = eClosureT(reachable);
+            if (this->beVerbose) {
+                cout << "   X next eClosure" << endl;
+                echoSet(next);
+                cout << "   X" << endl;
+            }
             if (unmarkedStates.end() == unmarkedStates.find(next) &&
                 markedStates.end() == markedStates.find(next)) {
                 unmarkedStates.insert(next);
@@ -190,7 +203,7 @@ NFAToDFAConverter::getDFA(void)
             for (StateSet::iterator news = a.begin();
                  news != a.end();
                  ++news) {
-                dfaTransTab.insert(make_pair(*news, FSMTransition(*input, dfaStateNum[next])));
+                dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
             }
         }
     }
