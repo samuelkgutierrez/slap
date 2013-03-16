@@ -1,0 +1,29 @@
+nfa
+states 
+0
+1
+2
+3
+4
+5
+end;
+
+initial
+0
+accept 
+5
+end; 
+
+transitions 
+0 --> 1
+0 --> 2
+1 'a --> 3
+3 --> 5
+2 'b --> 4
+4 --> 5
+end;
+
+alphabet
+'a 'b 'c
+end
+  

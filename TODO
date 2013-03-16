@@ -3,3 +3,4 @@ maybe we aren't going to have any accept states, so allow that
 read http://people.cs.umass.edu/~moss/610-slides/06.pdf
 test http://hackingoff.com/compilers/regular-expression-to-nfa-dfa
 read http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/07-trees/build-trees.html
+alpha parse: allow 'a'b

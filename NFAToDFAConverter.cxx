@@ -170,6 +170,7 @@ NFAToDFAConverter::getDFA(void)
         StateSet a = *unmarkedStates.begin();
         unmarkedStates.erase(unmarkedStates.begin());
         markedStates.insert(a);
+#if 0
         StateSet commonFinal;
         if (containsNFAFinalState(nfaFinalStates, a, commonFinal)) {
             if (this->beVerbose) {
@@ -181,6 +182,7 @@ NFAToDFAConverter::getDFA(void)
             tmp.insert(dfaStateNum[a]);
             dfa.addFinalStates(tmp);
         }
+#endif
         for (AlphabetString::iterator input = alphabet.begin();
              input != alphabet.end();
              ++input) {
@@ -206,6 +208,9 @@ NFAToDFAConverter::getDFA(void)
                 unmarkedStates.insert(next);
                 dfaStateNum[next] = getNewState();
             }
+            cout << "   X NAME CHANGE " << dfaStateNum[a] << " is:" <<endl;
+            echoSet(a);
+            cout << "   X" << endl;
             dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
         }
     }
