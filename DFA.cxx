@@ -52,8 +52,6 @@ DFA::move(FSMTransitionTable transTabCopy,
 {
     FSMTransitionTable::iterator it;
 
-    cout << "   D move on: " << in << endl;
-
     while (transTabCopy.end() != (it = transTabCopy.find(cur))) {
         if (in == it->second.getInput()) {
             break;
@@ -66,6 +64,7 @@ DFA::move(FSMTransitionTable transTabCopy,
         return State::StateInvalid();
     }
     if (this->beVerbose) {
+        cout << "   D ";
         cout << cur << " "
              << it->second.getInput() << " --> "
              << it->second.getTo() << endl;
