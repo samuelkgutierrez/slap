@@ -2,6 +2,7 @@
 *.o
 *.d
 slap
+nfa2dfa
 cscope.out
 tags
 .deps

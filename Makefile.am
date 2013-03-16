@@ -16,9 +16,11 @@
 EXTRA_DIST = \
 AUTHORS README COPYRIGHT autogen tests
 
-bin_PROGRAMS = slap
+bin_PROGRAMS = \
+slap \
+nfa2dfa
 
-slap_SOURCES = \
+base_src = \
 Constants.hxx \
 Alphabet.cxx Alphabet.hxx \
 AlphabetParser.cxx AlphabetParser.hxx \
@@ -34,5 +36,13 @@ Parser.cxx Parser.hxx \
 PrefixRegExParser.cxx PrefixRegExParser.hxx \
 SLAPException.cxx SLAPException.hxx \
 State.cxx State.hxx \
-Utils.cxx Utils.hxx \
+Utils.cxx Utils.hxx
+
+slap_SOURCES = \
+${base_src} \
 slap.cxx
+
+nfa2dfa_SOURCES = \
+${base_src} \
+nfa2dfa.cxx
+
