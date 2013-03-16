@@ -41,8 +41,9 @@ echoSet(const StateSet &target,
         pad.append(" ");
     }
 
+    cout << pad;
     for (it = target.begin(); it != target.end(); ++it) {
-        cout << pad << *it << endl;
+        cout << *it << " ";
     }
 }
 
@@ -90,10 +91,10 @@ NFAToDFAConverter::eClosureT(StateSet T)
     if (this->beVerbose) {
         cout << "   X done constructing eClosure for" << endl;
         echoSet(T);
-        cout << "   X" << endl;
+        cout << endl << "   X" << endl;
         cout << "   X eClosure is" << endl;
         echoSet(eClosure);
-        cout << "   X" << endl;
+        cout << endl << "   X" << endl;
     }
     return eClosure;
 }
@@ -142,9 +143,7 @@ NFAToDFAConverter::getDFA(void)
 
     AlphabetString alphabet(this->nfa.getAlphabet());
     StateSet nfaFinalStates(this->nfa.getAcceptStates());
-    cout << "########### FINAL NFA STATES #########" <<endl;
     echoSet(nfaFinalStates);
-    cout << "########### FINAL NFA STATES #########" <<endl;
     FSMTransitionTable dfaTransTab;
 
     if (this->beVerbose) {
@@ -170,19 +169,17 @@ NFAToDFAConverter::getDFA(void)
         StateSet a = *unmarkedStates.begin();
         unmarkedStates.erase(unmarkedStates.begin());
         markedStates.insert(a);
-#if 0
         StateSet commonFinal;
         if (containsNFAFinalState(nfaFinalStates, a, commonFinal)) {
             if (this->beVerbose) {
                 cout << "   X found common final states" << endl;
                 echoSet(commonFinal);
+                cout << endl << "   X" << endl;
             }
-            /* XXX still not right */
             StateSet tmp;
             tmp.insert(dfaStateNum[a]);
             dfa.addFinalStates(tmp);
         }
-#endif
         for (AlphabetString::iterator input = alphabet.begin();
              input != alphabet.end();
              ++input) {
@@ -192,25 +189,27 @@ NFAToDFAConverter::getDFA(void)
                 cout << "   X states reachable by " << *input << endl;
                 cout << "   X (S)" << endl;
                 echoSet(a);
-                cout << "   X" << endl;
+                cout << endl << "   X" << endl;
                 cout << "   X reachable" << endl;
                 echoSet(reachable);
-                cout << "   X" << endl;
+                cout << endl << "   X" << endl;
             }
             StateSet next = eClosureT(reachable);
             if (this->beVerbose) {
                 cout << "   X next eClosure" << endl;
                 echoSet(next);
-                cout << "   X" << endl;
+                cout << endl << "   X" << endl;
             }
             if (unmarkedStates.end() == unmarkedStates.find(next) &&
                 markedStates.end() == markedStates.find(next)) {
                 unmarkedStates.insert(next);
                 dfaStateNum[next] = getNewState();
             }
-            cout << "   X NAME CHANGE " << dfaStateNum[a] << " is:" <<endl;
-            echoSet(a);
-            cout << "   X" << endl;
+            if (this->beVerbose) {
+                cout << "   X states merged: state " << dfaStateNum[a] << " is:" <<endl;
+                echoSet(a);
+                cout << endl << "   X" << endl;
+            }
             if (next.size() == 0) {
                 continue;
             }
@@ -219,15 +218,15 @@ NFAToDFAConverter::getDFA(void)
             }
         }
     }
-
-    cout << "0000000000000000000000000" << endl;
-    for (FSMTransitionTable::iterator it = dfaTransTab.begin();
-        it != dfaTransTab.end();
-        ++it) {
-        cout << it->first << " " << it->second.getInput() << " --> "
-             << it->second.getTo() << endl;
+    
+    if (this->beVerbose) {
+        for (FSMTransitionTable::iterator it = dfaTransTab.begin();
+            it != dfaTransTab.end();
+            ++it) {
+            cout << it->first << " " << it->second.getInput() << " --> "
+                 << it->second.getTo() << endl;
+        }
     }
-    cout << "0000000000000000000000000" << endl;
 
     if (this->beVerbose) {
         cout <<
