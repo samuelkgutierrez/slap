@@ -18,6 +18,7 @@
 #ifndef NFA_TO_DFACONVERTER_INCLUDED
 #define NFA_TO_DFACONVERTER_INCLUDED
 
+#include "State.hxx"
 #include "DFA.hxx"
 #include "NFA.hxx"
 
@@ -31,6 +32,9 @@ private:
 
     StateSet eClosureT(StateSet T);
 
+     bool containsNFAFinalState(const StateSet &nfaFinal,
+                                const StateSet &ss,
+                                StateSet &commonFinalStates);
 
 protected:
 public:

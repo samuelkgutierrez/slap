@@ -38,7 +38,8 @@ using namespace std;
 /* ////////////////////////////////////////////////////////////////////////// */
 static bool
 nfa2dfa(const string &nfaInPath,
-        const AlphabetString &input)
+        const AlphabetString &input,
+        bool verbose)
 {
     FSMInputParser *inputParser = NULL;
     AlphabetParser *alphaParser = NULL;
@@ -47,7 +48,7 @@ nfa2dfa(const string &nfaInPath,
 
     cout <<
     "##########################################################################"
-    << endl << "### nfa2dfa: " << nfaInPath << endl
+    << endl << "### nfa2dfa - input file: " << nfaInPath << endl
     << "### input: " << endl;
     for (unsigned int i = 0; i < input.size(); ++i) {
         cout << input[i];
@@ -71,7 +72,7 @@ nfa2dfa(const string &nfaInPath,
                       inputParser->getAllStates(),
                       inputParser->getStartState(),
                       inputParser->getAcceptStates());
-        fsm->verbose(true);
+        fsm->verbose(verbose);
         accepts = fsm->accepts(input);
         cout << "nfa accepts input: " << accepts << endl;
 
@@ -91,7 +92,7 @@ static void
 usage(void)
 {
     cout << endl << "usage:" << endl;
-    cout << "nfa2dfa NFASpecification InputsFile" << endl << endl;
+    cout << "nfa2dfa [-v] NFASpecification InputsFile" << endl << endl;
     cout << "nfa2dfa reads an NFA specification file and input strings and "
             "returns whether or not the inputs found within InputsFile are "
             "accepted by the machine." << endl;
@@ -103,14 +104,24 @@ int
 main(int argc, char **argv)
 {
     string nfaSpec, inputsFile;
+    bool verboseMode = false;
 
-    if (3 != argc) {
+    if (3 != argc && 4 != argc) {
         usage();
         return EXIT_FAILURE;
     }
-    else {
+    else if (3 == argc) {
         nfaSpec = string(argv[1]);
         inputsFile = string(argv[2]);
+    }
+    else {
+        if ("-v" != string(argv[1])) {
+            usage();
+            return EXIT_FAILURE;
+        }
+        nfaSpec = string(argv[2]);
+        inputsFile = string(argv[3]);
+        verboseMode = true;
     }
     try {
         UserInputStringParser inputParser(inputsFile);
@@ -120,10 +131,9 @@ main(int argc, char **argv)
         AlphabetString parts;
         for (unsigned long c = 0; c < symStr.length(); ++c) {
             char *cp = &symStr[c];
-            cout << "P|" << *cp << "|" << endl;
             parts.push_back(AlphabetSymbol(string(cp, 1)));
         }
-        nfa2dfa(nfaSpec, parts);
+        nfa2dfa(nfaSpec, parts, verboseMode);
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

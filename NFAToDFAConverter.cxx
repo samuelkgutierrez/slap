@@ -114,16 +114,18 @@ NFAToDFAConverter::NFAToDFAConverter(const NFA &nfa)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static bool
-containsNFAFinalState(const StateSet &nfaFinal,
-                      const StateSet &ss,
-                      StateSet &commonFinalStates)
+bool
+NFAToDFAConverter::containsNFAFinalState(const StateSet &nfaFinal,
+                                         const StateSet &ss,
+                                         StateSet &commonFinalStates)
 {
     for (StateSet::const_iterator state = ss.begin();
          ss.end() != state;
          ++state) {
-        cout << "   X common final: " << *state << endl;
         if (nfaFinal.end() != nfaFinal.find(*state)) {
+            if (this->beVerbose) {
+                cout << "   X common final: " << *state << endl;
+            }
             commonFinalStates.insert(*state);
         }
     }
@@ -227,7 +229,8 @@ NFAToDFAConverter::getDFA(void)
                 dfaStateNum[next] = getNewState();
             }
             if (this->beVerbose) {
-                cout << "   X states merged: state " << dfaStateNum[a] << " is:" <<endl;
+                cout << "   X states merged: state " << dfaStateNum[a] << " is:"
+                     << endl;
                 echoSet(a);
                 cout << endl << "   X" << endl;
             }
@@ -235,7 +238,9 @@ NFAToDFAConverter::getDFA(void)
                 continue;
             }
             else { 
-                dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
+                dfaTransTab.insert(make_pair(dfaStateNum[a],
+                                             FSMTransition(*input,
+                                                           dfaStateNum[next])));
             }
         }
     }
