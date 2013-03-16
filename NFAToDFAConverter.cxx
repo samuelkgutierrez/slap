@@ -164,7 +164,6 @@ NFAToDFAConverter::getDFA(void)
 
     AlphabetString alphabet(this->nfa.getAlphabet());
     StateSet nfaFinalStates(this->nfa.getAcceptStates());
-    echoSet(nfaFinalStates);
     FSMTransitionTable dfaTransTab;
 
     if (this->beVerbose) {
