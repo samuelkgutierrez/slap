@@ -1,3 +1,20 @@
 ################################################################################
                             slap - A Simple Lex App
 ################################################################################
+
+
+####################
+# standalone tools #
+####################
+nfa2dfa
+
+
+######################
+# testing from stdin #
+######################
+it is possible to test the standalone programs with input from stdin.
+# for example:
+# echo "cb" | ./nfa2dfa ./tests/nfa3.txt -
+# OR
+# ./nfa2dfa ./tests/nfa3.txt - <ENTER>
+# asdf <ENTER>

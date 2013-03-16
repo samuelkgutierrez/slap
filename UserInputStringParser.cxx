@@ -41,23 +41,32 @@ using namespace std;
 /* ////////////////////////////////////////////////////////////////////////// */
 UserInputStringParser::UserInputStringParser(const string &fileToParse)
 {
-    string inputStr, line;
-    ifstream file(fileToParse.c_str());
+    string line;
 
-    /* problem opening the file */
-    if (!file.is_open()) {
-        int err = errno;
-        string eStr = "cannot open " + fileToParse +
-                      ". " + strerror(err) + ".\n";
-        throw SLAPException(SLAP_WHERE, eStr);
-    }
-    /* start building the strings */
-    while (file.good()) {
-        getline(file, line);
+    if ("-" == fileToParse) {
+        istream *in = &cin;
+        getline(*in, line);
         this->inputs.push_back(AlphabetSymbol(line));
     }
-    /* close the file */
-    file.close();
+    else {
+        ifstream *file;
+        file = new ifstream(fileToParse.c_str());
+        /* problem opening the file */
+        if (!file->is_open()) {
+            int err = errno;
+            string eStr = "cannot open " + fileToParse +
+                          ". " + strerror(err) + ".\n";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
+        /* start building the strings */
+        while (file->good()) {
+            getline(*file, line);
+            this->inputs.push_back(AlphabetSymbol(line));
+        }
+        /* close the file */
+        file->close();
+        delete file;
+    }
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
