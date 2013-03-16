@@ -129,6 +129,20 @@ containsNFAFinalState(const StateSet &nfaFinal,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static StateSet
+getStateSetFromTransTab(const FSMTransitionTable &tab)
+{
+    StateSet s;
+    for (FSMTransitionTable::const_iterator it = tab.begin();
+         it != tab.end();
+         ++it) {
+        s.insert(it->first);
+        s.insert(it->second.getTo());
+    }
+    return s;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 DFA
 NFAToDFAConverter::getDFA(void)
 {
@@ -176,9 +190,7 @@ NFAToDFAConverter::getDFA(void)
                 echoSet(commonFinal);
                 cout << endl << "   X" << endl;
             }
-            StateSet tmp;
-            tmp.insert(dfaStateNum[a]);
-            dfa.addFinalStates(tmp);
+            dfaFinalStates.insert(dfaStateNum[a]);
         }
         for (AlphabetString::iterator input = alphabet.begin();
              input != alphabet.end();
@@ -218,14 +230,20 @@ NFAToDFAConverter::getDFA(void)
             }
         }
     }
-    
     if (this->beVerbose) {
+        cout << "   X dfa start state: " << endl << "     " << dfaInitial
+             << endl << "   X" << endl;
+        cout << "   X dfa accept states: "<< endl;
+        echoSet(dfaFinalStates);
+        cout << endl << "   X" << endl;
+        cout << "   X dfa transition table: " << endl;
         for (FSMTransitionTable::iterator it = dfaTransTab.begin();
             it != dfaTransTab.end();
             ++it) {
-            cout << it->first << " " << it->second.getInput() << " --> "
+            cout << "     " << it->first << " " << it->second.getInput() << " --> "
                  << it->second.getTo() << endl;
         }
+        cout << "   X" << endl;
     }
 
     if (this->beVerbose) {
@@ -233,6 +251,9 @@ NFAToDFAConverter::getDFA(void)
         "   X done with NFAToDFAConverter:subsetConstruct #####################"
             << endl;
     }
+
+    StateSet dfaAllStates = getStateSetFromTransTab(dfaTransTab);
+    dfa = DFA(alphabet, dfaTransTab, dfaAllStates, dfaInitial, dfaFinalStates);
 
     return dfa;
 }

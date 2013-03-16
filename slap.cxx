@@ -182,15 +182,7 @@ nfa2dfa(const string &nfaInPath,
     AlphabetSymbol c("c");
 
     input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
-    input.push_back(a);
+
     cout <<
     "##########################################################################"
     << endl << "### nfaXListBool: " << nfaInPath << endl
@@ -218,10 +210,9 @@ nfa2dfa(const string &nfaInPath,
                       inputParser->getStartState(),
                       inputParser->getAcceptStates());
         fsm->verbose(true);
+        accepts = fsm->accepts(input);
+        cout << "accepts: " << accepts << endl;
 
-        converter = NFAToDFAConverter(*fsm);
-        converter.verbose(true);
-        dfa = converter.getDFA();
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
@@ -248,8 +239,8 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-#if 0
     bool accepts = false;
+#if 0
     accepts = dfaXListBool("./tests/dfa1.txt", "./tests/dfa1-test-input.txt");
     cout << "accepts: " << accepts << endl;
 
@@ -260,6 +251,6 @@ main(int argc, char **argv)
     cout <<
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         <<endl;
-    nfa2dfa("./tests/nfa2.txt", "asdf");
+    accepts = nfa2dfa("./tests/nfa2.txt", "asdf");
     return EXIT_SUCCESS;
 }

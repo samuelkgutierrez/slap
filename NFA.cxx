@@ -16,6 +16,7 @@
  */
 
 #include "NFA.hxx"
+#include "NFAToDFAConverter.hxx"
 
 using namespace std;
 
@@ -47,17 +48,25 @@ NFA::accepts(const AlphabetString &alphaString)
 {
     /* XXX convert to DFA, minimize, run, return */
     FSMTransitionTable::iterator it;
+    NFAToDFAConverter converter(*this);
+    converter.verbose(this->beVerbose);
+    DFA dfa(converter.getDFA());
+    dfa.verbose(this->beVerbose);
+    FSMTransitionTable dfaTransTab = dfa.getTransitionTable();
+    bool accepts = false;
+
+    accepts = dfa.accepts(alphaString);
 
     if (this->beVerbose) {
-        for (it = this->transitionTable.begin();
-             it != this->transitionTable.end();
+        for (it = dfaTransTab.begin();
+             it != dfaTransTab.end();
              ++it) {
             cout << it->first << " "
                 << it->second.getInput() << " --> "
                 << it->second.getTo() << endl;
         }
     }
-    return true;
+    return accepts;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
