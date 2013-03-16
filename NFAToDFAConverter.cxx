@@ -26,6 +26,23 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static void
+echoSet(const StateSet &target,
+        int numSpaces = 5)
+{
+    StateSet::const_iterator it;
+    string pad;
+
+    for (int i = 0; i < numSpaces; ++i) {
+        pad.append(" ");
+    }
+
+    for (it = target.begin(); it != target.end(); ++it) {
+        cout << pad << *it << endl;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 /* returns set of nfa states reachable from nfa state S on an e-transition alone
  */
 StateSet
@@ -33,7 +50,7 @@ NFAToDFAConverter::eClosureT(StateSet T)
 {
     State state;
     stack<State> stateStack;
-    StateSet eClosure = T;
+    StateSet eClosure;
     FSMTransitionTable transTab = this->nfa.getTransitionTable();
     FSMTransitionTable::iterator u;
 
@@ -48,16 +65,19 @@ NFAToDFAConverter::eClosureT(StateSet T)
         for (u = transTab.begin(); u != transTab.end(); ++u) {
             /* is this the state that we care about? that is: u->first == t? */
             if (u->first == state) {
-                /* is this an epsilon transition and not in eClosure? */
+                /* is this an epsilon transition to u and not in eClosure? */
                 if (u->second.getInput() == AlphabetSymbol::epsilon() &&
                     eClosure.find(u->second.getTo()) == eClosure.end()) {
                     /* then add it to the eClosure */
                     eClosure.insert(u->second.getTo());
+                    stateStack.push(u->second.getTo());
                 }
             }
         }
     }
 
+    
+    echoSet(eClosure);
 
 
     return eClosure;
