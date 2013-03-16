@@ -181,7 +181,7 @@ nfa2dfa(const string &nfaInPath,
     AlphabetSymbol b("b");
     AlphabetSymbol c("c");
 
-    input.push_back(a);
+    input.push_back(c);
 
     cout <<
     "##########################################################################"
@@ -251,6 +251,6 @@ main(int argc, char **argv)
     cout <<
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         <<endl;
-    accepts = nfa2dfa("./tests/nfa2.txt", "asdf");
+    accepts = nfa2dfa("./tests/nfa1.txt", "asdf");
     return EXIT_SUCCESS;
 }

@@ -50,13 +50,15 @@ NFA::accepts(const AlphabetString &alphaString)
     FSMTransitionTable::iterator it;
     NFAToDFAConverter converter(*this);
     converter.verbose(this->beVerbose);
-    DFA dfa(converter.getDFA());
+    DFA dfa;
+    dfa = converter.getDFA();
     dfa.verbose(this->beVerbose);
     FSMTransitionTable dfaTransTab = dfa.getTransitionTable();
     bool accepts = false;
 
     accepts = dfa.accepts(alphaString);
 
+#if 0
     if (this->beVerbose) {
         for (it = dfaTransTab.begin();
              it != dfaTransTab.end();
@@ -66,6 +68,7 @@ NFA::accepts(const AlphabetString &alphaString)
                 << it->second.getTo() << endl;
         }
     }
+#endif
     return accepts;
 }
 
