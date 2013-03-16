@@ -43,7 +43,7 @@ echoSet(const StateSet &target,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* returns set of nfa states reachable from nfa state S on an e-transition alone
+/* returns set of nfa states reachable from nfa state T on an e-transition alone
  */
 StateSet
 NFAToDFAConverter::eClosureT(StateSet T)
@@ -60,7 +60,7 @@ NFAToDFAConverter::eClosureT(StateSet T)
     while (!stateStack.empty()) {
         state = stateStack.top();
         stateStack.pop();
-        /* for each state u with an epsilon transition from t to u */ 
+        /* for each state u with an epsilon transition from t to u */
         /* that is: t 'e --> u */
         for (u = transTab.begin(); u != transTab.end(); ++u) {
             /* is this the state that we care about? that is: u->first == t? */
@@ -76,9 +76,7 @@ NFAToDFAConverter::eClosureT(StateSet T)
         }
     }
 
-    
     echoSet(eClosure);
-
 
     return eClosure;
 }
@@ -97,7 +95,9 @@ NFAToDFAConverter::getDFA(void)
     DFA dfa;
     StateSet eReachableStates;
 
-    eReachableStates = eClosureT(this->nfa.getAllStates());
+    StateSet foo;
+    foo.insert(this->nfa.getStartState());
+    eReachableStates = eClosureT(foo);
 
     return dfa;
 }
