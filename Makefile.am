@@ -36,7 +36,8 @@ Parser.cxx Parser.hxx \
 PrefixRegExParser.cxx PrefixRegExParser.hxx \
 SLAPException.cxx SLAPException.hxx \
 State.cxx State.hxx \
-Utils.cxx Utils.hxx
+Utils.cxx Utils.hxx \
+UserInputStringParser.cxx UserInputStringParser.hxx
 
 slap_SOURCES = \
 ${base_src} \
