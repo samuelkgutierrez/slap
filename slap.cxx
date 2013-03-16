@@ -181,7 +181,15 @@ nfa2dfa(const string &nfaInPath,
     AlphabetSymbol b("b");
     AlphabetSymbol c("c");
 
-    input.push_back(c);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(b);
+    input.push_back(a);
+    input.push_back(b);
+    input.push_back(b);
+    input.push_back(b);
+    input.push_back(b);
+    input.push_back(a);
 
     cout <<
     "##########################################################################"

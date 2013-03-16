@@ -46,30 +46,13 @@ NFA::NFA(const NFA &other) :
 bool
 NFA::accepts(const AlphabetString &alphaString)
 {
-    /* XXX convert to DFA, minimize, run, return */
-    FSMTransitionTable::iterator it;
+    DFA dfa;
     NFAToDFAConverter converter(*this);
     converter.verbose(this->beVerbose);
-    DFA dfa;
     dfa = converter.getDFA();
     dfa.verbose(this->beVerbose);
-    FSMTransitionTable dfaTransTab = dfa.getTransitionTable();
-    bool accepts = false;
 
-    accepts = dfa.accepts(alphaString);
-
-#if 0
-    if (this->beVerbose) {
-        for (it = dfaTransTab.begin();
-             it != dfaTransTab.end();
-             ++it) {
-            cout << it->first << " "
-                << it->second.getInput() << " --> "
-                << it->second.getTo() << endl;
-        }
-    }
-#endif
-    return accepts;
+    return dfa.accepts(alphaString);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

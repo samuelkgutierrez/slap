@@ -161,7 +161,7 @@ NFAToDFAConverter::getDFA(void)
     FSMTransitionTable dfaTransTab;
 
     if (this->beVerbose) {
-        cout <<
+        cout << endl <<
         "   X starting NFAToDFAConverter:subsetConstruct ######################"
             << endl;
     }
