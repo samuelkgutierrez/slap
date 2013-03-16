@@ -23,6 +23,7 @@
 #include "FiniteStateMachine.hxx"
 #include "NFA.hxx"
 #include "DFA.hxx"
+#include "NFAToDFAConverter.hxx"
 
 #include <cstdlib>
 #include <cstdio>
@@ -166,6 +167,75 @@ nfaXListBool(const string &nfaInPath,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static bool
+nfa2dfa(const string &nfaInPath,
+        const string &inputPath)
+{
+    FSMInputParser *inputParser = NULL;
+    AlphabetParser *alphaParser = NULL;
+    NFA *fsm = NULL;
+    bool accepts = false;
+    /* XXX TODO read from file */
+    AlphabetString input;
+    AlphabetSymbol a("a");
+    AlphabetSymbol b("b");
+    AlphabetSymbol c("c");
+
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    input.push_back(a);
+    cout <<
+    "##########################################################################"
+    << endl << "### nfaXListBool: " << nfaInPath << endl
+    << "### input: " << endl;
+    for (unsigned int i = 0; i < input.size(); ++i) {
+        cout << input[i];
+    }
+    cout << endl <<
+    "##########################################################################"
+    << endl;
+
+    try {
+        DFA dfa;
+        NFAToDFAConverter converter;
+        alphaParser = new AlphabetParser(nfaInPath);
+        alphaParser->parse();
+
+        inputParser = new FSMInputParser(nfaInPath,
+                                         alphaParser->getAlphabet());
+        inputParser->parse();
+
+        fsm = new NFA(alphaParser->getAlphabet(),
+                      inputParser->getTransitionTable(),
+                      inputParser->getAllStates(),
+                      inputParser->getStartState(),
+                      inputParser->getAcceptStates());
+        fsm->verbose(true);
+
+        converter = NFAToDFAConverter(*fsm);
+        converter.verbose(true);
+
+        dfa = converter.getDFA();
+    }
+    catch (SLAPException &e) {
+        cerr << e.what() << endl;
+        return false;
+    }
+
+    delete inputParser;
+    delete alphaParser;
+    delete fsm;
+    return accepts;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 #if 0
 static void
 usage(void)
@@ -185,5 +255,9 @@ main(int argc, char **argv)
 
     accepts = nfaXListBool("./tests/nfa1.txt", "./tests/dfa1-test-input.txt");
     cout << "accepts: " << accepts << endl;
+
+    cout <<
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        <<endl;
     return EXIT_SUCCESS;
 }

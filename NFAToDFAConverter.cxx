@@ -17,10 +17,11 @@
 
 #include "NFAToDFAConverter.hxx"
 
+static bool _verbose = false;
+
 /* ////////////////////////////////////////////////////////////////////////// */
-NFAToDFAConverter::NFAToDFAConverter(const DFA &dfa, const NFA &nfa)
+NFAToDFAConverter::NFAToDFAConverter(const NFA &nfa)
 {
-    this->dfa = dfa;
     this->nfa = nfa;
 }
 
@@ -28,5 +29,13 @@ NFAToDFAConverter::NFAToDFAConverter(const DFA &dfa, const NFA &nfa)
 DFA
 NFAToDFAConverter::getDFA(void)
 {
+    DFA dfa;
     return dfa;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+NFAToDFAConverter::verbose(bool beVerbose)
+{
+    this->beVerbose = beVerbose;
 }

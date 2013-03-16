@@ -25,15 +25,21 @@
 
 class NFAToDFAConverter {
 private:
-    DFA dfa;
+    bool beVerbose;
+
     NFA nfa;
 
-    NFAToDFAConverter(void);
-    ~NFAToDFAConverter(void);
 protected:
 public:
-    NFAToDFAConverter(const DFA &dfa, const NFA &nfa);
+    NFAToDFAConverter(void);
+
+    ~NFAToDFAConverter(void);
+
+    NFAToDFAConverter(const NFA &nfa);
+
     DFA getDFA(void);
+
+    void verbose(bool beVerbose);
 };
 
 #endif
