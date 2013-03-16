@@ -183,6 +183,9 @@ NFAToDFAConverter::getDFA(void)
         StateSet a = *unmarkedStates.begin();
         unmarkedStates.erase(unmarkedStates.begin());
         markedStates.insert(a);
+        if (0 == a.size()) {
+            continue;
+        }
         StateSet commonFinal;
         if (containsNFAFinalState(nfaFinalStates, a, commonFinal)) {
             if (this->beVerbose) {
@@ -225,7 +228,7 @@ NFAToDFAConverter::getDFA(void)
             if (next.size() == 0) {
                 continue;
             }
-            else {
+            else { 
                 dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
             }
         }
