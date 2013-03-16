@@ -73,9 +73,9 @@ nfa2dfa(const string &nfaInPath,
                       inputParser->getStartState(),
                       inputParser->getAcceptStates());
         fsm->verbose(verbose);
+
         accepts = fsm->accepts(input);
         cout << "nfa accepts input: " << accepts << endl;
-
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
