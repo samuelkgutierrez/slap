@@ -15,7 +15,7 @@
 
 AC_PREREQ([2.60])
 
-AC_INIT([slap], [0.1], [asdf])
+AC_INIT([slap], [0.1])
 
 # Check If AM_SILENT_RULES Rule Are Supported
 # If So, Build Using AM_SILENT_RULES
