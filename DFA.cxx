@@ -96,3 +96,19 @@ DFA::accepts(const AlphabetString &alphaString)
     /* if we are here, then return if the current state is an accept state */
     return this->acceptState(cur);
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+DFA::setStart(const State &s)
+{
+    this->startState = s;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+DFA::addFinalStates(const StateSet &f)
+{
+    for (StateSet::const_iterator s = f.begin(); s != f.end(); ++s) {
+        this->acceptStates.insert(*s);
+    }
+}

@@ -31,6 +31,7 @@ private:
 
     StateSet eClosureT(StateSet T);
 
+
 protected:
 public:
     NFAToDFAConverter(void) { }

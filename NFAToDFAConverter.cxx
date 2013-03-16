@@ -19,11 +19,15 @@
 #include "State.hxx"
 #include "FSMTransition.hxx"
 #include "AlphabetSymbol.hxx"
+#include "Utils.hxx"
 
 #include <iostream>
 #include <stack>
+#include <map>
 
 using namespace std;
+
+typedef set<StateSet> SOS;
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static void
@@ -40,6 +44,14 @@ echoSet(const StateSet &target,
     for (it = target.begin(); it != target.end(); ++it) {
         cout << pad << *it << endl;
     }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static State
+getNewState(void)
+{
+    static int stateName = 0;
+    return State(Utils::int2string(stateName));
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -75,7 +87,6 @@ NFAToDFAConverter::eClosureT(StateSet T)
             }
         }
     }
-
     if (this->beVerbose) {
         cout << "   X done constructing eClosure for" << endl;
         echoSet(T);
@@ -84,8 +95,6 @@ NFAToDFAConverter::eClosureT(StateSet T)
         echoSet(eClosure);
         cout << "   X" << endl;
     }
-
-
     return eClosure;
 }
 
@@ -97,15 +106,78 @@ NFAToDFAConverter::NFAToDFAConverter(const NFA &nfa)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static bool
+containsNFAFinalState(const StateSet &nfaFinal,
+                      const StateSet &ss,
+                      StateSet &commonFinalStates)
+{
+    for (StateSet::const_iterator state = ss.begin();
+         ss.end() != state;
+         ++state) {
+        if (nfaFinal.end() != nfaFinal.find(*state)) {
+            commonFinalStates.insert(*state);
+        }
+    }
+    if (!commonFinalStates.empty()) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 DFA
 NFAToDFAConverter::getDFA(void)
 {
     DFA dfa;
-    StateSet eReachableStates;
+    SOS markedStates;
+    SOS unmarkedStates;
+    StateSet first;
+    StateSet nfaInitial;
+    State dfaInitial;
+    map<StateSet, State> dfaStateNum;
+    StateSet dfaFinalStates;
+    StateSet nfaFinalStates(this->nfa.getAcceptStates());
 
-    StateSet foo;
-    foo.insert(this->nfa.getStartState());
-    eReachableStates = eClosureT(foo);
+    if (this->beVerbose) {
+        cout <<
+        "   X starting NFAToDFAConverter:subsetConstruct ######################"
+            << endl;
+    }
+
+    nfaInitial.insert(this->nfa.getStartState());
+    first = StateSet(eClosureT(nfaInitial));
+    unmarkedStates.insert(first);
+
+    dfaInitial = getNewState();
+    dfaStateNum[first] = dfaInitial;
+    dfa.setStart(dfaInitial);
+
+    while (!unmarkedStates.empty()) {
+        if (this->beVerbose) {
+            cout <<
+            "   X in main loop ################################################"
+                << endl;
+        }
+        StateSet a = *unmarkedStates.begin();
+        unmarkedStates.erase(unmarkedStates.begin());
+        markedStates.insert(a);
+        StateSet commonFinal;
+        if (containsNFAFinalState(nfaFinalStates, a, commonFinal)) {
+            if (this->beVerbose) {
+                cout << "   X found common final states" << endl;
+                echoSet(commonFinal);
+            }
+            dfa.addFinalStates(commonFinal);
+        }
+    }
+
+    if (this->beVerbose) {
+        cout <<
+        "   X done with NFAToDFAConverter:subsetConstruct #####################"
+            << endl;
+    }
 
     return dfa;
 }

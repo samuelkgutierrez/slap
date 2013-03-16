@@ -23,8 +23,6 @@
 #include <iostream>
 #include <set>
 
-#define StateSet std::set<State>
-
 class State {
 private:
     std::string name;
@@ -32,6 +30,7 @@ private:
 protected:
 
 public:
+
     State(void);
 
     State(const std::string &alphaSymbol);
@@ -50,6 +49,7 @@ public:
                                     const State &state);
 
     static State StateInvalid(void);
-};
 
+};
+    typedef std::set<State> StateSet;
 #endif
