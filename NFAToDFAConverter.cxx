@@ -203,15 +203,10 @@ NFAToDFAConverter::getDFA(void)
             }
             if (unmarkedStates.end() == unmarkedStates.find(next) &&
                 markedStates.end() == markedStates.find(next)) {
-                cout << "HERE!!!!" << endl;
                 unmarkedStates.insert(next);
                 dfaStateNum[next] = getNewState();
             }
-            for (StateSet::iterator news = a.begin();
-                 news != a.end();
-                 ++news) {
-                dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
-            }
+            dfaTransTab.insert(make_pair(dfaStateNum[a], FSMTransition(*input, dfaStateNum[next])));
         }
     }
 
