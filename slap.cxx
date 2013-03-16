@@ -33,7 +33,7 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static bool
+bool
 dfaXListBool(const string &dfaInPath,
              const string &inputPath)
 {
@@ -102,7 +102,7 @@ dfaXListBool(const string &dfaInPath,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static bool
+bool
 nfaXListBool(const string &nfaInPath,
              const string &inputPath)
 {
@@ -248,16 +248,18 @@ usage(void)
 int
 main(int argc, char **argv)
 {
+#if 0
     bool accepts = false;
     accepts = dfaXListBool("./tests/dfa1.txt", "./tests/dfa1-test-input.txt");
     cout << "accepts: " << accepts << endl;
 
-    accepts = nfaXListBool("./tests/nfa1.txt", "./tests/dfa1-test-input.txt");
+    accepts = nfaXListBool("./tests/nfa2.txt", "./tests/dfa1-test-input.txt");
     cout << "accepts: " << accepts << endl;
+#endif
 
     cout <<
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         <<endl;
-    nfa2dfa("./tests/nfa1.txt", "asdf");
+    nfa2dfa("./tests/nfa2.txt", "asdf");
     return EXIT_SUCCESS;
 }

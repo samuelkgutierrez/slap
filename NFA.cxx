@@ -73,7 +73,9 @@ NFA::getStatesReachableByTransition(const StateSet &s,
          state != s.end();
          ++state) {
         while (copy.end() != (it = copy.find(*state))) {
-            reachable.insert(it->second.getTo());
+            if (input == it->second.getInput()) {
+                reachable.insert(it->second.getTo());
+            }
             copy.erase(it);
         }
     }

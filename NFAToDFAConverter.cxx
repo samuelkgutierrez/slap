@@ -142,6 +142,9 @@ NFAToDFAConverter::getDFA(void)
 
     AlphabetString alphabet(this->nfa.getAlphabet());
     StateSet nfaFinalStates(this->nfa.getAcceptStates());
+    cout << "########### FINAL NFA STATES #########" <<endl;
+    echoSet(nfaFinalStates);
+    cout << "########### FINAL NFA STATES #########" <<endl;
     FSMTransitionTable dfaTransTab;
 
     if (this->beVerbose) {
@@ -173,7 +176,10 @@ NFAToDFAConverter::getDFA(void)
                 cout << "   X found common final states" << endl;
                 echoSet(commonFinal);
             }
-            dfa.addFinalStates(commonFinal);
+            /* XXX still not right */
+            StateSet tmp;
+            tmp.insert(dfaStateNum[a]);
+            dfa.addFinalStates(tmp);
         }
         for (AlphabetString::iterator input = alphabet.begin();
              input != alphabet.end();
@@ -187,7 +193,7 @@ NFAToDFAConverter::getDFA(void)
                 cout << "   X" << endl;
                 cout << "   X reachable" << endl;
                 echoSet(reachable);
-                cout << "   X";
+                cout << "   X" << endl;
             }
             StateSet next = eClosureT(reachable);
             if (this->beVerbose) {
@@ -197,6 +203,7 @@ NFAToDFAConverter::getDFA(void)
             }
             if (unmarkedStates.end() == unmarkedStates.find(next) &&
                 markedStates.end() == markedStates.find(next)) {
+                cout << "HERE!!!!" << endl;
                 unmarkedStates.insert(next);
                 dfaStateNum[next] = getNewState();
             }
