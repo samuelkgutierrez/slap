@@ -76,7 +76,15 @@ NFAToDFAConverter::eClosureT(StateSet T)
         }
     }
 
-    echoSet(eClosure);
+    if (this->beVerbose) {
+        cout << "   X done constructing eClosure for" << endl;
+        echoSet(T);
+        cout << "   X" << endl;
+        cout << "   X eClosure is" << endl;
+        echoSet(eClosure);
+        cout << "   X" << endl;
+    }
+
 
     return eClosure;
 }
