@@ -114,6 +114,7 @@ containsNFAFinalState(const StateSet &nfaFinal,
     for (StateSet::const_iterator state = ss.begin();
          ss.end() != state;
          ++state) {
+        cout << "   X common final: " << *state << endl;
         if (nfaFinal.end() != nfaFinal.find(*state)) {
             commonFinalStates.insert(*state);
         }
@@ -138,9 +139,10 @@ NFAToDFAConverter::getDFA(void)
     State dfaInitial;
     map<StateSet, State> dfaStateNum;
     StateSet dfaFinalStates;
-    StateSet nfaFinalStates(this->nfa.getAcceptStates());
+
     AlphabetString alphabet(this->nfa.getAlphabet());
-    FSMTransitionTable nfaTransitionTable;
+    StateSet nfaFinalStates(this->nfa.getAcceptStates());
+    FSMTransitionTable dfaTransTab;
 
     if (this->beVerbose) {
         cout <<
@@ -166,6 +168,7 @@ NFAToDFAConverter::getDFA(void)
         unmarkedStates.erase(unmarkedStates.begin());
         markedStates.insert(a);
         StateSet commonFinal;
+        cout << "XXXXXXXXXXXXXXXX" << endl;
         if (containsNFAFinalState(nfaFinalStates, a, commonFinal)) {
             if (this->beVerbose) {
                 cout << "   X found common final states" << endl;
@@ -184,7 +187,19 @@ NFAToDFAConverter::getDFA(void)
                 unmarkedStates.insert(next);
                 dfaStateNum[next] = getNewState();
             }
+            for (StateSet::iterator news = a.begin();
+                 news != a.end();
+                 ++news) {
+                dfaTransTab.insert(make_pair(*news, FSMTransition(*input, dfaStateNum[next])));
+            }
         }
+    }
+
+    for (FSMTransitionTable::iterator it = dfaTransTab.begin();
+        it != dfaTransTab.end();
+        ++it) {
+        cout << it->first << " " << it->second.getInput() << " --> "
+             << it->second.getTo() << endl;
     }
 
     if (this->beVerbose) {
