@@ -161,14 +161,20 @@ NFA
 RegExpInputParser::reTreeToNFA(ExpNode *root)
 {
     NFA nfa;
-
-    if (this->beVerbose) {
-        cout << "   R building an NFA from re tree" << endl;
+    if (NULL == root) {
+        nfa;
+    }
+    else if (root->type == EXPNODE_UOP) {
+    }
+    else if (root->type == EXPNODE_BOP) {
+    }
+    else if (root->type == EXPNODE_SYM) {
+    }
+    else {
+        string eStr = "unknown exp type in reTreeToNFA. cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
     }
 
-    if (this->beVerbose) {
-        cout << "   R done building an NFA from re tree" << endl;
-    }
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -190,5 +196,24 @@ RegExpInputParser::parse(void)
     ExpNode::echoTree(root);
     cout << endl;
 
+    this->reTree = root;
+
     delete[] psave;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+NFA
+RegExpInputParser::getNFA(void)
+{
+    NFA nfa;
+
+    if (this->beVerbose) {
+        cout << "   R building an NFA from re tree" << endl;
+    }
+
+    nfa = this->reTreeToNFA(this->reTree);
+
+    if (this->beVerbose) {
+        cout << "   R done building an NFA from re tree" << endl;
+    }
 }
