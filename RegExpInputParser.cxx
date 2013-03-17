@@ -164,10 +164,20 @@ RegExpInputParser::reTreeToNFA(ExpNode *root)
         return NFA(AlphabetSymbol(root->id));
     }
     else if (root->type == EXPNODE_UOP) {
-        return NFA(reTreeToNFA(root->l), root->id);
+        return NFA::getKleeneNFA(reTreeToNFA(root->l));
     }
     else if (root->type == EXPNODE_BOP) {
-        return NFA(reTreeToNFA(root->l), reTreeToNFA(root->r), root->id);
+        if ("+" == root->id) {
+            return NFA::getNFAConcat(reTreeToNFA(root->l),
+                                     reTreeToNFA(root->r));
+        }
+        else if ("|" == root->id) {
+            ;
+        }
+        else {
+            string eStr = "unknown op type in reTreeToNFA. cannot continue.";
+            throw SLAPException(SLAP_WHERE, eStr);
+        }
     }
     else {
         string eStr = "unknown exp type in reTreeToNFA. cannot continue.";

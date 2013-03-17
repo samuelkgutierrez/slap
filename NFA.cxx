@@ -74,13 +74,30 @@ NFA::NFA(const AlphabetSymbol &input)
     this->transitionTable.insert(make_pair(start,
                                            FSMTransition(input, accept)));
 }
+
 /* ////////////////////////////////////////////////////////////////////////// */
-NFA::NFA(const NFA &n, const NFA &m, std::string op)
+NFA
+NFA::getNFAConcat(const NFA &n, const NFA &m)
 {
+    NFA cnfa = NFA();
+
+    cnfa.beVerbose = n.beVerbose || m.beVerbose;
+    
+    if (cnfa.beVerbose) {
+        cout << "   N building concatenation" << endl;
+    }
+
+    if (cnfa.beVerbose) {
+        cout << "   N done building concatenation" << endl;
+    }
+
+
+    return cnfa;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-NFA::NFA(const NFA &n, string op)
+NFA
+NFA::getKleeneNFA(const NFA &n)
 {
     NFA nfa;
     State nStart = getNewState();
@@ -90,42 +107,44 @@ NFA::NFA(const NFA &n, string op)
     State oStart = n.startState;
     StateSet oAccepts = n.acceptStates;
 
-    this->beVerbose = n.beVerbose;
+    nfa.beVerbose = n.beVerbose;
 
-    if (this->beVerbose) {
+    if (nfa.beVerbose) {
         cout << "   N building kleene star" << endl;
     }
 
     /* add new start and accept states */
-    this->startState = nStart;
+    nfa.startState = nStart;
     /* add all old accepts to new */
-    this->acceptStates = n.acceptStates;
-    this->acceptStates.insert(nAccept);
+    nfa.acceptStates = n.acceptStates;
+    /* don't forget about the new accept */
+    nfa.acceptStates.insert(nAccept);
 
-    this->alphabet = n.alphabet;
-    this->transitionTable = n.transitionTable;
+    nfa.alphabet = n.alphabet;
+    nfa.transitionTable = n.transitionTable;
 
     /* add e to new start and final */
-    this->transitionTable.insert(make_pair(nStart,
-                                           FSMTransition(eIn, nAccept)));
-    this->transitionTable.insert(make_pair(nStart,
-                                           FSMTransition(eIn, oStart)));
+    nfa.transitionTable.insert(make_pair(nStart,
+                                         FSMTransition(eIn, nAccept)));
+    nfa.transitionTable.insert(make_pair(nStart,
+                                         FSMTransition(eIn, oStart)));
     /* add e from old accept to old start */
-    this->transitionTable.insert(make_pair(*oAccepts.begin(),
-                                           FSMTransition(eIn, oStart)));
+    nfa.transitionTable.insert(make_pair(*oAccepts.begin(),
+                                         FSMTransition(eIn, oStart)));
 
-    if (this->beVerbose) {
-        cout << "   N kleen start: " << this->startState << endl;
+    if (nfa.beVerbose) {
+        cout << "   N kleen start: " << nfa.startState << endl;
         cout << "   N kleen accept " << endl;
-        for (StateSet::iterator a = this->acceptStates.begin();
-             this->acceptStates.end() != a;
+        for (StateSet::iterator a = nfa.acceptStates.begin();
+             nfa.acceptStates.end() != a;
              ++a) {
             cout << "   N " << *a << endl;
         }
         cout << "   N end kleen accept";
-        this->echoTransitions();
+        nfa.echoTransitions();
         cout << "   N done building kleene star" << endl;
     }
+    return nfa;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

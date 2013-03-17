@@ -28,6 +28,7 @@ class NFA : public FiniteStateMachine {
 private:
 
 protected:
+
 public:
     NFA(void) { }
 
@@ -36,17 +37,16 @@ public:
         const StateSet &allStates,
         const State &startState,
         const StateSet &acceptStates);
-
     /* build new NFA from e expression or from alphabet input */
     NFA(const AlphabetSymbol &input);
-    /* for * */
-    NFA(const NFA &n, std::string op);
-    /* for | and + */
-    NFA(const NFA &n, const NFA &m, std::string op);
-
+    /* destructor */    
     ~NFA(void) { }
     /* copy contructor */
     NFA(const NFA &other);
+    /* for * */
+    static NFA getKleeneNFA(const NFA &n);
+    /* returns a new DFA that is the concatenation of n and m. that is n + m */
+    static NFA getNFAConcat(const NFA &n, const NFA &m);
     /* returns whether or not the string is accepted by the DFA */
     bool accepts(const AlphabetString &alphaString);
     /* returns a set of states that are reachable from s on input */
