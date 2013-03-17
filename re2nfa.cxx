@@ -19,7 +19,7 @@
 #include "SLAPException.hxx"
 #include "AlphabetSymbol.hxx"
 #include "AlphabetParser.hxx"
-#include "FSMInputParser.hxx"
+#include "RegExpInputParser.hxx"
 #include "FSMTransition.hxx"
 #include "State.hxx"
 #include "FiniteStateMachine.hxx"
@@ -37,51 +37,56 @@ using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static bool
-nfa2dfa(const string &nfaInPath,
+re2nfa(const string &nfaInPath,
         const AlphabetString &input,
         bool verbose)
 {
-    FSMInputParser *inputParser = NULL;
+    RegExpInputParser *reParser = NULL;
     AlphabetParser *alphaParser = NULL;
     NFA *fsm = NULL;
     bool accepts = false;
 
-    cout <<
+    cout << endl <<
     "##########################################################################"
-    << endl << "### nfa2dfa - input file: " << nfaInPath << endl
-    << "### input: " << endl;
+        << endl <<
+    "##########################################################################"
+    << endl;
+    cout << "# re2nfa - input file: " << nfaInPath << endl
+        << "# input: " << endl;
     for (unsigned int i = 0; i < input.size(); ++i) {
         cout << input[i];
     }
     cout << endl <<
     "##########################################################################"
+        << endl <<
+    "##########################################################################"
     << endl;
 
     try {
-        DFA dfa;
-        NFAToDFAConverter converter;
+        /* parse the alphabet */
         alphaParser = new AlphabetParser(nfaInPath);
         alphaParser->parse();
 
-        inputParser = new FSMInputParser(nfaInPath,
-                                         alphaParser->getAlphabet());
-        inputParser->parse();
+        /* parse the re spec */
+        reParser = new RegExpInputParser(nfaInPath,
+                                            alphaParser->getAlphabet());
+        reParser->parse();
 
-        fsm = new NFA(alphaParser->getAlphabet(),
-                      inputParser->getTransitionTable(),
-                      inputParser->getAllStates(),
-                      inputParser->getStartState(),
-                      inputParser->getAcceptStates());
-        fsm->verbose(verbose);
+        cout << "# alphabet:" << endl;
+        reParser->echoAlphabet();
+        cout << "# alphabet end" << endl;
 
-        accepts = fsm->accepts(input);
-        cout << "nfa accepts input: " << accepts << endl;
+
+        cout << "# starting re --> nfa conversion..." << endl;
+
+
+        cout << "re accepts input: " << accepts << endl;
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
         return false;
     }
-    delete inputParser;
+    delete reParser;
     delete alphaParser;
     delete fsm;
     return accepts;
@@ -92,8 +97,8 @@ static void
 usage(void)
 {
     cout << endl << "usage:" << endl;
-    cout << "nfa2dfa [-v] NFASpecification InputsFile" << endl << endl;
-    cout << "nfa2dfa reads an NFA specification file and input strings and "
+    cout << "re2nfa [-v] RESpecification InputsFile" << endl << endl;
+    cout << "re2nfa reads an RE specification file and input strings and "
             "returns whether or not the inputs found within InputsFile are "
             "accepted by the machine." << endl;
 }
@@ -133,7 +138,7 @@ main(int argc, char **argv)
             char *cp = &symStr[c];
             parts.push_back(AlphabetSymbol(string(cp, 1)));
         }
-        nfa2dfa(nfaSpec, parts, verboseMode);
+        re2nfa(nfaSpec, parts, verboseMode);
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

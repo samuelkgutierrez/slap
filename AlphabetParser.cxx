@@ -111,6 +111,8 @@ AlphabetParser::parse(void)
     cptr = alphaBegin;
     /* now we can get to parsing the thing... */
     while ('\0' != *cptr) {
+        /* alphabet string that we are going to insert */
+        string newAlpha;
         /* skip all the white space and get starting position */
         cptr += strspn(cptr, SLAP_WHITESPACE);
         /* find extent of word */
@@ -130,9 +132,16 @@ AlphabetParser::parse(void)
             string eStr = "invalid alphabet format. cannot continue...";
             throw SLAPException(SLAP_WHERE, eStr);
         }
+        /* if this is a '_ alphabet char, then turn it into a " " */
+        if ("'" == string(cptr, symLength)) {
+            newAlpha = string(" ");
+        }
+        else {
+            /* +1/-1 to skip over '... we don't want those in our alphabet */
+            newAlpha = string(cptr + 1, symLength - 1);
+        }
         /* make sure this symbol already isn't in our set */
-        /* +1/-1 to skip over '... we don't want those in our alphabet */
-        if (!this->alphabet.insert(string(cptr + 1, symLength - 1)).second) {
+        if (!this->alphabet.insert(newAlpha).second) {
             string eStr = "duplicate symbol \"" + string(cptr, symLength) +
                           "\" found. cannot continue...";
             throw SLAPException(SLAP_WHERE, eStr);

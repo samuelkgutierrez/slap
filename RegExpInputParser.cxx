@@ -56,3 +56,31 @@ RegExpInputParser::RegExpInputParser(const std::string &fileToParse,
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = Utils::getNewCString(inputStr);
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+RegExpInputParser::echoAlphabet(void)
+{
+    for (AlphabetString::const_iterator a = this->alphabet.begin();
+         this->alphabet.end() != a;
+         ++a) {
+        if (" " == a->str()) {
+            cout << "# _" << endl;
+        }
+        else {
+            cout << "# " << *a  << endl;
+        }
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+RegExpInputParser::parse(char *cInputStr)
+{
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+RegExpInputParser::parse(void)
+{
+}
