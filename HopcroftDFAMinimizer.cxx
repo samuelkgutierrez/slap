@@ -26,7 +26,7 @@
 #include <set>
 
 /* set of sets --- help! */
-#define SoS set<StateSet>
+#define SOS set<StateSet>
 
 using namespace std;
 
@@ -187,11 +187,11 @@ getStatesReachableByAonC(const FSMTransitionTable &transTab,
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static StateSet
-getStateSetStateIn(const SoS &group,
+getStateSetStateIn(const SOS &group,
                    const State &state)
 {
     StateSet empty;
-    for (SoS::const_iterator git = group.begin(); group.end() != git; ++git) {
+    for (SOS::const_iterator git = group.begin(); group.end() != git; ++git) {
         StateSet ss = *git;
         if (ss.end() != ss.find(state)) {
             return ss;
@@ -213,14 +213,22 @@ buildTransitionsFromStart(const FSMTransitionTable &transTab,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static State
+getNewState(void)
+{
+    static int stateName = 0;
+    return State(Utils::int2string(stateName++));
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 static void
-merge(SoS &P,
+merge(SOS &P,
       const AlphabetString &alphabet,
       const FSMTransitionTable &transTab,
       const State &start,
       const StateSet &acceptStates)
 {
-    SoS::iterator ssi;
+    SOS::iterator ssi;
     StateSet startSet;
 
     if (verbose) {
@@ -301,9 +309,9 @@ go(AlphabetString alphabet,
    const StateSet &f)
 {
     AlphabetString::iterator alphaIt;
-    SoS::iterator wIt, y;
-    SoS p;
-    SoS w;
+    SOS::iterator wIt, y;
+    SOS p;
+    SOS w;
 
     /* populate P and W */
     p.insert(f);
@@ -332,7 +340,7 @@ go(AlphabetString alphabet,
              * transition on c leads to a state in A */
             StateSet x = getStatesWhereCLeadsToA(transTab, *alphaIt, s);
             /* for each set Y in P */
-            SoS t = p;
+            SOS t = p;
             for (y = p.begin(); y != p.end(); ++y) {
                 StateSet yIx = getStateIntersection(*y, x);
                 StateSet yMyIx = getStateDifference(*y, yIx);
