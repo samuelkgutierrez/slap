@@ -124,10 +124,15 @@ RegExpInputParser::parse(char *input, char **out)
     /* find extent of word */
     slen = strcspn(cptr, SLAP_WHITESPACE);
     if ('\'' == *cptr) {
-        /* XXX add alpha check here */
         s = string(cptr + 1, slen - 1);
-        if ("" == s) {
+        if ("" == s && ' ' == *(cptr + 1)) {
             s = string(" ");
+        }
+        if (this->alphabet.end() ==
+            find(this->alphabet.begin(), this->alphabet.end(), AlphabetSymbol(s))) {
+            string eStr = "invalid alphabet symbol found during re parse. "
+                          "cannot continue. culprit: [" + s + "]";
+            throw SLAPException(SLAP_WHERE, eStr);
         }
     }
     else {
