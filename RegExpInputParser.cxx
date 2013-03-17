@@ -126,6 +126,9 @@ RegExpInputParser::parse(char *input, char **out)
     if ('\'' == *cptr) {
         /* XXX add alpha check here */
         s = string(cptr + 1, slen - 1);
+        if ("" == s) {
+            s = string(" ");
+        }
     }
     else {
         s = string(cptr, slen);
@@ -140,6 +143,9 @@ RegExpInputParser::parse(char *input, char **out)
         node->l = parse(cptr, &cptr);
         node->r = parse(cptr, &cptr);
     }
+    else if ("*" == s) {
+        node->l = parse(cptr, &cptr);
+    }
     return node;
 }
 
@@ -151,7 +157,16 @@ RegExpInputParser::parse(void)
     char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
     char *psave = regExpCStr;
 
+    if (this->beVerbose) {
+        cout << "   R walking the parse tree" << endl;
+    }
     root = parse(regExpCStr, &regExpCStr);
+    if (this->beVerbose) {
+        cout << "   R done walking the parse tree" << endl;
+    }
+    cout << "# re after tree walk: ";
+    ExpNode::echoTree(root);
+    cout << endl;
 
     delete[] psave;
 }

@@ -26,14 +26,14 @@ using namespace std;
 /* ////////////////////////////////////////////////////////////////////////// */
 ExpNode::ExpNode(void)
 {
-    this->l = this->r = this->exp = NULL;
+    this->l = this->r = NULL;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 ExpNode::ExpNode(string id)
 {
     this->id = id;
-    this->l = this->r = this->exp = NULL;
+    this->l = this->r = NULL;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -41,14 +41,18 @@ ExpNode::~ExpNode(void)
 {
     if (this->l) delete this->l;
     if (this->r) delete this->r;
-    if (this->exp) delete this->exp;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 void
 ExpNode::echoNode(const ExpNode *root)
 {
-    cout << root->id;
+    if (" " == root->id) {
+        cout << "_";
+    }
+    else {
+        cout << root->id;
+    }
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

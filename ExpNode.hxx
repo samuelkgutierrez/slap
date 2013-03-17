@@ -28,8 +28,6 @@ public:
     ExpNode *l;
     /* right child */
     ExpNode *r;
-    /* for unary ops */
-    ExpNode *exp;
 
     ExpNode(std::string id);
 
