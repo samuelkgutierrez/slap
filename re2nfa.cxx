@@ -68,7 +68,7 @@ re2nfa(const string &nfaInPath,
 
         /* parse the re spec */
         reParser = new RegExpInputParser(nfaInPath,
-                                            alphaParser->getAlphabet());
+                                         alphaParser->getAlphabet());
         reParser->verbose(verbose);
         reParser->parse();
 
