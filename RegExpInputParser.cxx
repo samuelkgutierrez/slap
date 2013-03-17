@@ -160,19 +160,15 @@ RegExpInputParser::parse(char *input, char **out)
 NFA
 RegExpInputParser::reTreeToNFA(ExpNode *root)
 {
-    NFA nfa;
-    if (NULL == root) {
-        return nfa;
+    if (root->type == EXPNODE_SYM) {
+        return NFA(AlphabetSymbol(root->id));
     }
     else if (root->type == EXPNODE_UOP) {
-        return reTreeToNFA(root->l);
+        return NFA(reTreeToNFA(root->l), "*");
     }
     else if (root->type == EXPNODE_BOP) {
         return reTreeToNFA(root->l);
         return reTreeToNFA(root->r);
-    }
-    else if (root->type == EXPNODE_SYM) {
-        nfa = NFA(AlphabetSymbol(root->id));
     }
     else {
         string eStr = "unknown exp type in reTreeToNFA. cannot continue.";
@@ -220,4 +216,5 @@ RegExpInputParser::getNFA(void)
     if (this->beVerbose) {
         cout << "   R done building an NFA from re tree" << endl;
     }
+    return nfa;
 }

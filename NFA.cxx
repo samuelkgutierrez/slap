@@ -69,8 +69,42 @@ NFA::NFA(const AlphabetSymbol &input)
     }
     this->startState = start;
     this->acceptStates.insert(accept);
+    this->allStates.insert(start);
+    this->allStates.insert(accept);
     this->transitionTable.insert(make_pair(start,
                                            FSMTransition(input, accept)));
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+NFA::NFA(const NFA &n, string op)
+{
+    NFA nfa;
+    State nStart = getNewState();
+    State nAccept = getNewState();
+    AlphabetSymbol eIn = AlphabetSymbol::epsilon();
+
+    State oStart = n.startState;
+    StateSet oAccepts = n.acceptStates;
+    
+    this->beVerbose = n.beVerbose;
+
+    /* add new start and accept states */
+    this->startState = nStart;
+    this->acceptStates.insert(nAccept);
+
+    this->alphabet = n.alphabet;
+    this->transitionTable = n.transitionTable;
+
+    /* add e to new start and final */
+    this->transitionTable.insert(make_pair(nStart,
+                                           FSMTransition(eIn, nAccept)));
+    this->transitionTable.insert(make_pair(nStart,
+                                           FSMTransition(eIn, oStart)));
+
+    if (this->beVerbose) {
+        cout << "   N building kleene star" << endl;
+    }
+
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

@@ -39,6 +39,8 @@ public:
 
     /* build new NFA from e expression or from alphabet input */
     NFA(const AlphabetSymbol &input);
+    /* for * */
+    NFA(const NFA &n, std::string op);
 
     ~NFA(void) { }
     /* copy contructor */
