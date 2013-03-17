@@ -20,8 +20,14 @@
 
 #include <string>
 
+#define EXPNODE_NONE 0
+#define EXPNODE_BOP  1
+#define EXPNODE_UOP  2
+#define EXPNODE_SYM  3
+
 class ExpNode {
 public:
+    int type;
     /* id */
     std::string id;
     /* left child */
@@ -29,7 +35,7 @@ public:
     /* right child */
     ExpNode *r;
 
-    ExpNode(std::string id);
+    ExpNode(std::string id, int type = EXPNODE_NONE);
 
     ~ExpNode(void);
 

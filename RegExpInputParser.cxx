@@ -143,12 +143,14 @@ RegExpInputParser::parse(char *input, char **out)
     if (this->beVerbose) {
         cout << "   R reading: " << s << endl;
     }
-    node = new ExpNode(s);
+    node = new ExpNode(s, EXPNODE_SYM);
     if ("|" == s || "+" == s) {
+        node->type = EXPNODE_BOP;
         node->l = parse(cptr, &cptr);
         node->r = parse(cptr, &cptr);
     }
     else if ("*" == s) {
+        node->type = EXPNODE_UOP;
         node->l = parse(cptr, &cptr);
     }
     return node;

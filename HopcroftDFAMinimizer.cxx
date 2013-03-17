@@ -20,6 +20,7 @@
 #include "State.hxx"
 #include "FSMTransition.hxx"
 #include "SLAPException.hxx"
+#include "Utils.hxx"
 
 #include <iostream>
 #include <algorithm>

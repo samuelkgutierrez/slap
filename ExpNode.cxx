@@ -16,6 +16,8 @@
  */
 
 #include "ExpNode.hxx"
+#include "Constants.hxx"
+#include "SLAPException.hxx"
 
 #include <cstdlib>
 #include <string>
@@ -26,12 +28,14 @@ using namespace std;
 /* ////////////////////////////////////////////////////////////////////////// */
 ExpNode::ExpNode(void)
 {
+    this->type = EXPNODE_NONE;
     this->l = this->r = NULL;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-ExpNode::ExpNode(string id)
+ExpNode::ExpNode(string id, int type)
 {
+    this->type = type;
     this->id = id;
     this->l = this->r = NULL;
 }
@@ -47,11 +51,32 @@ ExpNode::~ExpNode(void)
 void
 ExpNode::echoNode(const ExpNode *root)
 {
-    if (" " == root->id) {
-        cout << "_";
+    if (NULL == root) {
+        return;
+    }
+    else if (root->type == EXPNODE_UOP) {
+        cout << "(";
+        echoNode(root->l);
+        cout << root->id << ")";
+    }
+    else if (root->type == EXPNODE_BOP) {
+        cout << "(";
+        echoNode(root->l);
+        cout << " " << root->id << " ";
+        echoNode(root->r);
+        cout << ")";
+    }
+    else if (root->type == EXPNODE_SYM) {
+        if (" " == root->id) {
+            cout << "_";
+        }
+        else {
+            cout << root->id;
+        }
     }
     else {
-        cout << root->id;
+        string eStr = "unknown exp type in echoNode. cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
     }
 }
 
@@ -62,7 +87,5 @@ ExpNode::echoTree(const ExpNode *root)
     if (NULL == root) {
         return;
     }
-    echoTree(root->l);
     echoNode(root);
-    echoTree(root->r);
 }
