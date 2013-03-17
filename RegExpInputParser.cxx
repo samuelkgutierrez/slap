@@ -87,6 +87,22 @@ RegExpInputParser::verbose(bool beVerbose)
 ExpNode *
 RegExpInputParser::parse(char *input)
 {
+    char *cptr = input;
+    int wordLen = 0;
+    string wordStr;
+
+    if ('\0' == *cptr) {
+        return NULL;
+    }
+    /* skip all the white space and get starting position */
+    cptr += strspn(cptr, SLAP_WHITESPACE);
+    /* find extent of word */
+    wordLen = strcspn(cptr, SLAP_WHITESPACE);
+    wordStr = string(cptr, wordLen);
+    if (this->beVerbose) {
+        cout << "reading: " << wordStr << endl;
+    }
+    return parse(cptr);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
