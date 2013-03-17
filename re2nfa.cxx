@@ -70,15 +70,14 @@ re2nfa(const string &nfaInPath,
         /* parse the re spec */
         reParser = new RegExpInputParser(nfaInPath,
                                             alphaParser->getAlphabet());
+        reParser->verbose(verbose);
         reParser->parse();
 
         cout << "# alphabet:" << endl;
         reParser->echoAlphabet();
         cout << "# alphabet end" << endl;
 
-
         cout << "# starting re --> nfa conversion..." << endl;
-
 
         cout << "re accepts input: " << accepts << endl;
     }

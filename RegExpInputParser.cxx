@@ -19,6 +19,7 @@
 #include "Constants.hxx"
 #include "Utils.hxx"
 #include "SLAPException.hxx"
+#include "ExpNode.hxx"
 
 #include <iostream>
 #include <fstream>
@@ -37,6 +38,8 @@ RegExpInputParser::RegExpInputParser(const std::string &fileToParse,
 {
     string inputStr;
     ifstream file(fileToParse.c_str());
+
+    this->beVerbose = false;
 
     /* problem opening the file */
     if (!file.is_open()) {
@@ -75,7 +78,14 @@ RegExpInputParser::echoAlphabet(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 void
-RegExpInputParser::parse(char *cInputStr)
+RegExpInputParser::verbose(bool beVerbose)
+{
+    this->beVerbose = beVerbose;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+ExpNode *
+RegExpInputParser::parse(char *input)
 {
 }
 
@@ -83,4 +93,10 @@ RegExpInputParser::parse(char *cInputStr)
 void
 RegExpInputParser::parse(void)
 {
+    ExpNode *root = NULL;             
+    char *inputCopy = Utils::getNewCString(string(this->cInputStr));
+
+    root = parse(inputCopy);
+
+    delete[] inputCopy;
 }

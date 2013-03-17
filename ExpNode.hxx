@@ -22,7 +22,7 @@
 
 class ExpNode {
 public:
-    /* id */ 
+    /* id */
     std::string id;
     /* left child */
     ExpNode *l;
