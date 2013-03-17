@@ -47,6 +47,8 @@ public:
     static NFA getKleeneNFA(const NFA &n);
     /* returns a new DFA that is the concatenation of n and m. that is n + m */
     static NFA getNFAConcat(const NFA &n, const NFA &m);
+    /* returns DFA that is n | m */
+    static NFA getNFAUnion(const NFA &n, const NFA &m);
     /* returns whether or not the string is accepted by the DFA */
     bool accepts(const AlphabetString &alphaString);
     /* returns a set of states that are reachable from s on input */

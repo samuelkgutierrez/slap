@@ -172,7 +172,8 @@ RegExpInputParser::reTreeToNFA(ExpNode *root)
                                      reTreeToNFA(root->r));
         }
         else if ("|" == root->id) {
-            ;
+            return NFA::getNFAUnion(reTreeToNFA(root->l),
+                                    reTreeToNFA(root->r));
         }
         else {
             string eStr = "unknown op type in reTreeToNFA. cannot continue.";

@@ -77,6 +77,62 @@ NFA::NFA(const AlphabetSymbol &input)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 NFA
+NFA::getNFAUnion(const NFA &n, const NFA &m)
+{
+    NFA unfa;
+    AlphabetSymbol eIn = AlphabetSymbol::epsilon();
+    State newStart = getNewState();
+    State newAccept = getNewState();
+
+    unfa.beVerbose = n.beVerbose || m.beVerbose;
+    
+    if (unfa.beVerbose) {
+        cout << "   N building union" << endl;
+    }
+
+    unfa.startState = newStart;
+    unfa.acceptStates.insert(newAccept);
+
+    /* add e transitions from newStart to starts of n and m */
+    unfa.transitionTable.insert(make_pair(newStart,
+                                          FSMTransition(eIn, n.startState)));
+    unfa.transitionTable.insert(make_pair(newStart,
+                                          FSMTransition(eIn, m.startState)));
+    /* add e transitions from n and m accepts to newAccept */
+    for (StateSet::const_iterator a = n.acceptStates.begin();
+         n.acceptStates.end() != a;
+         ++a) {
+        unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
+                                                                newAccept)));
+    }
+    for (StateSet::const_iterator a = m.acceptStates.begin();
+         m.acceptStates.end() != a;
+         ++a) {
+        unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
+                                                                newAccept)));
+    }
+
+    if (unfa.beVerbose) {
+        cout << "   N union start: " << unfa.startState << endl;
+        cout << "   N union accept " << endl;
+        for (StateSet::iterator a = unfa.acceptStates.begin();
+             unfa.acceptStates.end() != a;
+             ++a) {
+            cout << "   N " << *a << endl;
+        }
+        cout << "   N end union accept" << endl;
+        cout << "   N union transitions:" << endl;
+        unfa.echoTransitions();
+        cout << "   N end union transitions:" << endl;
+        cout << "   N done building union" << endl;
+    }
+
+    return unfa;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/* XXX this is busted! */
+NFA
 NFA::getNFAConcat(const NFA &n, const NFA &m)
 {
     NFA cnfa;
