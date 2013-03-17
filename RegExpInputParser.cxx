@@ -53,7 +53,7 @@ getRegExpCStr(char *fileText)
     dptr = cptr;
     dptr += strcspn(dptr, SLAP_EOL);
     *dptr = '\0';
-    cout << "re: [" << string(cptr) << "]" << endl;
+    cout << "# re: [" << string(cptr) << "]" << endl;
 
     return Utils::getNewCString(string(cptr));
 }
@@ -127,9 +127,9 @@ RegExpInputParser::parse(char *input)
     wordLen = strcspn(cptr, SLAP_WHITESPACE);
     wordStr = string(cptr, wordLen);
     if (this->beVerbose) {
-        cout << "reading: " << wordStr << endl;
+        cout << "   R reading: " << wordStr << endl;
     }
-    return parse(cptr);
+    return parse(cptr + wordLen);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -139,7 +139,7 @@ RegExpInputParser::parse(void)
     ExpNode *root = NULL;             
     char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
 
-    //root = parse(regExpCStr);
+    root = parse(regExpCStr);
 
     delete[] regExpCStr;
 }
