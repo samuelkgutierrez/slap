@@ -18,7 +18,8 @@ AUTHORS README COPYRIGHT autogen tests
 
 bin_PROGRAMS = \
 slap \
-nfa2dfa
+nfa2dfa \
+re2nfa
 
 base_src = \
 Constants.hxx \
@@ -32,7 +33,7 @@ FiniteStateMachine.cxx FiniteStateMachine.hxx \
 HopcroftDFAMinimizer.cxx HopcroftDFAMinimizer.hxx \
 NFA.cxx NFA.hxx \
 NFAToDFAConverter.cxx NFAToDFAConverter.hxx \
-Parser.cxx Parser.hxx \
+RegExpInputParser.cxx RegExpInputParser.hxx \
 ExpNode.cxx ExpNode.hxx \
 PrefixRegExParser.cxx PrefixRegExParser.hxx \
 SLAPException.cxx SLAPException.hxx \
@@ -48,3 +49,6 @@ nfa2dfa_SOURCES = \
 ${base_src} \
 nfa2dfa.cxx
 
+re2nfa_SOURCES = \
+${base_src} \
+re2nfa.cxx

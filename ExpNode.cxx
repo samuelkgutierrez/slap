@@ -19,22 +19,21 @@
 
 #include <cstdlib>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
 ExpNode::ExpNode(void)
 {
-    this->l = NULL;
-    this->r = NULL;
+    this->l = this->r = this->exp = NULL;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 ExpNode::ExpNode(string id)
 {
     this->id = id;
-    this->l = NULL;
-    this->r = NULL;
+    this->l = this->r = this->exp = NULL;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -42,4 +41,24 @@ ExpNode::~ExpNode(void)
 {
     if (this->l) delete this->l;
     if (this->r) delete this->r;
+    if (this->exp) delete this->exp;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+ExpNode::echoNode(const ExpNode *root)
+{
+    cout << root->id;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+ExpNode::echoTree(const ExpNode *root)
+{
+    if (NULL == root) {
+        return;
+    }
+    echoTree(root->l);
+    echoNode(root);
+    echoTree(root->r);
 }

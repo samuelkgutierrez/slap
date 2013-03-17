@@ -22,21 +22,27 @@
 
 class ExpNode {
 public:
-    ExpNode(void);
-
-    ExpNode(std::string id);
-
-    ~ExpNode(void);
-
-protected:
-
-private:
     /* id */ 
     std::string id;
     /* left child */
     ExpNode *l;
     /* right child */
     ExpNode *r;
+    /* for unary ops */
+    ExpNode *exp;
+
+    ExpNode(std::string id);
+
+    ~ExpNode(void);
+
+    static void echoTree(const ExpNode *root);
+
+protected:
+
+private:
+    ExpNode(void);
+
+    static void echoNode(const ExpNode *root);
 };
 
 #endif
