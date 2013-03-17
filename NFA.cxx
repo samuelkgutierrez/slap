@@ -94,6 +94,8 @@ NFA::NFA(const NFA &n, string op)
 
     /* add new start and accept states */
     this->startState = nStart;
+    /* add all old accepts to new */
+    this->acceptStates = n.acceptStates;
     this->acceptStates.insert(nAccept);
 
     this->alphabet = n.alphabet;
@@ -105,8 +107,8 @@ NFA::NFA(const NFA &n, string op)
     this->transitionTable.insert(make_pair(nStart,
                                            FSMTransition(eIn, oStart)));
     /* add e from old accept to old start */
-    this->transitionTable.insert(make_pair(oStart,
-                                           FSMTransition(eIn, *oAccepts.begin())));
+    this->transitionTable.insert(make_pair(*oAccepts.begin(),
+                                           FSMTransition(eIn, oStart)));
 
     if (this->beVerbose) {
         cout << "   N kleen start: " << this->startState << endl;
