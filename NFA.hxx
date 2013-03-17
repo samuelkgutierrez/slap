@@ -37,6 +37,9 @@ public:
         const State &startState,
         const StateSet &acceptStates);
 
+    /* build new NFA from e expression or from alphabet input */
+    NFA(const AlphabetSymbol &input);
+
     ~NFA(void) { }
     /* copy contructor */
     NFA(const NFA &other);

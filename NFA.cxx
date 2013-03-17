@@ -17,8 +17,19 @@
 
 #include "NFA.hxx"
 #include "NFAToDFAConverter.hxx"
+#include "Utils.hxx"
+
+#include <algorithm>
 
 using namespace std;
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static State
+getNewState(void)
+{
+    static int stateName = 0;
+    return State(Utils::int2string(stateName++));
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 NFA::NFA(const AlphabetString &alpha,
@@ -43,6 +54,21 @@ NFA::NFA(const NFA &other) :
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+NFA::NFA(const AlphabetSymbol &input)
+{
+    State start = getNewState();
+    State accept = getNewState();
+    if (this->alphabet.end() == find(this->alphabet.begin(),
+                                     this->alphabet.end(), input)) {
+        this->alphabet.push_back(input);
+    }
+    this->startState = start;
+    this->acceptStates.insert(accept);
+    this->transitionTable.insert(make_pair(start,
+                                           FSMTransition(input, accept)));
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 bool
 NFA::accepts(const AlphabetString &alphaString)
 {
@@ -63,7 +89,7 @@ NFA::getStatesReachableByTransition(const StateSet &s,
     StateSet reachable;
     FSMTransitionTable copy = this->transitionTable;
     FSMTransitionTable::iterator it;
-    
+
     for (StateSet::const_iterator state = s.begin();
          state != s.end();
          ++state) {
