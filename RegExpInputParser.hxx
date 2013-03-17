@@ -20,6 +20,7 @@
 
 #include "AlphabetSymbol.hxx"
 #include "ExpNode.hxx"
+#include "NFA.hxx"
 
 #include <string>
 
@@ -34,6 +35,8 @@ private:
     AlphabetString alphabet;
 
     ExpNode *parse(char *input, char **out);
+
+    NFA reTreeToNFA(ExpNode *root);
 
 protected:
 

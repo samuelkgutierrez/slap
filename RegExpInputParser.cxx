@@ -157,6 +157,21 @@ RegExpInputParser::parse(char *input, char **out)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+NFA
+RegExpInputParser::reTreeToNFA(ExpNode *root)
+{
+    NFA nfa;
+
+    if (this->beVerbose) {
+        cout << "   R building an NFA from re tree" << endl;
+    }
+
+    if (this->beVerbose) {
+        cout << "   R done building an NFA from re tree" << endl;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 void
 RegExpInputParser::parse(void)
 {
