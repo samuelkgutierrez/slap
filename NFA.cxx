@@ -104,6 +104,9 @@ NFA::NFA(const NFA &n, string op)
                                            FSMTransition(eIn, nAccept)));
     this->transitionTable.insert(make_pair(nStart,
                                            FSMTransition(eIn, oStart)));
+    /* add e from old accept to old start */
+    this->transitionTable.insert(make_pair(oStart,
+                                           FSMTransition(eIn, *oAccepts.begin())));
 
     if (this->beVerbose) {
         cout << "   N kleen start: " << this->startState << endl;
