@@ -3,6 +3,8 @@
 *.d
 slap
 nfa2dfa
+dfa2dfa
+re2nfa
 cscope.out
 tags
 .deps
