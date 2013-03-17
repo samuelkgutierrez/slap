@@ -25,7 +25,6 @@
 #include "FiniteStateMachine.hxx"
 #include "NFA.hxx"
 #include "DFA.hxx"
-#include "NFAToDFAConverter.hxx"
 #include "UserInputStringParser.hxx"
 
 #include <cstdlib>
@@ -79,9 +78,7 @@ re2nfa(const string &nfaInPath,
 
         cout << "# starting re --> nfa conversion..." << endl;
         NFA nfa = reParser->getNFA();
-        NFAToDFAConverter nfa2dfa(nfa);
-        DFA dfa = nfa2dfa.getDFA();
-        accepts = dfa.accepts(input);
+        accepts = nfa.accepts(input);
         cout << "re accepts input: " << accepts << endl;
     }
     catch (SLAPException &e) {
