@@ -112,24 +112,35 @@ RegExpInputParser::verbose(bool beVerbose)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 ExpNode *
-RegExpInputParser::parse(char *input)
+RegExpInputParser::parse(char *input, char **out)
 {
     char *cptr = input;
-    int wordLen = 0;
-    string wordStr;
+    int slen = 0;
+    string s;
+    ExpNode *node = NULL;
 
-    if ('\0' == *cptr) {
-        return NULL;
-    }
     /* skip all the white space and get starting position */
     cptr += strspn(cptr, SLAP_WHITESPACE);
     /* find extent of word */
-    wordLen = strcspn(cptr, SLAP_WHITESPACE);
-    wordStr = string(cptr, wordLen);
-    if (this->beVerbose) {
-        cout << "   R reading: " << wordStr << endl;
+    slen = strcspn(cptr, SLAP_WHITESPACE);
+    if ('\'' == *cptr) {
+        /* XXX add alpha check here */
+        s = string(cptr + 1, slen - 1);
     }
-    return parse(cptr + wordLen);
+    else {
+        s = string(cptr, slen);
+    }
+    cptr += slen;
+    *out = cptr;
+    if (this->beVerbose) {
+        cout << "   R reading: " << s << endl;
+    }
+    node = new ExpNode(s);
+    if ("|" == s || "+" == s) {
+        node->l = parse(cptr, &cptr);
+        node->r = parse(cptr, &cptr);
+    }
+    return node;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -138,8 +149,9 @@ RegExpInputParser::parse(void)
 {
     ExpNode *root = NULL;             
     char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
+    char *psave = regExpCStr;
 
-    root = parse(regExpCStr);
+    root = parse(regExpCStr, &regExpCStr);
 
-    delete[] regExpCStr;
+    delete[] psave;
 }
