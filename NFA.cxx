@@ -59,14 +59,12 @@ NFA::NFA(const AlphabetSymbol &input)
     State start = getNewState();
     State accept = getNewState();
 
-    if (this->beVerbose) {
+    /* XXX FIXME - add static NFA getter */
+    if (this->beVerbose || true) {
         cout << "   N creating new: " << start << " " << input << " --> "
              << accept << " transition" << endl;
     }
-    if (this->alphabet.end() == find(this->alphabet.begin(),
-                                     this->alphabet.end(), input)) {
-        this->alphabet.push_back(input);
-    }
+    this->alphabet.push_back(input);
     this->startState = start;
     this->acceptStates.insert(accept);
     this->allStates.insert(start);
@@ -98,6 +96,24 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
                                           FSMTransition(eIn, n.startState)));
     unfa.transitionTable.insert(make_pair(newStart,
                                           FSMTransition(eIn, m.startState)));
+
+    /* update transition table to include n and m transitions */
+    for (FSMTransitionTable::const_iterator t = n.transitionTable.begin();
+         n.transitionTable.end() != t;
+         ++t) {
+        unfa.transitionTable.insert(
+            make_pair(t->first, FSMTransition(t->second.getInput(),
+                                              t->second.getTo()))
+        );
+    }
+    for (FSMTransitionTable::const_iterator t = m.transitionTable.begin();
+         m.transitionTable.end() != t;
+         ++t) {
+        unfa.transitionTable.insert(
+            make_pair(t->first, FSMTransition(t->second.getInput(),
+                                              t->second.getTo()))
+        );
+    }
     /* add e transitions from n and m accepts to newAccept */
     for (StateSet::const_iterator a = n.acceptStates.begin();
          n.acceptStates.end() != a;
@@ -111,6 +127,27 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
         unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
                                                                 newAccept)));
     }
+    /* create all states */
+    unfa.allStates = n.allStates;
+    for (StateSet::const_iterator s = m.allStates.begin();
+         m.allStates.end() != s;
+         ++s) {
+        unfa.allStates.insert(*s);
+    }
+    unfa.allStates.insert(newStart);
+    unfa.allStates.insert(newAccept);
+
+    /* create alphabet */
+    unfa.alphabet = n.alphabet;
+    for (AlphabetString::const_iterator a = m.alphabet.begin();
+         m.alphabet.end() != a;
+         ++a) {
+        if (m.alphabet.end() == find(m.alphabet.begin(),
+                                     m.alphabet.end(),
+                                     *a)) {
+            unfa.alphabet.push_back(*a);
+        }
+    }
 
     if (unfa.beVerbose) {
         cout << "   N union start: " << unfa.startState << endl;
@@ -121,6 +158,20 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
             cout << "   N " << *a << endl;
         }
         cout << "   N end union accept" << endl;
+        cout << "   N union states:" << endl;
+        for (StateSet::const_iterator s = unfa.allStates.begin();
+             unfa.allStates.end() != s;
+             ++s) {
+            cout << "   N " << *s << endl;
+        }
+        cout << "   N end union states" << endl;
+        cout << "   N union alphabet:" << endl;
+        for (AlphabetString::const_iterator a = unfa.alphabet.begin();
+             unfa.alphabet.end() != a;
+             ++a) {
+            cout << "   N " << *a << endl;
+        }
+        cout << "   N end union alphabet" << endl;
         cout << "   N union transitions:" << endl;
         unfa.echoTransitions();
         cout << "   N end union transitions:" << endl;
