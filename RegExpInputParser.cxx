@@ -173,7 +173,6 @@ RegExpInputParser::reTreeToNFA(ExpNode *root)
         string eStr = "unknown exp type in reTreeToNFA. cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
-
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

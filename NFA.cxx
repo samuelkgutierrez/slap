@@ -89,7 +89,7 @@ NFA::NFA(const NFA &n, string op)
 
     State oStart = n.startState;
     StateSet oAccepts = n.acceptStates;
-    
+
     this->beVerbose = n.beVerbose;
 
     if (this->beVerbose) {
@@ -116,6 +116,13 @@ NFA::NFA(const NFA &n, string op)
 
     if (this->beVerbose) {
         cout << "   N kleen start: " << this->startState << endl;
+        cout << "   N kleen accept " << endl;
+        for (StateSet::iterator a = this->acceptStates.begin();
+             this->acceptStates.end() != a;
+             ++a) {
+            cout << "   N " << *a << endl;
+        }
+        cout << "   N end kleen accept";
         this->echoTransitions();
         cout << "   N done building kleene star" << endl;
     }

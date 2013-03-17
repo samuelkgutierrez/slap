@@ -48,17 +48,17 @@ public:
     FiniteStateMachine(const FiniteStateMachine &other);
 
     virtual ~FiniteStateMachine(void);
-
+    /* toggles verbose output */
     void verbose(bool beVerbose);
-
+    /* returns alphabet */
     AlphabetString getAlphabet(void);
-
+    /* returns transition table */
     FSMTransitionTable getTransitionTable(void);
-
+    /* returns all valid states */
     StateSet getAllStates(void);
-
+    /* returns accept states */
     StateSet getAcceptStates(void);
-
+    /* returns start state */
     State getStartState(void);
     /* sets DFA start state */
     void setStart(const State &s);

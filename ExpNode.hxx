@@ -16,7 +16,7 @@
  */
 
 #ifndef EXPNODE_INCLUDED
-#define EXPNODE_INCLUDED 
+#define EXPNODE_INCLUDED
 
 #include <string>
 
