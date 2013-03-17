@@ -106,6 +106,7 @@ NFA::NFA(const NFA &n, string op)
                                            FSMTransition(eIn, oStart)));
 
     if (this->beVerbose) {
+        cout << "   N kleen start: " << this->startState << endl;
         this->echoTransitions();
         cout << "   N done building kleene star" << endl;
     }

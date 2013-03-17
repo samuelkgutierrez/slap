@@ -79,7 +79,9 @@ re2nfa(const string &nfaInPath,
 
         cout << "# starting re --> nfa conversion..." << endl;
         NFA nfa = reParser->getNFA();
-
+        NFAToDFAConverter nfa2dfa(nfa);
+        DFA dfa = nfa2dfa.getDFA();
+        accepts = dfa.accepts(input);
         cout << "re accepts input: " << accepts << endl;
     }
     catch (SLAPException &e) {
