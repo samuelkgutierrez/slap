@@ -43,6 +43,8 @@ public:
     ~NFA(void) { }
     /* copy contructor */
     NFA(const NFA &other);
+    /* for inputs */
+    static NFA getSimpleNFA(const AlphabetSymbol &input);
     /* for * */
     static NFA getKleeneNFA(const NFA &n);
     /* returns a new DFA that is the concatenation of n and m. that is n + m */

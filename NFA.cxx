@@ -54,23 +54,26 @@ NFA::NFA(const NFA &other) :
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-NFA::NFA(const AlphabetSymbol &input)
+NFA
+NFA::getSimpleNFA(const AlphabetSymbol &input)
 {
+    NFA nfa;
     State start = getNewState();
     State accept = getNewState();
 
-    /* XXX FIXME - add static NFA getter */
-    if (this->beVerbose || true) {
+    /* XXX FIXME */
+    if (nfa.beVerbose || true) {
         cout << "   N creating new: " << start << " " << input << " --> "
              << accept << " transition" << endl;
     }
-    this->alphabet.push_back(input);
-    this->startState = start;
-    this->acceptStates.insert(accept);
-    this->allStates.insert(start);
-    this->allStates.insert(accept);
-    this->transitionTable.insert(make_pair(start,
+    nfa.alphabet.push_back(input);
+    nfa.startState = start;
+    nfa.acceptStates.insert(accept);
+    nfa.allStates.insert(start);
+    nfa.allStates.insert(accept);
+    nfa.transitionTable.insert(make_pair(start,
                                            FSMTransition(input, accept)));
+    return nfa;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -127,7 +130,11 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
         );
     }
     /* create all states */
-    unfa.allStates = n.allStates;
+    for (StateSet::const_iterator s = n.allStates.begin();
+         n.allStates.end() != s;
+         ++s) {
+        unfa.allStates.insert(*s);
+    }
     for (StateSet::const_iterator s = m.allStates.begin();
          m.allStates.end() != s;
          ++s) {
@@ -141,8 +148,8 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
     for (AlphabetString::const_iterator a = m.alphabet.begin();
          m.alphabet.end() != a;
          ++a) {
-        if (m.alphabet.end() == find(m.alphabet.begin(),
-                                     m.alphabet.end(),
+        if (unfa.alphabet.end() == find(unfa.alphabet.begin(),
+                                     unfa.alphabet.end(),
                                      *a)) {
             unfa.alphabet.push_back(*a);
         }
