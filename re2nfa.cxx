@@ -78,6 +78,7 @@ re2nfa(const string &nfaInPath,
         cout << "# alphabet end" << endl;
 
         cout << "# starting re --> nfa conversion..." << endl;
+        NFA nfa = reParser->getNFA();
 
         cout << "re accepts input: " << accepts << endl;
     }

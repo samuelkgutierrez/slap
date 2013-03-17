@@ -58,6 +58,11 @@ NFA::NFA(const AlphabetSymbol &input)
 {
     State start = getNewState();
     State accept = getNewState();
+
+    if (this->beVerbose) {
+        cout << "   N creating new: " << start << " " << input << " --> "
+             << accept << " transition" << endl;
+    }
     if (this->alphabet.end() == find(this->alphabet.begin(),
                                      this->alphabet.end(), input)) {
         this->alphabet.push_back(input);
