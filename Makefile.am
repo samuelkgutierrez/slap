@@ -33,6 +33,7 @@ HopcroftDFAMinimizer.cxx HopcroftDFAMinimizer.hxx \
 NFA.cxx NFA.hxx \
 NFAToDFAConverter.cxx NFAToDFAConverter.hxx \
 Parser.cxx Parser.hxx \
+ExpNode.cxx ExpNode.hxx \
 PrefixRegExParser.cxx PrefixRegExParser.hxx \
 SLAPException.cxx SLAPException.hxx \
 State.cxx State.hxx \
