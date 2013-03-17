@@ -96,7 +96,19 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
                                           FSMTransition(eIn, n.startState)));
     unfa.transitionTable.insert(make_pair(newStart,
                                           FSMTransition(eIn, m.startState)));
-
+    /* add e transitions from n and m accepts to newAccept */
+    for (StateSet::const_iterator a = n.acceptStates.begin();
+         n.acceptStates.end() != a;
+         ++a) {
+        unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
+                                                                newAccept)));
+    }
+    for (StateSet::const_iterator a = m.acceptStates.begin();
+         m.acceptStates.end() != a;
+         ++a) {
+        unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
+                                                                newAccept)));
+    }
     /* update transition table to include n and m transitions */
     for (FSMTransitionTable::const_iterator t = n.transitionTable.begin();
          n.transitionTable.end() != t;
@@ -113,19 +125,6 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
             make_pair(t->first, FSMTransition(t->second.getInput(),
                                               t->second.getTo()))
         );
-    }
-    /* add e transitions from n and m accepts to newAccept */
-    for (StateSet::const_iterator a = n.acceptStates.begin();
-         n.acceptStates.end() != a;
-         ++a) {
-        unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
-                                                                newAccept)));
-    }
-    for (StateSet::const_iterator a = m.acceptStates.begin();
-         m.acceptStates.end() != a;
-         ++a) {
-        unfa.transitionTable.insert(make_pair(*a, FSMTransition(eIn,
-                                                                newAccept)));
     }
     /* create all states */
     unfa.allStates = n.allStates;
@@ -148,6 +147,8 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
             unfa.alphabet.push_back(*a);
         }
     }
+    /* don't forget about the epsilons! */
+    unfa.alphabet.push_back(eIn);
 
     if (unfa.beVerbose) {
         cout << "   N union start: " << unfa.startState << endl;
