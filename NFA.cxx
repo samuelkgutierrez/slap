@@ -129,7 +129,7 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
                                               t->second.getTo()))
         );
     }
-    /* create all states */
+    /* /// create all states /// */
     for (StateSet::const_iterator s = n.allStates.begin();
          n.allStates.end() != s;
          ++s) {
@@ -143,14 +143,14 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
     unfa.allStates.insert(newStart);
     unfa.allStates.insert(newAccept);
 
-    /* create alphabet */
+    /* /// create alphabet /// */
     unfa.alphabet = n.alphabet;
     for (AlphabetString::const_iterator a = m.alphabet.begin();
          m.alphabet.end() != a;
          ++a) {
         if (unfa.alphabet.end() == find(unfa.alphabet.begin(),
-                                     unfa.alphabet.end(),
-                                     *a)) {
+                                        unfa.alphabet.end(),
+                                        *a)) {
             unfa.alphabet.push_back(*a);
         }
     }
