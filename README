@@ -17,8 +17,13 @@ nfa2dfa
 # testing from stdin #
 ######################
 it is possible to test the standalone programs with input from stdin.
-# for example:
+# For Example:
 # echo "cb" | ./nfa2dfa ./tests/nfa3.txt -
 # OR
 # ./nfa2dfa ./tests/nfa3.txt - <ENTER>
 # asdf <ENTER>
+
+#################
+ # assumptions #
+#################
+o Regular expression specifications do not span over multiple lines.
