@@ -1,4 +1,4 @@
-* 'b
+* + 'b 'a
 
 alphabet
 'a 'b ' 

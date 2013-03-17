@@ -79,18 +79,37 @@ NFA::NFA(const AlphabetSymbol &input)
 NFA
 NFA::getNFAConcat(const NFA &n, const NFA &m)
 {
-    NFA cnfa = NFA();
+    NFA cnfa;
 
     cnfa.beVerbose = n.beVerbose || m.beVerbose;
     
     if (cnfa.beVerbose) {
         cout << "   N building concatenation" << endl;
     }
-
+    /* set new start and accepts */
+    cnfa.startState = n.startState;
+    cnfa.acceptStates = m.acceptStates;
+    /* build the new transition table */ 
+    cnfa.transitionTable = n.transitionTable;
+    for (FSMTransitionTable::const_iterator t = m.transitionTable.begin();
+         m.transitionTable.end() != t;
+         ++t) {
+        cnfa.transitionTable.insert(*t);
+    }
     if (cnfa.beVerbose) {
+        cout << "   N concat start: " << cnfa.startState << endl;
+        cout << "   N concat accept " << endl;
+        for (StateSet::iterator a = cnfa.acceptStates.begin();
+             cnfa.acceptStates.end() != a;
+             ++a) {
+            cout << "   N " << *a << endl;
+        }
+        cout << "   N end concat accept" << endl;
+        cout << "   N concat transitions:" << endl;
+        cnfa.echoTransitions();
+        cout << "   N end concat transitions:" << endl;
         cout << "   N done building concatenation" << endl;
     }
-
 
     return cnfa;
 }
@@ -140,8 +159,10 @@ NFA::getKleeneNFA(const NFA &n)
              ++a) {
             cout << "   N " << *a << endl;
         }
-        cout << "   N end kleen accept";
+        cout << "   N end kleen accept" << endl;
+        cout << "   N kleen transitions:" << endl;
         nfa.echoTransitions();
+        cout << "   N end kleen transitions";
         cout << "   N done building kleene star" << endl;
     }
     return nfa;
