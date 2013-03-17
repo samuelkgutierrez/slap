@@ -50,6 +50,8 @@ public:
     /* returns a set of states that are reachable from s on input */
     StateSet getStatesReachableByTransition(const StateSet &s,
                                             const AlphabetSymbol &input) const;
+
+    void echoTransitions(void);
 };
 
 #endif

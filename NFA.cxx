@@ -88,6 +88,10 @@ NFA::NFA(const NFA &n, string op)
     
     this->beVerbose = n.beVerbose;
 
+    if (this->beVerbose) {
+        cout << "   N building kleene star" << endl;
+    }
+
     /* add new start and accept states */
     this->startState = nStart;
     this->acceptStates.insert(nAccept);
@@ -102,9 +106,9 @@ NFA::NFA(const NFA &n, string op)
                                            FSMTransition(eIn, oStart)));
 
     if (this->beVerbose) {
-        cout << "   N building kleene star" << endl;
+        this->echoTransitions();
+        cout << "   N done building kleene star" << endl;
     }
-
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -140,4 +144,16 @@ NFA::getStatesReachableByTransition(const StateSet &s,
         }
     }
     return reachable;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+NFA::echoTransitions(void)
+{
+    for (FSMTransitionTable::const_iterator i = this->transitionTable.begin();
+         this->transitionTable.end() != i;
+         ++i) {
+        cout << "   N " << i->first << " " << i->second.getInput() << " --> "
+             << i->second.getTo() << endl;
+    }
 }

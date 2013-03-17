@@ -216,5 +216,6 @@ RegExpInputParser::getNFA(void)
     if (this->beVerbose) {
         cout << "   R done building an NFA from re tree" << endl;
     }
+
     return nfa;
 }
