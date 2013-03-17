@@ -11,8 +11,17 @@ make
 ######################
  # standalone tools #
 ######################
-re2nfa
-nfa2dfa
+# (algorithms: {1, 2, ... n} means that within each standalone tool, the
+# algorithm number mentioned in the specification was used in some form or
+# another.)
+re2nfa -  converts an re to an nfa
+          algorithms: 1, 2, 3, 4, 7
+
+nfa2dfa - converts an nfa to a dfa using subset construction
+          algorithms: 2, 3, 4, 6
+
+dfa2dfa - minimizes a given dfa using hopcroft's algorithm
+          algorithms: 3, 4, 5
 
 ######################
 # testing from stdin #

@@ -18,6 +18,7 @@ AUTHORS README COPYRIGHT autogen tests
 
 bin_PROGRAMS = \
 slap \
+dfa2dfa \
 nfa2dfa \
 re2nfa
 
@@ -41,9 +42,9 @@ State.cxx State.hxx \
 Utils.cxx Utils.hxx \
 UserInputStringParser.cxx UserInputStringParser.hxx
 
-slap_SOURCES = \
+dfa2dfa_SOURCES = \
 ${base_src} \
-slap.cxx
+dfa2dfa.cxx
 
 nfa2dfa_SOURCES = \
 ${base_src} \
@@ -52,3 +53,7 @@ nfa2dfa.cxx
 re2nfa_SOURCES = \
 ${base_src} \
 re2nfa.cxx
+
+slap_SOURCES = \
+${base_src} \
+slap.cxx

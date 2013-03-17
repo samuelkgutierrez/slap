@@ -46,6 +46,7 @@ public:
     StateSet getAcceptStates(void);
 
     State getStartState(void);
+    void echoAlphabet(void);
 
 private:
     /* buffer that holds input text */

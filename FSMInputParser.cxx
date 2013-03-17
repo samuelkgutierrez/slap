@@ -564,3 +564,19 @@ FSMInputParser::getStartState(void)
     /* else, return the one item in the set */
     return *this->initStateSet.begin();
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+FSMInputParser::echoAlphabet(void)
+{
+    for (AlphabetString::const_iterator a = this->alphabet.begin();
+         this->alphabet.end() != a;
+         ++a) {
+        if (" " == a->str()) {
+            cout << "# _" << endl;
+        }
+        else {
+            cout << "# " << *a  << endl;
+        }
+    }
+}
