@@ -41,6 +41,8 @@ public:
     NFA(const AlphabetSymbol &input);
     /* for * */
     NFA(const NFA &n, std::string op);
+    /* for | and + */
+    NFA(const NFA &n, const NFA &m, std::string op);
 
     ~NFA(void) { }
     /* copy contructor */

@@ -74,6 +74,10 @@ NFA::NFA(const AlphabetSymbol &input)
     this->transitionTable.insert(make_pair(start,
                                            FSMTransition(input, accept)));
 }
+/* ////////////////////////////////////////////////////////////////////////// */
+NFA::NFA(const NFA &n, const NFA &m, std::string op)
+{
+}
 
 /* ////////////////////////////////////////////////////////////////////////// */
 NFA::NFA(const NFA &n, string op)
