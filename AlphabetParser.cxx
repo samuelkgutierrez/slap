@@ -30,9 +30,6 @@
 #include <ctype.h>
 #include <errno.h>
 
-#define ALPHABET_START_KEYWORD "alphabet"
-#define ALPHABET_END_KEYWORD   "end"
-
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */

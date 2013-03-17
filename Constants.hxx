@@ -19,6 +19,10 @@
 #define CONSTANTS_INCLUDED
 
 #define SLAP_WHITESPACE " \t\n\v\f\r"
+#define SLAP_EOL        "\n\f\r"
 #define SLAP_WHERE      __FILE__, __LINE__
+
+#define ALPHABET_START_KEYWORD "alphabet"
+#define ALPHABET_END_KEYWORD   "end"
 
 #endif

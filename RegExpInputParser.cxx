@@ -33,6 +33,32 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////////////// */
+/* private utility functions */
+/* ////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////////////// */
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static char *
+getRegExpCStr(char *fileText)
+{
+    char *cptr = fileText, *dptr = NULL;
+    int inputLen = 0;
+
+    /* skip all the white space and get starting position */
+    cptr += strspn(cptr, SLAP_WHITESPACE);
+    dptr = strcasestr(cptr, ALPHABET_START_KEYWORD);
+    /* cap, so we ignore the alphabet spec */
+    *dptr = '\0';
+    dptr = cptr;
+    dptr += strcspn(dptr, SLAP_EOL);
+    *dptr = '\0';
+    cout << "re: [" << string(cptr) << "]" << endl;
+
+    return Utils::getNewCString(string(cptr));
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 RegExpInputParser::RegExpInputParser(const std::string &fileToParse,
                                      const AlphabetString &alpha)
 {
@@ -58,6 +84,7 @@ RegExpInputParser::RegExpInputParser(const std::string &fileToParse,
     this->alphabet = alpha;
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = Utils::getNewCString(inputStr);
+    this->cRegExpStr = getRegExpCStr(this->cInputStr);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -110,9 +137,9 @@ void
 RegExpInputParser::parse(void)
 {
     ExpNode *root = NULL;             
-    char *inputCopy = Utils::getNewCString(string(this->cInputStr));
+    char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
 
-    root = parse(inputCopy);
+    //root = parse(regExpCStr);
 
-    delete[] inputCopy;
+    delete[] regExpCStr;
 }
