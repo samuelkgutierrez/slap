@@ -55,17 +55,17 @@ NFA::NFA(const NFA &other) :
 
 /* ////////////////////////////////////////////////////////////////////////// */
 NFA
-NFA::getSimpleNFA(const AlphabetSymbol &input)
+NFA::getSimpleNFA(const AlphabetSymbol &input, bool verbose)
 {
     NFA nfa;
     State start = getNewState();
     State accept = getNewState();
 
-    /* XXX FIXME */
-    if (nfa.beVerbose || true) {
+    if (verbose) {
         cout << "   N creating new: " << start << " " << input << " --> "
              << accept << " transition" << endl;
     }
+    nfa.beVerbose = verbose;
     nfa.alphabet.push_back(input);
     nfa.startState = start;
     nfa.acceptStates.insert(accept);

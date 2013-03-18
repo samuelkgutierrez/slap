@@ -161,7 +161,7 @@ NFA
 RegExpInputParser::reTreeToNFA(ExpNode *root)
 {
     if (root->type == EXPNODE_SYM) {
-        return NFA::getSimpleNFA(root->id);
+        return NFA::getSimpleNFA(root->id, this->beVerbose);
     }
     else if (root->type == EXPNODE_UOP) {
         return NFA::getKleeneNFA(reTreeToNFA(root->l));
