@@ -227,6 +227,7 @@ NFA::getNFAConcat(const NFA &n, const NFA &m)
          ++t) {
         cnfa.transitionTable.insert(*t);
     }
+    /* XXX */
     if (cnfa.beVerbose) {
         cout << "   N concat start: " << cnfa.startState << endl;
         cout << "   N concat accept " << endl;
