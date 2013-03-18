@@ -160,6 +160,10 @@ RegExpInputParser::parse(char *input, char **out)
 NFA
 RegExpInputParser::reTreeToNFA(ExpNode *root)
 {
+    if (NULL == root) {
+        string eStr = "unexpected node state. cannot continue.";
+        throw SLAPException(SLAP_WHERE, eStr);
+    }
     if (root->type == EXPNODE_SYM) {
         return NFA::getSimpleNFA(root->id, this->beVerbose);
     }
