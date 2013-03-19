@@ -23,7 +23,7 @@
 #include "NFA.hxx"
 
 #include <string>
-#include <stack>
+#include <queue>
 
 class RegExpInputParser {
 private:
@@ -37,11 +37,11 @@ private:
 
     ExpNode *reTree;
 
-    ExpNode *parse(std::stack<std::string> &tokVec);
+    ExpNode *parse(std::queue<std::string> &tokQ);
 
     NFA reTreeToNFA(ExpNode *root);
 
-    std::stack<std::string> cStrToTokVec(char *cStr);
+    std::queue<std::string> cStrToTokQ(char *cStr);
 
 protected:
 

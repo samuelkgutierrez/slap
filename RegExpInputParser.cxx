@@ -112,20 +112,20 @@ RegExpInputParser::verbose(bool beVerbose)
 /* ////////////////////////////////////////////////////////////////////////// */
 /* XXX add some input checks here */
 ExpNode *
-RegExpInputParser::parse(stack<string> &tokVec)
+RegExpInputParser::parse(queue<string> &tokQ)
 {
     ExpNode *node = NULL;
-    string s = tokVec.top();
-    tokVec.pop();
+    string s = tokQ.front();
+    tokQ.pop();
 
     if (this->beVerbose) {
         cout << "   R reading: " << s << endl;
     }
     if ("|" == s || "+" == s) {
-        return new ExpNode(parse(tokVec), s, parse(tokVec));
+        return new ExpNode(parse(tokQ), s, parse(tokQ));
     }
     else if ("*" == s) {
-        return new ExpNode(parse(tokVec), s, NULL);
+        return new ExpNode(parse(tokQ), s, NULL);
     }
     else {
         return new ExpNode(s, EXPNODE_SYM);
@@ -168,13 +168,13 @@ RegExpInputParser::reTreeToNFA(ExpNode *root)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-stack<string>
-RegExpInputParser::cStrToTokVec(char *cStr)
+queue<string>
+RegExpInputParser::cStrToTokQ(char *cStr)
 {
     char *cptr = cStr;
     int slen = 0;
     string s;
-    stack<string> tokVec;
+    queue<string> tokQ;
 
     while ('\0' != *cptr) {
         /* skip all the white space and get starting position */
@@ -196,10 +196,10 @@ RegExpInputParser::cStrToTokVec(char *cStr)
         else {
             s = string(cptr, slen);
         }
-        tokVec.push(s);
+        tokQ.push(s);
         cptr += slen;
     }
-    return tokVec;
+    return tokQ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -209,17 +209,12 @@ RegExpInputParser::parse(void)
     ExpNode *root = NULL;             
     char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
     char *psave = regExpCStr;
-    stack<string> tokVec = cStrToTokVec(regExpCStr);
-    stack<string> asdf;
+    queue<string> tokQ = cStrToTokQ(regExpCStr);
 
-    while (!tokVec.empty()) {
-        asdf.push(tokVec.top());
-        tokVec.pop();
-    }
     if (this->beVerbose) {
         cout << "   R walking the parse tree" << endl;
     }
-    root = parse(asdf);
+    root = parse(tokQ);
     if (this->beVerbose) {
         cout << "   R done walking the parse tree" << endl;
     }
