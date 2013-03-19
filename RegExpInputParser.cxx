@@ -43,7 +43,6 @@ static char *
 getRegExpCStr(char *fileText)
 {
     char *cptr = fileText, *dptr = NULL;
-    int inputLen = 0;
 
     /* skip all the white space and get starting position */
     cptr += strspn(cptr, SLAP_WHITESPACE);
@@ -113,41 +112,20 @@ RegExpInputParser::verbose(bool beVerbose)
 /* ////////////////////////////////////////////////////////////////////////// */
 /* XXX add some input checks here */
 ExpNode *
-RegExpInputParser::parse(char *input)
+RegExpInputParser::parse(stack<string> &tokVec)
 {
-    char *cptr = input;
-    int slen = 0;
-    string s;
     ExpNode *node = NULL;
+    string s = tokVec.top();
+    tokVec.pop();
 
-    /* skip all the white space and get starting position */
-    cptr += strspn(cptr, SLAP_WHITESPACE);
-    /* find extent of word */
-    slen = strcspn(cptr, SLAP_WHITESPACE);
-    if ('\'' == *cptr) {
-        s = string(cptr + 1, slen - 1);
-        if ("" == s && ' ' == *(cptr + 1)) {
-            s = string(" ");
-        }
-        if (this->alphabet.end() ==
-            find(this->alphabet.begin(), this->alphabet.end(), AlphabetSymbol(s))) {
-            string eStr = "invalid alphabet symbol found during re parse. "
-                          "cannot continue. culprit: [" + s + "]";
-            throw SLAPException(SLAP_WHERE, eStr);
-        }
-    }
-    else {
-        s = string(cptr, slen);
-    }
-    cptr += slen;
     if (this->beVerbose) {
         cout << "   R reading: " << s << endl;
     }
     if ("|" == s || "+" == s) {
-        return new ExpNode(parse(cptr), s, parse(cptr + 1));
+        return new ExpNode(parse(tokVec), s, parse(tokVec));
     }
     else if ("*" == s) {
-        return new ExpNode(parse(cptr), s, NULL);
+        return new ExpNode(parse(tokVec), s, NULL);
     }
     else {
         return new ExpNode(s, EXPNODE_SYM);
@@ -190,17 +168,59 @@ RegExpInputParser::reTreeToNFA(ExpNode *root)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+stack<string>
+RegExpInputParser::cStrToTokVec(char *cStr)
+{
+    char *cptr = cStr;
+    int slen = 0;
+    string s;
+    stack<string> tokVec;
+
+    while ('\0' != *cptr) {
+        /* skip all the white space and get starting position */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        slen = strcspn(cptr, SLAP_WHITESPACE);
+        if ('\'' == *cptr) {
+            s = string(cptr + 1, slen - 1);
+            if ("" == s && ' ' == *(cptr + 1)) {
+                s = string(" ");
+            }
+            if (this->alphabet.end() ==
+                find(this->alphabet.begin(), this->alphabet.end(), AlphabetSymbol(s))) {
+                string eStr = "invalid alphabet symbol found during re parse. "
+                              "cannot continue. culprit: [" + s + "]";
+                throw SLAPException(SLAP_WHERE, eStr);
+            }
+        }
+        else {
+            s = string(cptr, slen);
+        }
+        tokVec.push(s);
+        cptr += slen;
+    }
+    return tokVec;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 void
 RegExpInputParser::parse(void)
 {
     ExpNode *root = NULL;             
     char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
     char *psave = regExpCStr;
+    stack<string> tokVec = cStrToTokVec(regExpCStr);
+    stack<string> asdf;
+
+    while (!tokVec.empty()) {
+        asdf.push(tokVec.top());
+        tokVec.pop();
+    }
 
     if (this->beVerbose) {
-        cout << "   R walking the parse tree" << endl;
+        cout << "   R tokens" << endl;
     }
-    root = parse(regExpCStr);
+    root = parse(asdf);
     if (this->beVerbose) {
         cout << "   R done walking the parse tree" << endl;
     }
