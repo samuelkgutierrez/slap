@@ -241,7 +241,6 @@ NFA::getNFAConcat(const NFA &n, const NFA &m)
             State tmpFrom = t->first;
             State tmpTo = t->second.getTo();
             AlphabetSymbol tmpIn = t->second.getInput();
-            cnfa.transitionTable.erase(t);
             if (*s == tmpTo) {
                 concatTab.insert(make_pair(tmpFrom,
                                            FSMTransition(tmpIn, m.startState)));
@@ -251,6 +250,7 @@ NFA::getNFAConcat(const NFA &n, const NFA &m)
                 concatTab.insert(make_pair(tmpFrom, FSMTransition(tmpIn, tmpTo)));
             }
         }
+        cnfa.transitionTable.erase(t);
     }
     /* set transitions from new concatTab */
     cnfa.transitionTable = concatTab;

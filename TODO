@@ -2,3 +2,4 @@ make sure that start and ends are balanced in inputs
 read http://people.cs.umass.edu/~moss/610-slides/06.pdf
 test http://hackingoff.com/compilers/regular-expression-to-nfa-dfa
 read http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/07-trees/build-trees.html
+fix reg4.txt
