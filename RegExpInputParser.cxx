@@ -216,9 +216,8 @@ RegExpInputParser::parse(void)
         asdf.push(tokVec.top());
         tokVec.pop();
     }
-
     if (this->beVerbose) {
-        cout << "   R tokens" << endl;
+        cout << "   R walking the parse tree" << endl;
     }
     root = parse(asdf);
     if (this->beVerbose) {
