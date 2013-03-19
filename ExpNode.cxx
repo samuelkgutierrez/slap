@@ -18,6 +18,7 @@
 #include "ExpNode.hxx"
 #include "Constants.hxx"
 #include "SLAPException.hxx"
+#include "Utils.hxx"
 
 #include <cstdlib>
 #include <string>
@@ -71,12 +72,12 @@ ExpNode::echoNode(const ExpNode *root)
     else if (root->type == EXPNODE_UOP) {
         cout << "(";
         echoNode(root->l);
-        cout << root->id << ")";
+        cout << Utils::internalTokToSpecialTok(root->id) << ")";
     }
     else if (root->type == EXPNODE_BOP) {
         cout << "(";
         echoNode(root->l);
-        cout << " " << root->id << " ";
+        cout << " " << Utils::internalTokToSpecialTok(root->id) << " ";
         echoNode(root->r);
         cout << ")";
     }

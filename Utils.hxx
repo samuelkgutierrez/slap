@@ -42,6 +42,12 @@ public:
     static std::string int2string(int i);
 
     static std::string bufferFile(std::ifstream &fin);
+
+    static std::string specialTokToInternalTok(const std::string &tok);
+
+    static std::string internalTokToSpecialTok(const std::string &tok);
+
+    static bool specialTok(const std::string &tok);
 };
 
 #endif

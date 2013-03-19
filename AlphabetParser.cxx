@@ -133,6 +133,7 @@ AlphabetParser::parse(void)
         if ("'" == string(cptr, symLength)) {
             newAlpha = string(" ");
         }
+        /* XXX add \n and such support here */
         else {
             /* +1/-1 to skip over '... we don't want those in our alphabet */
             newAlpha = string(cptr + 1, symLength - 1);

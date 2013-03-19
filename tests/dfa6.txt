@@ -1,0 +1,24 @@
+     alphabet  
+ '+		'*
+'| 'states   
+end
+
+dfa               
+    states   
+blah1 blah2
+blah3
+blah4 blah5
+end;
+initial
+blah1
+accept 
+blah2
+blah4
+end; 
+transitions 
+blah1 '+ --> blah2
+    blah2 '+ --> blah2 blah2 '* -->    blah3
+blah3 '* --> blah4
+blah3 '| --> blah5
+blah5 '| --> blah4 end;
+

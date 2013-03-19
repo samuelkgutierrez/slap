@@ -42,8 +42,13 @@ using namespace std;
 static char *
 getRegExpCStr(char *fileText)
 {
-    char *cptr = fileText, *dptr = NULL;
+    char *cptr = NULL, *dptr = NULL;
 
+    if (NULL == fileText) {
+        throw SLAPException(SLAP_WHERE, "fileText NULL!");
+    }
+
+    cptr = fileText;
     /* skip all the white space and get starting position */
     cptr += strspn(cptr, SLAP_WHITESPACE);
     dptr = strcasestr(cptr, ALPHABET_START_KEYWORD);
@@ -121,10 +126,10 @@ RegExpInputParser::parse(queue<string> &tokQ)
     if (this->beVerbose) {
         cout << "   R reading: " << s << endl;
     }
-    if ("|" == s || "+" == s) {
+    if (OP_UNION == s || OP_CONCAT == s) {
         return new ExpNode(parse(tokQ), s, parse(tokQ));
     }
-    else if ("*" == s) {
+    else if (OP_STAR == s) {
         return new ExpNode(parse(tokQ), s, NULL);
     }
     else {
@@ -148,11 +153,11 @@ RegExpInputParser::reTreeToNFA(ExpNode *root)
         return NFA::getKleeneNFA(reTreeToNFA(root->l));
     }
     else if (root->type == EXPNODE_BOP) {
-        if ("+" == root->id) {
+        if (OP_CONCAT == root->id) {
             return NFA::getNFAConcat(reTreeToNFA(root->l),
                                      reTreeToNFA(root->r));
         }
-        else if ("|" == root->id) {
+        else if (OP_UNION == root->id) {
             return NFA::getNFAUnion(reTreeToNFA(root->l),
                                     reTreeToNFA(root->r));
         }
@@ -193,8 +198,15 @@ RegExpInputParser::cStrToTokQ(char *cStr)
                 throw SLAPException(SLAP_WHERE, eStr);
             }
         }
-        else {
-            s = string(cptr, slen);
+        /* must be an op */
+        else if (Utils::specialTok(string(cptr, slen))) {
+            s = Utils::specialTokToInternalTok(string(cptr, slen));
+        }
+        /* if not, bail if not empty */
+        else if ("" != string(cptr, slen)) {
+            string eStr = "cannot parse. invalid operation found: " +
+                          string(cptr, slen);
+            throw SLAPException(SLAP_WHERE, eStr);
         }
         tokQ.push(s);
         cptr += slen;
@@ -220,7 +232,7 @@ RegExpInputParser::parse(void)
     }
     cout << "# re after tree walk: ";
     ExpNode::echoTree(root);
-    cout << endl;
+    cout << "# doen re after tree walk: ";
 
     this->reTree = root;
 

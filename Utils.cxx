@@ -16,6 +16,8 @@
  */
 
 #include "Utils.hxx"
+#include "Constants.hxx"
+#include "SLAPException.hxx"
 
 #include <string>
 #include <iostream>
@@ -109,4 +111,31 @@ Utils::bufferFile(ifstream &fin)
         input += (line + "\n");
     }
     return input;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+bool
+Utils::specialTok(const string &tok)
+{
+    return "*" == tok || "+" == tok || "|" == tok;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+string
+Utils::specialTokToInternalTok(const string &tok)
+{
+    if ("*" == tok) return OP_STAR;
+    if ("+" == tok) return OP_CONCAT;
+    if ("|" == tok) return OP_UNION;
+    throw SLAPException(SLAP_WHERE, "cannot convert given token");
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+string
+Utils::internalTokToSpecialTok(const std::string &tok)
+{
+    if (OP_STAR == tok) return "*";
+    if (OP_CONCAT == tok) return "+";
+    if (OP_UNION == tok) return "|";
+    throw SLAPException(SLAP_WHERE, "cannot convert given token");
 }
