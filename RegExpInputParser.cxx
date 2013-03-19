@@ -111,8 +111,9 @@ RegExpInputParser::verbose(bool beVerbose)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+/* XXX add some input checks here */
 ExpNode *
-RegExpInputParser::parse(char *input, char **out)
+RegExpInputParser::parse(char *input)
 {
     char *cptr = input;
     int slen = 0;
@@ -139,19 +140,17 @@ RegExpInputParser::parse(char *input, char **out)
         s = string(cptr, slen);
     }
     cptr += slen;
-    *out = cptr;
     if (this->beVerbose) {
         cout << "   R reading: " << s << endl;
     }
-    node = new ExpNode(s, EXPNODE_SYM);
     if ("|" == s || "+" == s) {
-        node->type = EXPNODE_BOP;
-        node->l = parse(cptr, &cptr);
-        node->r = parse(cptr, &cptr);
+        return new ExpNode(parse(cptr), s, parse(cptr + 1));
     }
     else if ("*" == s) {
-        node->type = EXPNODE_UOP;
-        node->l = parse(cptr, &cptr);
+        return new ExpNode(parse(cptr), s, NULL);
+    }
+    else {
+        return new ExpNode(s, EXPNODE_SYM);
     }
     return node;
 }
@@ -201,7 +200,7 @@ RegExpInputParser::parse(void)
     if (this->beVerbose) {
         cout << "   R walking the parse tree" << endl;
     }
-    root = parse(regExpCStr, &regExpCStr);
+    root = parse(regExpCStr);
     if (this->beVerbose) {
         cout << "   R done walking the parse tree" << endl;
     }
@@ -223,9 +222,7 @@ RegExpInputParser::getNFA(void)
     if (this->beVerbose) {
         cout << "   R building an NFA from re tree" << endl;
     }
-
     nfa = this->reTreeToNFA(this->reTree);
-
     if (this->beVerbose) {
         cout << "   R done building an NFA from re tree" << endl;
     }

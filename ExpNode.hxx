@@ -37,6 +37,8 @@ public:
 
     ExpNode(std::string id, int type = EXPNODE_NONE);
 
+    ExpNode(ExpNode *l, std::string op, ExpNode *r);
+
     ~ExpNode(void);
 
     static void echoTree(const ExpNode *root);

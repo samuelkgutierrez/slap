@@ -201,11 +201,12 @@ NFA::getNFAUnion(const NFA &n, const NFA &m)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* XXX this is busted! */
 NFA
 NFA::getNFAConcat(const NFA &n, const NFA &m)
 {
     NFA cnfa;
+    FSMTransitionTable::iterator t;
+    FSMTransitionTable concatTab;
 
     cnfa.beVerbose = n.beVerbose || m.beVerbose;
 
@@ -214,20 +215,45 @@ NFA::getNFAConcat(const NFA &n, const NFA &m)
     }
     /* set new start and accepts */
     cnfa.startState = n.startState;
+    /* set new accept states */
     cnfa.acceptStates = m.acceptStates;
     /* create alphabet */
     cnfa.alphabet = getAlphabetStringUnion(n.alphabet, m.alphabet);
     /* create all states */
     cnfa.allStates = getStateSetUnion(n.allStates, m.allStates);
-
     /* build the new transition table */
     cnfa.transitionTable = n.transitionTable;
+    /* initial add transitions in n and m */
     for (FSMTransitionTable::const_iterator t = m.transitionTable.begin();
          m.transitionTable.end() != t;
          ++t) {
-        cnfa.transitionTable.insert(*t);
+        cnfa.transitionTable.insert(
+            make_pair(t->first, FSMTransition(t->second.getInput(),
+                                              t->second.getTo()))
+        );
     }
-    /* XXX */
+    /* now we need to modify the transitions s.t transitions to final states in
+     * n go to the start state in m. */
+    while (cnfa.transitionTable.end() != (t = cnfa.transitionTable.begin())) {
+        for (StateSet::iterator s = n.acceptStates.begin();
+             n.acceptStates.end() != s;
+             ++s) {
+            State tmpFrom = t->first;
+            State tmpTo = t->second.getTo();
+            AlphabetSymbol tmpIn = t->second.getInput();
+            cnfa.transitionTable.erase(t);
+            if (*s == tmpTo) {
+                concatTab.insert(make_pair(tmpFrom,
+                                           FSMTransition(tmpIn, m.startState)));
+            }
+            /* just add the original transition to the table */
+            else {
+                concatTab.insert(make_pair(tmpFrom, FSMTransition(tmpIn, tmpTo)));
+            }
+        }
+    }
+    /* set transitions from new concatTab */
+    cnfa.transitionTable = concatTab;
     if (cnfa.beVerbose) {
         cout << "   N concat start: " << cnfa.startState << endl;
         cout << "   N concat accept " << endl;
@@ -242,7 +268,6 @@ NFA::getNFAConcat(const NFA &n, const NFA &m)
         cout << "   N end concat transitions:" << endl;
         cout << "   N done building concatenation" << endl;
     }
-
     return cnfa;
 }
 
@@ -306,6 +331,7 @@ NFA::accepts(const AlphabetString &alphaString)
 {
     DFA dfa;
     NFAToDFAConverter converter(*this);
+
     converter.verbose(this->beVerbose);
     dfa = converter.getDFA();
     dfa.verbose(this->beVerbose);

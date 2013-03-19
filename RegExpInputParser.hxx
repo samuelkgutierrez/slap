@@ -36,7 +36,7 @@ private:
 
     ExpNode *reTree;
 
-    ExpNode *parse(char *input, char **out);
+    ExpNode *parse(char *input);
 
     NFA reTreeToNFA(ExpNode *root);
 

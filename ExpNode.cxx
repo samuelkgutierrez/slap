@@ -41,6 +41,20 @@ ExpNode::ExpNode(string id, int type)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+ExpNode::ExpNode(ExpNode *l, std::string op, ExpNode *r)
+{
+    this->l = l;
+    this->id = op;
+    this->r = r;
+    if (NULL != this->r) {
+        this->type = EXPNODE_BOP;
+    }
+    else {
+        this->type = EXPNODE_UOP;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 ExpNode::~ExpNode(void)
 {
     if (this->l) delete this->l;
@@ -85,6 +99,8 @@ void
 ExpNode::echoTree(const ExpNode *root)
 {
     if (NULL == root) {
+        throw SLAPException(SLAP_WHERE,
+                            "unexpected node state. cannot continue.");
         return;
     }
     echoNode(root);
