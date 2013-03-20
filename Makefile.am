@@ -36,7 +36,6 @@ NFA.cxx NFA.hxx \
 NFAToDFAConverter.cxx NFAToDFAConverter.hxx \
 RegExpInputParser.cxx RegExpInputParser.hxx \
 ExpNode.cxx ExpNode.hxx \
-PrefixRegExParser.cxx PrefixRegExParser.hxx \
 SLAPException.cxx SLAPException.hxx \
 State.cxx State.hxx \
 Utils.cxx Utils.hxx \

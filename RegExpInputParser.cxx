@@ -124,7 +124,6 @@ RegExpInputParser::verbose(bool beVerbose)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* XXX add some input checks here */
 ExpNode *
 RegExpInputParser::parse(queue<string> &tokQ)
 {
@@ -201,7 +200,9 @@ RegExpInputParser::cStrToTokQ(char *cStr)
                 s = string(" ");
             }
             if (this->alphabet.end() ==
-                find(this->alphabet.begin(), this->alphabet.end(), AlphabetSymbol(s))) {
+                find(this->alphabet.begin(),
+                     this->alphabet.end(),
+                     AlphabetSymbol(s))) {
                 string eStr = "invalid alphabet symbol found during re parse. "
                               "cannot continue. culprit: [" + s + "]";
                 throw SLAPException(SLAP_WHERE, eStr);
