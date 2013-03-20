@@ -36,7 +36,7 @@ public:
 
     Alphabet(const Alphabet &other);
 
-    bool isMember(AlphabetSymbol &symbol);
+    bool isMember(const AlphabetSymbol &symbol);
 
     friend std::ostream &operator<<(std::ostream &out,
                                     const Alphabet &a);

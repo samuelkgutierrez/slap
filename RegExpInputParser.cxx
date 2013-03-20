@@ -237,11 +237,11 @@ RegExpInputParser::parse(void)
     }
     root = parse(tokQ);
     if (this->beVerbose) {
-        cout << "   R done walking the parse tree" << endl;
+        cout << endl << "   R done walking the parse tree" << endl;
     }
-    cout << "# re after tree walk: ";
+    cout << "# re after tree walk: " << endl;
     ExpNode::echoTree(root);
-    cout << "# doen re after tree walk: ";
+    cout << endl << "# done re after tree walk" << endl;
 
     this->reTree = root;
 

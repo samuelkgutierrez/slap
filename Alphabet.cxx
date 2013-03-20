@@ -37,7 +37,7 @@ Alphabet::Alphabet(const Alphabet &other)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-Alphabet::isMember(AlphabetSymbol &symbol)
+Alphabet::isMember(const AlphabetSymbol &symbol)
 {
     return (this->alphabet.end() != this->alphabet.find(symbol.str()));
 }
