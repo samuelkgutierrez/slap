@@ -27,6 +27,9 @@
 
 class RegExpInputParser {
 private:
+
+    RegExpInputParser(void);
+
     bool beVerbose;
     /* buffer that holds input text */
     char *cInputStr;
@@ -46,6 +49,8 @@ private:
 protected:
 
 public:
+
+    ~RegExpInputParser(void);
     RegExpInputParser(const std::string &fileToParse,
                       const AlphabetString &alpha);
 

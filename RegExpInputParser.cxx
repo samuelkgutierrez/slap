@@ -89,6 +89,14 @@ RegExpInputParser::RegExpInputParser(const std::string &fileToParse,
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = Utils::getNewCString(inputStr);
     this->cRegExpStr = getRegExpCStr(this->cInputStr);
+    this->reTree = NULL;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+RegExpInputParser::~RegExpInputParser(void)
+{
+    delete this->reTree;
+    delete[] this->cRegExpStr;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
