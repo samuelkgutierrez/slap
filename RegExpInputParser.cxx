@@ -97,6 +97,7 @@ RegExpInputParser::~RegExpInputParser(void)
 {
     delete this->reTree;
     delete[] this->cRegExpStr;
+    delete[] this->cInputStr;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
