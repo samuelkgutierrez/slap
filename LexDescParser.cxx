@@ -87,8 +87,8 @@ static stack<string>
 getNewTypeClassStack(void)
 {
     stack<string> classes;
-    classes.push("irrelevant");
     classes.push("relevant");
+    classes.push("irrelevant");
     classes.push("discard");
     return classes;
 }
