@@ -32,6 +32,8 @@ FSMInputParser.cxx FSMInputParser.hxx \
 FSMTransition.cxx FSMTransition.hxx \
 FiniteStateMachine.cxx FiniteStateMachine.hxx \
 HopcroftDFAMinimizer.cxx HopcroftDFAMinimizer.hxx \
+LexDescParser.cxx LexDescParser.hxx \
+LexDesc.cxx LexDesc.hxx \
 NFA.cxx NFA.hxx \
 NFAToDFAConverter.cxx NFAToDFAConverter.hxx \
 RegExpInputParser.cxx RegExpInputParser.hxx \
