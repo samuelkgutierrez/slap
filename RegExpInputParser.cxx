@@ -237,6 +237,7 @@ RegExpInputParser::cStrToTokQ(char *cStr)
         slen = strcspn(cptr, SLAP_WHITESPACE);
         if ('\'' == *cptr) {
             s = string(cptr + 1, slen - 1);
+            cout << "GOT|" << s << "|GOT" << endl; 
             if ("" == s) {
                 s = string(" ");
             }
