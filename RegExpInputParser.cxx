@@ -138,6 +138,7 @@ RegExpInputParser::RegExpInputParser(const AlphabetString &alpha,
 {
     /* /// setup private member containers /// */
     /* first get the alphabet - all FSM input will have one of these */
+    this->beVerbose = false;
     this->alphabet = alpha;
     /* convert to C string because it's easier to mess with C strings */
     this->cInputStr = NULL;
@@ -292,10 +293,10 @@ RegExpInputParser::parse(void)
     root = parse(tokQ);
     if (this->beVerbose) {
         cout << endl << "   R done walking the parse tree" << endl;
+        cout << "# re after tree walk: " << endl << "# ";
+        ExpNode::echoTree(root);
+        cout << endl << "# done re after tree walk" << endl;
     }
-    cout << "# re after tree walk: " << endl << "# ";
-    ExpNode::echoTree(root);
-    cout << endl << "# done re after tree walk" << endl;
 
     this->reTree = root;
 

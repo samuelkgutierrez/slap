@@ -47,7 +47,10 @@ LexDesc::LexDesc(const AlphabetString &alphabet,
     this->desc = desc;
     this->semRelStr = semRelStr;
     reParser.parse();
+    reParser.verbose(false);
     nfa = reParser.getNFA();    
+    nfa.verbose(false);
     NFAToDFAConverter nfaToDFAConv(nfa);
+    nfaToDFAConv.verbose(false);
     this->dfa = nfaToDFAConv.getDFA();
 }

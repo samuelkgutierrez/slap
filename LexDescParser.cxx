@@ -156,7 +156,7 @@ LexDescParser::parseClasses(void)
                          << endl;
                     cout << "   L end found new class" << endl;
                 }
-
+                lexs.push_back(LexDesc(this->alphabet, classID, reStr, classRel));
                 break;
             }
         }
