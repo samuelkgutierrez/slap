@@ -24,6 +24,7 @@
 #include "NFA.hxx"
 #include "DFA.hxx"
 #include "NFAToDFAConverter.hxx"
+#include "UserInputStringParser.hxx"
 
 #include <cstdlib>
 #include <cstdio>
@@ -37,12 +38,31 @@ static void
 echoHeader(void)
 {
     cout <<
-    "       .__" << endl <<
-    "  _____|  | _____  ______" << endl <<
-    " /  ___/  | \\__  \\ \\____ \\" << endl <<
-    " \\___ \\|  |__/ __ \\|  |_> >" << endl <<
-    "/____  >____(____  /   __/" << endl <<
-    "     \\/          \\/|__|" << endl;
+    "c        .__" << endl <<
+    "c   _____|  | _____  ______" << endl <<
+    "c  /  ___/  | \\__  \\ \\____ \\" << endl <<
+    "c  \\___ \\|  |__/ __ \\|  |_> >" << endl <<
+    "c /____  >____(____  /   __/" << endl <<
+    "c      \\/          \\/|__|" << endl;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+usage(void)
+{
+    cout << endl << "usage:" << endl;
+    cout << "slap [-v] LexDesc FileToParse" << endl << endl;
+    cout << "slap reads a lexical specification file and an input file "
+            "and parses its input." << endl;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static void
+parse(bool verboseMode,
+      const string &lexDesc,
+      const AlphabetString &input)
+{
+    ;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -50,6 +70,35 @@ echoHeader(void)
 int
 main(int argc, char **argv)
 {
-    echoHeader();
+    string lexDesc, targetFile;
+    bool verboseMode = false;
+
+    if (3 != argc && 4 != argc) {
+        usage();
+        return EXIT_FAILURE;
+    }
+    else if (3 == argc) {
+        lexDesc = string(argv[1]);
+        targetFile = string(argv[2]);
+    }
+    else {
+        if ("-v" != string(argv[1])) {
+            usage();
+            return EXIT_FAILURE;
+        }
+        lexDesc = string(argv[2]);
+        targetFile = string(argv[3]);
+        verboseMode = true;
+    }
+    try {
+        echoHeader();
+        UserInputStringParser inputParser(targetFile);
+        AlphabetString input = inputParser.getInput();
+        parse(verboseMode, lexDesc, input);
+    }
+    catch (SLAPException &e) {
+        cerr << e.what() << endl;
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
