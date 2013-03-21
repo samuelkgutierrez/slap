@@ -42,13 +42,15 @@ using namespace std;
 static char *
 getRegExpCStr(char *fileText)
 {
+    char *textCopy = NULL; 
     char *cptr = NULL, *dptr = NULL;
 
     if (NULL == fileText) {
         throw SLAPException(SLAP_WHERE, "fileText NULL!");
     }
-
-    cptr = fileText;
+    /* make a copy of the text because we are going to modify it */
+    textCopy = Utils::getNewCString(string(fileText));
+    cptr = textCopy;
     /* skip all the white space and get starting position */
     cptr += strspn(cptr, SLAP_WHITESPACE);
     dptr = strcasestr(cptr, ALPHABET_START_KEYWORD);
@@ -58,7 +60,8 @@ getRegExpCStr(char *fileText)
     dptr += strcspn(dptr, SLAP_EOL);
     *dptr = '\0';
     cout << "# re: [" << string(cptr) << "]" << endl;
-
+    delete[] textCopy;
+    
     return Utils::getNewCString(string(cptr));
 }
 
@@ -196,7 +199,7 @@ RegExpInputParser::cStrToTokQ(char *cStr)
         slen = strcspn(cptr, SLAP_WHITESPACE);
         if ('\'' == *cptr) {
             s = string(cptr + 1, slen - 1);
-            if ("" == s && ' ' == *(cptr + 1)) {
+            if ("" == s) {
                 s = string(" ");
             }
             if (this->alphabet.end() ==

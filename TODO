@@ -1,11 +1,8 @@
 make sure that start and ends are balanced in inputs
-read http://people.cs.umass.edu/~moss/610-slides/06.pdf
-test http://hackingoff.com/compilers/regular-expression-to-nfa-dfa
-read http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/07-trees/build-trees.html
 fix regex at end alpha at begin
 fix \n inputs. like:
 alphabet
 'b 'a 'o 'r 'i 'n 'g ' '\n
-end; <<== this is the problem
+end
 in input parse, need to add \n and maybe others like \t?
 fix ' and '_
