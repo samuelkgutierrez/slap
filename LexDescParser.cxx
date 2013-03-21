@@ -172,7 +172,7 @@ LexDescParser::parse(void)
              ++a) {
             cout << "     " << *a << endl;
         }
-        cout << "   L alphabet" << endl;
+        cout << "   L end alphabet" << endl;
     }
     this->parseClasses();
 }
