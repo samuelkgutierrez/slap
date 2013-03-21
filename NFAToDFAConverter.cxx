@@ -237,7 +237,7 @@ NFAToDFAConverter::getDFA(void)
             if (next.size() == 0) {
                 continue;
             }
-            else { 
+            else {
                 dfaTransTab.insert(make_pair(dfaStateNum[a],
                                              FSMTransition(*input,
                                                            dfaStateNum[next])));

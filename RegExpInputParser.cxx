@@ -228,7 +228,7 @@ RegExpInputParser::cStrToTokQ(char *cStr)
 void
 RegExpInputParser::parse(void)
 {
-    ExpNode *root = NULL;             
+    ExpNode *root = NULL;
     char *regExpCStr = Utils::getNewCString(string(this->cRegExpStr));
     char *psave = regExpCStr;
     queue<string> tokQ = cStrToTokQ(regExpCStr);
