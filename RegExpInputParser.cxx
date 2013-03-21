@@ -133,12 +133,24 @@ RegExpInputParser::RegExpInputParser(const std::string &fileToParse,
     this->reTree = NULL;
 }
 
+RegExpInputParser::RegExpInputParser(const AlphabetString &alpha,
+                                     const std::string &reDesc)
+{
+    /* /// setup private member containers /// */
+    /* first get the alphabet - all FSM input will have one of these */
+    this->alphabet = alpha;
+    /* convert to C string because it's easier to mess with C strings */
+    this->cInputStr = NULL;
+    this->cRegExpStr = Utils::getNewCString(reDesc);
+    this->reTree = NULL;
+}
+
 /* ////////////////////////////////////////////////////////////////////////// */
 RegExpInputParser::~RegExpInputParser(void)
 {
     delete this->reTree;
     delete[] this->cRegExpStr;
-    delete[] this->cInputStr;
+    if (this->cInputStr) delete[] this->cInputStr;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */

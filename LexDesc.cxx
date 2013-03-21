@@ -18,6 +18,11 @@
 #include "LexDesc.hxx"
 #include "Constants.hxx"
 #include "SLAPException.hxx"
+#include "DFA.hxx"
+#include "NFA.hxx"
+#include "RegExpInputParser.hxx"
+#include "AlphabetSymbol.hxx"
+#include "NFAToDFAConverter.hxx"
 
 #include <string>
 #include <iostream>
@@ -29,3 +34,20 @@
 #include <ctype.h>
 
 using namespace std;
+
+LexDesc::LexDesc(const AlphabetString &alphabet,
+                 std::string id,
+                 std::string desc,
+                 std::string semRelStr)
+{
+    NFA nfa;
+    RegExpInputParser reParser(alphabet, desc);
+
+    this->id = id;
+    this->desc = desc;
+    this->semRelStr = semRelStr;
+    reParser.parse();
+    nfa = reParser.getNFA();    
+    NFAToDFAConverter nfaToDFAConv(nfa);
+    dfa = nfaToDFAConv.getDFA();
+}

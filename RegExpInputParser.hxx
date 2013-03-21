@@ -54,6 +54,9 @@ public:
     RegExpInputParser(const std::string &fileToParse,
                       const AlphabetString &alpha);
 
+    RegExpInputParser(const AlphabetString &alpha,
+                      const std::string &reDesc);
+
     void parse(void);
 
     void echoAlphabet(void);

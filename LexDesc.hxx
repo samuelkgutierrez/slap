@@ -18,17 +18,27 @@
 #ifndef LEX_DESC_INCLUDED
 #define LEX_DESC_INCLUDED
 
+#include "DFA.hxx"
+
 #include <string>
 #include <fstream>
 
 class LexDesc {
 private:
+    DFA dfa;
+    std::string id;
+    std::string desc;
+    std::string semRelStr;
     LexDesc(void);
     ~LexDesc(void);
 
 protected:
 
 public:
+    LexDesc(const AlphabetString &alphabet,
+            std::string id,
+            std::string desc,
+            std::string semRelStr);
 };
 
 #endif
