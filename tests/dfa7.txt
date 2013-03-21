@@ -1,0 +1,21 @@
+
+
+dfa               
+states 
+\n \t \o
+end;
+initial
+\n
+accept 
+\t \o
+end; 
+transitions 
+\n 'a --> \o
+\o 'b --> \t
+\t 'c --> \t
+end;
+
+    alphabet
+ 'a		'b
+'c
+end

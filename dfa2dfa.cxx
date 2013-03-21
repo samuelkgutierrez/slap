@@ -44,7 +44,7 @@ dfa2dfa(const string &dfaInPath,
 {
     FSMInputParser *fsmParser = NULL;
     AlphabetParser *alphaParser = NULL;
-    DFA *fsm, *minfsm = NULL;
+    DFA *fsm, minfsm;
     bool accepts = false;
 
     cout << endl <<
@@ -87,7 +87,7 @@ dfa2dfa(const string &dfaInPath,
 
         cout << "# now minimizing dfa..." << endl;
         minfsm = HopcroftDFAMinimizer::minimize(*fsm, verbose);
-        cout << "# min dfa accepts input: " << minfsm->accepts(input)
+        cout << "# min dfa accepts input: " << minfsm.accepts(input)
              << endl;
 
     }
@@ -98,7 +98,6 @@ dfa2dfa(const string &dfaInPath,
     delete fsmParser;
     delete alphaParser;
     delete fsm;
-    delete minfsm;
     return accepts;
 }
 

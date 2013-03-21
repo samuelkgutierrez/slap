@@ -11,9 +11,9 @@ end;
 initial
 s1
 accept 
+s1
 s5
 s6
-s7
 end; 
 transitions 
 s1 'a --> s2

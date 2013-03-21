@@ -45,7 +45,7 @@ public:
     /* returns whether or not the string is accepted by the DFA */
     bool accepts(const AlphabetString &alphaString);
     /* minimizes the DFA and returns a new, minimized DFA */
-    DFA *minimize(void);
+    DFA minimize(void);
 };
 
 #endif

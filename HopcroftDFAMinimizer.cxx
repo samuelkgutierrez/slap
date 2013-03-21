@@ -25,6 +25,7 @@
 #include <iostream>
 #include <algorithm>
 #include <set>
+#include <map>
 
 /* set of sets --- help! */
 #define SOS set<StateSet>
@@ -40,7 +41,7 @@ using namespace std;
  * see: p. 180
  */
 
-bool verbose = false;
+static bool verbose = false;
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static void
@@ -53,40 +54,9 @@ echoSet(const StateSet &target,
     for (int i = 0; i < numSpaces; ++i) {
         pad.append(" ");
     }
-
     for (it = target.begin(); it != target.end(); ++it) {
         cout << pad << *it << endl;
     }
-}
-
-#if 0
-/* ////////////////////////////////////////////////////////////////////////// */
-static void
-echoTransitionSet(set<FSMTransition> t)
-{
-    set<FSMTransition>::iterator it;
-
-    for (it = t.begin(); it != t.end(); ++it) {
-        FSMTransition tmp = *it;
-        cout << tmp.getInput() << " " << tmp.getTo() << endl;
-    }
-}
-#endif
-
-/* ////////////////////////////////////////////////////////////////////////// */
-static
-StateSet
-getStateUnion(const StateSet &s1,
-              const StateSet &s2)
-{
-    StateSet u;
-
-    set_union(s1.begin(),
-              s1.end(),
-              s2.begin(),
-              s2.end(),
-              inserter(u, u.end()));
-    return u;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -154,37 +124,13 @@ getStatesWhereCLeadsToA(const FSMTransitionTable &transTab,
     return stateSet;
 }
 
-#if 0
 /* ////////////////////////////////////////////////////////////////////////// */
-/* returns {s1, s2, ..., sn} that contains a set of states that 'a' can reach on
- * a transition on c */
-static StateSet
-getStatesReachableByAonC(const FSMTransitionTable &transTab,
-                         const State &a,
-                         const AlphabetSymbol &c)
+static State
+getNewState(void)
 {
-    StateSet stateSet;
-    FSMTransitionTable myTransTab = transTab;
-    FSMTransitionTable::iterator it;
-
-    if (verbose) {
-        cout << "   $ finding valid delta(" << a << ", " << c << ") " << endl;
-    }
-    while (myTransTab.end() != (it = myTransTab.find(a))) {
-        if (verbose) {
-            cout << "   $ " << it->first << " "
-                 << it->second.getInput() << " --> "
-                 << it->second.getTo() << endl;
-        }
-        stateSet.insert(it->second.getTo());
-        myTransTab.erase(it);
-    }
-    if (verbose) {
-        cout << "   $" << endl;
-    }
-    return stateSet;
+    static int stateName = 0;
+    return State(Utils::int2string(stateName++));
 }
-#endif
 
 /* ////////////////////////////////////////////////////////////////////////// */
 static StateSet
@@ -202,107 +148,103 @@ getStateSetStateIn(const SOS &group,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static FSMTransitionTable
-buildTransitionsFromStart(const FSMTransitionTable &transTab,
-                          const StateSet &startSet)
-{
-    FSMTransitionTable retTransTab;
-    FSMTransition transition;
-
-    return retTransTab;
-
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
-static State
-getNewState(void)
-{
-    static int stateName = 0;
-    return State(Utils::int2string(stateName++));
-}
-
-/* ////////////////////////////////////////////////////////////////////////// */
 static void
-merge(SOS &P,
+echoTransitions(const FSMTransitionTable &transTab)
+{
+    for (FSMTransitionTable::const_iterator i = transTab.begin();
+         transTab.end() != i;
+         ++i) {
+        cout << "   $ " << i->first << " " << i->second.getInput() << " --> "
+             << i->second.getTo() << endl;
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static bool
+stateHasTransition(const State &s,
+                   const FSMTransition &trans,
+                   const FSMTransitionTable &tt)
+{
+    FSMTransitionTable tcopy = tt;
+    FSMTransitionTable::iterator t;
+
+    while (tcopy.end() != (t = tcopy.find(s))) {
+        if (t->second.getInput() == trans.getInput() &&
+            t->second.getTo() == trans.getTo()) {
+            return true;
+        }
+        tcopy.erase(t);
+    }
+    return false;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+static DFA
+merge(const SOS &P,
       const AlphabetString &alphabet,
       const FSMTransitionTable &transTab,
       const State &start,
       const StateSet &acceptStates)
 {
-    SOS::iterator ssi;
-    StateSet startSet;
+    StateSet newStates;
+    FSMTransitionTable newTransTab;
+    /* map from equiv class set to new state that represents old set */
+    map<StateSet, State> oldToNewMap;
+    DFA minDFA;
+    StateSet newAccepts;
 
     if (verbose) {
         cout << endl <<
         "   $ HopcroftDFAMinimizer: starting equivalence class merge $$$$$$$$$$"
              << endl;
-        cout << "   $ looking for start state" << endl;
+        cout << "   $ creating " << P.size() << " new start states..." << endl;
     }
-    startSet = getStateSetStateIn(P, start);
-    /* start better be by itself */
-    if (startSet.size() == 1) {
-        if (verbose) {
-            cout << "   $ found it" << endl;
-            echoSet(startSet);
-        }
+    /* create the new states */
+    for (SOS::const_iterator S = P.begin(); P.end() != S; ++S) {
+        State newState = getNewState();
+        newStates.insert(newState);
+        /* create the mapping from old set to new state name */
+        oldToNewMap[*S] = newState;
     }
-    else {
-        throw SLAPException(SLAP_WHERE, "i <3 dfas");
-    }
-    /* now let's construct a new transition table based on the start state */
     if (verbose) {
-        cout <<
-        "   $ HopcroftDFAMinimizer: starting to build new DFA from start $$$$$$"
-             << endl;
+        cout << "   $ creating new transition table" << endl;
     }
-
-    /* /// start building up the DFA pieces /// */
-    /* init stuff we know */
-    /* start state is okay */
-    State minStart = start;
-    /* alphabet isn't going to change across the minimization */
-    AlphabetString minAlphabet = alphabet;
-    /* the rest we'll fill in next */
-    FSMTransitionTable minTransTab;
-    /* accept states for min DFA */
-    StateSet minAcceptStates;
-    /* all states within the min DFA */
-    StateSet minAllStates;
-    /* used to build up final transition table */
-    FSMTransitionTable tmpTransTab;
-
-    if (verbose) {
-        cout <<
-        "   $ HopcroftDFAMinimizer: building accept state set $$$$$$$$$$$$$$$$$"
-             << endl;
-    }
-    /* /// get accept states /// */
-    for (StateSet::iterator ssi = acceptStates.begin();
-         ssi != acceptStates.end();
-         ++ssi) {
-        StateSet newAccepts;
-        newAccepts = getStateSetStateIn(P, *ssi);
-        if (newAccepts.size() > 0) {
-            minAcceptStates = getStateUnion(minAcceptStates, newAccepts);
+    /* for each old transition */
+    for (FSMTransitionTable::const_iterator t = transTab.begin();
+         transTab.end() != t;
+         ++t) {
+        State newFrom = oldToNewMap[getStateSetStateIn(P, t->first)];
+        State newTo = oldToNewMap[getStateSetStateIn(P, t->second.getTo())];
+        AlphabetSymbol input = t->second.getInput();
+        FSMTransition newTransition = FSMTransition(input, newTo);
+        /* this is really ugly... fix later -- poor performance */
+        if (!stateHasTransition(newFrom, newTransition, newTransTab)) {
+            newTransTab.insert(make_pair(newFrom, newTransition));
         }
     }
     if (verbose) {
-        echoSet(minAcceptStates);
-        cout <<
-        "   $ HopcroftDFAMinimizer: done building accept state set $$$$$$$$$$$$"
+        cout << "   $ done creating new transition table and here it is"
              << endl;
-    }
-    /* build the transition table from the start set */
-    minTransTab = buildTransitionsFromStart(transTab, startSet);
-    if (verbose) {
+        echoTransitions(newTransTab);
+        cout << "   $" << endl;
         cout << endl <<
         "   $ HopcroftDFAMinimizer: done with equivalence class merge $$$$$$$$$"
              << endl;
     }
+
+    State newStart = oldToNewMap[getStateSetStateIn(P, start)];
+
+    for (StateSet::iterator a = acceptStates.begin();
+         acceptStates.end() != a;
+         ++a) {
+        State newAccept = oldToNewMap[getStateSetStateIn(P, *a)];
+        newAccepts.insert(newAccept);
+    }
+    return DFA(alphabet, newTransTab, newStates, newStart, newAccepts);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-static void
+static DFA
 go(AlphabetString alphabet,
    const FSMTransitionTable &transTab,
    const State &start,
@@ -387,11 +329,11 @@ go(AlphabetString alphabet,
              << endl;
         }
     /* now merge the darn things */
-    merge(p, alphabet, transTab, start, f);
+    return merge(p, alphabet, transTab, start, f);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-DFA *
+DFA
 HopcroftDFAMinimizer::minimize(DFA targetDFA,
                                bool beVerbose)
 {
@@ -409,6 +351,7 @@ HopcroftDFAMinimizer::minimize(DFA targetDFA,
     StateSet sf = getStateDifference(allStates, finalStates);
     /* start state */
     State start = targetDFA.getStartState();
+    DFA minDFA;
 
     if (verbose) {
         cout << endl <<
@@ -435,11 +378,10 @@ HopcroftDFAMinimizer::minimize(DFA targetDFA,
 
     try {
         /* get to work */
-        go(alphabet, transitionTable, start, sf, finalStates);
+        minDFA = go(alphabet, transitionTable, start, sf, finalStates);
     }
     catch (SLAPException &e) {
-        return new DFA(targetDFA);
+        return DFA(targetDFA);
     }
-    /* XXX */
-    return new DFA(targetDFA);
+    return minDFA;
 }

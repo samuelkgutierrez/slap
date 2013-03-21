@@ -74,7 +74,7 @@ DFA::move(FSMTransitionTable transTabCopy,
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-DFA *
+DFA
 DFA::minimize(void)
 {
     return HopcroftDFAMinimizer::minimize(*this);

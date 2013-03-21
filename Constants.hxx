@@ -18,6 +18,10 @@
 #ifndef CONSTANTS_INCLUDED
 #define CONSTANTS_INCLUDED
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #define SLAP_WHITESPACE " \t\n\v\f\r"
 #define SLAP_EOL        "\n\f\r"
 #define SLAP_WHERE      __FILE__, __LINE__

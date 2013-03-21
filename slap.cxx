@@ -40,7 +40,7 @@ dfaXListBool(const string &dfaInPath,
     FSMInputParser *inputParser = NULL;
     AlphabetParser *alphaParser = NULL;
     DFA *fsm = NULL;
-    FiniteStateMachine *minFSM = NULL;
+    DFA minFSM;
     bool accepts = false;
     /* XXX TODO read from file */
     AlphabetString input;
@@ -86,8 +86,8 @@ dfaXListBool(const string &dfaInPath,
         accepts = fsm->accepts(input);
         cout << "accepts: " << accepts << endl;
         minFSM = fsm->minimize();
-        minFSM->verbose(true);
-        accepts = minFSM->accepts(input);
+        minFSM.verbose(true);
+        accepts = minFSM.accepts(input);
         cout << "accepts: " << accepts << endl;
     }
     catch (SLAPException &e) {

@@ -1,0 +1,4 @@
+| ' '\n
+alphabet
+' '\n
+end
