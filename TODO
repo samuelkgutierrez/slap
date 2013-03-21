@@ -1,5 +1,4 @@
 make sure that start and ends are balanced in inputs
-fix regex at end alpha at begin
 fix \n inputs. like:
 alphabet
 'b 'a 'o 'r 'i 'n 'g ' '\n
