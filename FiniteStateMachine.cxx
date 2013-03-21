@@ -27,6 +27,7 @@ FiniteStateMachine::FiniteStateMachine(const AlphabetString &alpha,
                                        const State &startState,
                                        const StateSet &acceptStates)
 {
+    this->beVerbose = false;
     this->alphabet = alpha;
     this->transitionTable = transitionTab;
     this->allStates = allStates;
