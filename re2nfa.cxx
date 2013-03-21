@@ -45,20 +45,16 @@ re2nfa(const string &nfaInPath,
     NFA *fsm = NULL;
     bool accepts = false;
 
-    cout << endl <<
-    "# ................::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-        << endl <<
-    "# ........................................................................"
-    << endl;
+    cout << endl << endl << "#" << endl;
     cout << "# re2nfa - input file: " << nfaInPath << endl
         << "# input: " << endl << "# ";
     for (unsigned int i = 0; i < input.size(); ++i) {
         cout << input[i];
     }
     cout << endl <<
-    "# ................::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    "#-------------------------------------------------------------------------"
         << endl <<
-    "# ........................................................................"
+    "#-------------------------------------------------------------------------"
     << endl;
 
     try {
@@ -80,7 +76,7 @@ re2nfa(const string &nfaInPath,
         cout << "# starting re --> nfa conversion..." << endl;
         NFA nfa = reParser->getNFA();
         accepts = nfa.accepts(input);
-        cout << "re accepts input: " << accepts << endl;
+        cout << "# re accepts input: " << accepts << endl;
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

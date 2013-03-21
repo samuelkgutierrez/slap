@@ -240,7 +240,7 @@ RegExpInputParser::parse(void)
     if (this->beVerbose) {
         cout << endl << "   R done walking the parse tree" << endl;
     }
-    cout << "# re after tree walk: " << endl;
+    cout << "# re after tree walk: " << endl << "# ";
     ExpNode::echoTree(root);
     cout << endl << "# done re after tree walk" << endl;
 
