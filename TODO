@@ -8,3 +8,4 @@ alphabet
 'b 'a 'o 'r 'i 'n 'g ' '\n
 end; <<== this is the problem
 in input parse, need to add \n and maybe others like \t?
+fix ' and '_

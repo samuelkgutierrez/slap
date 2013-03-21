@@ -8,13 +8,13 @@
 ################################################################################
 
 ##############
- # building #
+ # BUILDING #
 ##############
 ./configure
 make
 
 ######################
- # standalone tools #
+ # STANDALONE TOOLS #
 ######################
 # (algorithms: {1, 2, ... n} means that within each standalone tool, the
 # algorithm number mentioned in the specification was used in some form or
@@ -29,7 +29,7 @@ dfa2dfa - minimizes a given dfa using hopcroft's algorithm
           algorithms: 3, 4, 5
 
 ########################
- # testing from stdin #
+ # TESTING FROM STDIN #
 ########################
 o It is possible to test the standalone programs with input from stdin.
 # For Example:
@@ -40,7 +40,7 @@ o It is possible to test the standalone programs with input from stdin.
 Please note, however, that in this mode only one line of text can be tested.
 
 #################
- # assumptions #
+ # ASSUMPTIONS #
 #################
 
 # Alphabet Specification
@@ -48,5 +48,5 @@ o Only 'alphabet' and 'end' will be recognized as valid alphabet specification
   keywords.
 
 # re2nfa
-o Regular expression specifications do not span over multiple lines.
+o Regular expression specifications do not span multiple lines.
 o Regular expression specification is before alphabet.

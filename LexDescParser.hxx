@@ -18,17 +18,34 @@
 #ifndef LEX_DESC_PARSER_INCLUDED
 #define LEX_DESC_PARSER_INCLUDED
 
+#include "AlphabetSymbol.hxx"
+
 #include <string>
 #include <fstream>
 
 class LexDescParser {
 private:
+    bool beVerbose;
+    std::string fileToParse;
+    /* buffer that holds input text */
+    char *cInputStr;
+    /* the alphabet */
+    AlphabetString alphabet;
+
     LexDescParser(void);
-    ~LexDescParser(void);
+
+    void parseAlphabet(void);
 
 protected:
 
 public:
+    LexDescParser(const std::string &fileToParse);
+
+    ~LexDescParser(void);
+
+    void verbose(bool beVerbose = false);
+
+    void parse(void);
 };
 
 #endif

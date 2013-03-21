@@ -25,6 +25,8 @@
 #include "DFA.hxx"
 #include "NFAToDFAConverter.hxx"
 #include "UserInputStringParser.hxx"
+#include "LexDesc.hxx"
+#include "LexDescParser.hxx"
 
 #include <cstdlib>
 #include <cstdio>
@@ -62,7 +64,9 @@ parse(bool verboseMode,
       const string &lexDesc,
       const AlphabetString &input)
 {
-    ;
+    LexDescParser ldParser(lexDesc);
+    ldParser.verbose(verboseMode);
+    ldParser.parse();
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
