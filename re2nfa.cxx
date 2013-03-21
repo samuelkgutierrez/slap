@@ -46,19 +46,19 @@ re2nfa(const string &nfaInPath,
     bool accepts = false;
 
     cout << endl <<
-    "##########################################################################"
+    "# ................::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         << endl <<
-    "##########################################################################"
+    "# ........................................................................"
     << endl;
     cout << "# re2nfa - input file: " << nfaInPath << endl
-        << "# input: " << endl;
+        << "# input: " << endl << "# ";
     for (unsigned int i = 0; i < input.size(); ++i) {
         cout << input[i];
     }
     cout << endl <<
-    "##########################################################################"
+    "# ................::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
         << endl <<
-    "##########################################################################"
+    "# ........................................................................"
     << endl;
 
     try {
@@ -71,10 +71,11 @@ re2nfa(const string &nfaInPath,
                                          alphaParser->getAlphabet());
         reParser->verbose(verbose);
         reParser->parse();
-
-        cout << "# alphabet:" << endl;
-        reParser->echoAlphabet();
-        cout << "# alphabet end" << endl;
+        if (verbose) {
+            cout << "# alphabet:" << endl;
+            reParser->echoAlphabet();
+            cout << "# alphabet end" << endl;
+        }
 
         cout << "# starting re --> nfa conversion..." << endl;
         NFA nfa = reParser->getNFA();

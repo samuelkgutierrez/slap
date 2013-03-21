@@ -1,4 +1,9 @@
-################################################################################
+                                 .__
+                            _____|  | _____  ______
+                           /  ___/  | \__  \ \____ \
+                           \___ \|  |__/ __ \|  |_> >
+                           /____  >____(____  /   __/
+                               \/          \/|__|
                     slap - A Simple Scanner Generator in C++
 ################################################################################
 
@@ -23,10 +28,10 @@ nfa2dfa - converts an nfa to a dfa using subset construction
 dfa2dfa - minimizes a given dfa using hopcroft's algorithm
           algorithms: 3, 4, 5
 
-######################
-# testing from stdin #
-######################
-it is possible to test the standalone programs with input from stdin.
+########################
+ # testing from stdin #
+########################
+o It is possible to test the standalone programs with input from stdin.
 # For Example:
 # echo "cb" | ./nfa2dfa ./tests/nfa3.txt -
 # OR
@@ -37,4 +42,11 @@ Please note, however, that in this mode only one line of text can be tested.
 #################
  # assumptions #
 #################
+
+# Alphabet Specification
+o Only 'alphabet' and 'end' will be recognized as valid alphabet specification
+  keywords.
+
+# re2nfa
 o Regular expression specifications do not span over multiple lines.
+o Regular expression specification is before alphabet.
