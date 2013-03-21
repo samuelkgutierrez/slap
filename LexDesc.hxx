@@ -29,12 +29,14 @@ private:
     std::string id;
     std::string desc;
     std::string semRelStr;
-    LexDesc(void);
-    ~LexDesc(void);
 
 protected:
 
 public:
+    LexDesc(void) { }
+
+    ~LexDesc(void) { }
+
     LexDesc(const AlphabetString &alphabet,
             std::string id,
             std::string desc,

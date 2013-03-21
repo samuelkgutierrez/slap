@@ -21,6 +21,7 @@
 #include "Utils.hxx"
 #include "AlphabetSymbol.hxx"
 #include "AlphabetParser.hxx"
+#include "LexDesc.hxx"
 
 #include <string>
 #include <iostream>
@@ -28,6 +29,7 @@
 #include <cstdio>
 #include <algorithm>
 #include <stack>
+#include <vector>
 
 #include <string.h>
 #include <ctype.h>
@@ -102,6 +104,7 @@ LexDescParser::parseClasses(void)
     string classID, reStr, classRel;
     int wordl = 0;
     stack<string> classes;
+    vector<LexDesc> lexs;
     cptr = fStartSav;
 
     while (true) {
@@ -153,6 +156,7 @@ LexDescParser::parseClasses(void)
                          << endl;
                     cout << "   L end found new class" << endl;
                 }
+
                 break;
             }
         }
