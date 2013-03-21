@@ -64,9 +64,13 @@ parse(bool verboseMode,
       const string &lexDesc,
       const AlphabetString &input)
 {
+    cout << "c creating scanner from: " << lexDesc << endl;
     LexDescParser ldParser(lexDesc);
     ldParser.verbose(verboseMode);
     ldParser.parse();
+    cout << "c done" << endl;
+
+    cout << "c starting parse" << endl;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
