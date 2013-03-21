@@ -184,6 +184,7 @@ LexDescParser::parse(const AlphabetString &input)
     this->parseClasses();
 
     /* now get to the real work */
-    
+    AlphabetString::const_iterator a, b;
+    a = b = input.begin();
 
 }

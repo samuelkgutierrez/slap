@@ -55,11 +55,7 @@ LexDesc::LexDesc(const AlphabetString &alphabet,
 }
 
 bool
-LexDesc::accepts(string input)
+LexDesc::accepts(const AlphabetString &input)
 {
-    AlphabetString in;     
-    for (unsigned i = 0; i < input.length(); ++i) {
-        in.push_back(AlphabetSymbol(string((char *)input[i])));
-    }
-    return this->dfa.accepts(in);
+    return this->dfa.accepts(input);
 }

@@ -19,6 +19,7 @@
 #define LEX_DESC_INCLUDED
 
 #include "DFA.hxx"
+#include "AlphabetSymbol.hxx"
 
 #include <string>
 #include <fstream>
@@ -42,7 +43,7 @@ public:
             std::string desc,
             std::string semRelStr);
 
-    bool accepts(std::string input);
+    bool accepts(const AlphabetString &input);
 };
 
 #endif
