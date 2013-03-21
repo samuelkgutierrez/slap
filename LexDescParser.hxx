@@ -19,9 +19,17 @@
 #define LEX_DESC_PARSER_INCLUDED
 
 #include "AlphabetSymbol.hxx"
+#include "FiniteStateMachine.hxx"
+#include "DFA.hxx"
+#include "NFA.hxx"
 
 #include <string>
 #include <fstream>
+#include <vector>
+#include <utility>
+
+typedef std::pair<std::string, DFA>      LexClassNameDFAPair;
+typedef std::vector<LexClassNameDFAPair> LexClassNameDFAVec;
 
 class LexDescParser {
 private:
