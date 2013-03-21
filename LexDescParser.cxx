@@ -83,57 +83,79 @@ LexDescParser::parseAlphabet(void)
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
+static stack<string>
+getNewTypeClassStack(void)
+{
+    stack<string> classes;
+    classes.push("irrelevant");
+    classes.push("relevant");
+    classes.push("discard");
+    return classes;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
 void
 LexDescParser::parseClasses(void)
 {
     char *fStartSav = this->cInputStr;
     char *cptr = NULL, *dptr = NULL, *cend = NULL;
-    string classID, reStr, classType;
+    string classID, reStr, classRel;
     int wordl = 0;
     stack<string> classes;
-    classes.push("irrelevant");
-    classes.push("relevant");
-    classes.push("discard");
+    cptr = fStartSav;
 
-
-    /* find beginning of class */
-    cptr = Utils::getListStart(fStartSav,
-                               (char *)CLASS_START_KEYWORD,
-                               (char *)CLASS_END_KEYWORD);
-    /* find end of class */
-    cend = strstr(cptr, CLASS_END_KEYWORD);
-    /* start working from beginning */
-    /* skip keyword */
-    cptr += strlen(CLASS_START_KEYWORD);
-    /* each white space */
-    cptr += strspn(cptr, SLAP_WHITESPACE);
-    /* find extent of word */
-    wordl = strcspn(cptr, SLAP_WHITESPACE);
-    /* store class id */
-    classID = string(cptr, wordl);
-    /* now skip over id is and whitespace */
-    cptr += strlen(classID.c_str());
-    cptr += strspn(cptr, SLAP_WHITESPACE);
-    cptr += strlen("is");
-    cptr += strspn(cptr, SLAP_WHITESPACE);
-    /* now grab re */
-    while (!classes.empty()) {
-        string curClass = classes.top();
-        classes.pop();
-        if (NULL == (dptr = strstr(cptr, curClass.c_str()))) {
-            continue;
+    while (true) {
+        classes = getNewTypeClassStack();
+        /* find beginning of class */
+        cptr = Utils::getListStart(cptr,
+                                   (char *)CLASS_START_KEYWORD,
+                                   (char *)CLASS_END_KEYWORD);
+        /* done */
+        if (NULL == cptr) {
+            break;
         }
-        /* make sure that it is within out bounds */
-        else if (dptr > cend) {
-            continue;
+        /* find end of class */
+        cend = strstr(cptr, CLASS_END_KEYWORD);
+        /* start working from beginning */
+        /* skip keyword */
+        cptr += strlen(CLASS_START_KEYWORD);
+        /* each white space */
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* find extent of word */
+        wordl = strcspn(cptr, SLAP_WHITESPACE);
+        /* store class id */
+        classID = string(cptr, wordl);
+        /* now skip over id is and whitespace */
+        cptr += strlen(classID.c_str());
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        cptr += strlen("is");
+        cptr += strspn(cptr, SLAP_WHITESPACE);
+        /* now grab re */
+        while (!classes.empty()) {
+            string curClass = classes.top();
+            classes.pop();
+            if (NULL == (dptr = strstr(cptr, curClass.c_str()))) {
+                continue;
+            }
+            /* make sure that it is within out bounds */
+            else if (dptr > cend) {
+                continue;
+            }
+            /* we found it! */
+            else {
+                reStr = string(cptr, dptr - cptr);
+                classRel = curClass;
+                if (beVerbose) {
+                    cout << "   L found new class" << endl;
+                    cout << "   L class id: " << classID << endl;
+                    cout << "   L class desc: " << reStr << endl;
+                    cout << "   L class semantic relevance: " << classRel
+                         << endl;
+                    cout << "   L end found new class" << endl;
+                }
+            }
         }
-        /* we found it! */
-        else {
-            reStr = string(cptr, dptr - cptr);
-            classType = curClass;
-            cout << "class: " << classType << endl;
-            cout << "re: " << reStr << endl;
-        }
+        cptr = cend + strlen(CLASS_END_KEYWORD);
     }
 }
 

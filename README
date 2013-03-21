@@ -50,3 +50,19 @@ o Only 'alphabet' and 'end' will be recognized as valid alphabet specification
 # re2nfa
 o Regular expression specifications do not span multiple lines.
 o Regular expression specification is before alphabet.
+
+# Lexical Description
+o class definitions are after one another. That is,
+
+class base is + 'b + * | 'a 'o 'r relevant end;
+class suffix is + + 'i 'n 'g irrelevant end;
+class whitespace is * | ' '\n  discard end;
+
+ooo Not ooo
+
+class base is + 'b + * | 'a 'o 'r relevant end;
+alphabet
+'b 'a 'o 'r 'i 'n 'g ' '\n
+end
+class suffix is + + 'i 'n 'g irrelevant end;
+class whitespace is * | ' '\n  discard end;
