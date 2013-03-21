@@ -27,6 +27,7 @@
 #include <fstream>
 #include <cstdio>
 #include <algorithm>
+#include <stack>
 
 #include <string.h>
 #include <ctype.h>
@@ -83,6 +84,47 @@ LexDescParser::parseAlphabet(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 void
+LexDescParser::parseClasses(void)
+{
+    char *fStartSav = this->cInputStr;
+    char *cptr = NULL, *dptr = NULL, *cend = NULL;
+    string classID, reStr;
+    int wordl = 0;
+    stack<string> classes;
+    classes.push("relevant");
+    classes.push("irrelevant");
+    classes.push("discard");
+
+
+    /* find beginning of class */
+    cptr = Utils::getListStart(fStartSav,
+                               (char *)CLASS_START_KEYWORD,
+                               (char *)CLASS_END_KEYWORD);
+    /* find end of class */
+    cend = strstr(cptr, CLASS_END_KEYWORD);
+    /* start working from beginning */
+    /* skip keyword */
+    cptr += strlen(CLASS_START_KEYWORD);
+    /* each white space */
+    cptr += strspn(cptr, SLAP_WHITESPACE);
+    /* find extent of word */
+    wordl = strcspn(cptr, SLAP_WHITESPACE);
+    /* store class id */
+    classID = string(cptr, wordl);
+    /* now skip over id is and whitespace */
+    cptr += strlen(classID.c_str());
+    cptr += strspn(cptr, SLAP_WHITESPACE);
+    cptr += strlen("is");
+    cptr += strspn(cptr, SLAP_WHITESPACE);
+    /* now grab re */
+
+    //while (NULL != (dptr = strstr(cptr, "relevant")
+
+    cout << "ID:|" << classID << "|" <<endl;
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
 LexDescParser::parse(void)
 {
     this->parseAlphabet();
@@ -95,4 +137,5 @@ LexDescParser::parse(void)
         }
         cout << "   L alphabet" << endl;
     }
+    this->parseClasses();
 }

@@ -44,6 +44,8 @@ private:
 
     void parseAlphabet(void);
 
+    void parseClasses(void);
+
 protected:
 
 public:

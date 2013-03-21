@@ -29,6 +29,9 @@
 #define ALPHABET_START_KEYWORD "alphabet"
 #define ALPHABET_END_KEYWORD   "end"
 
+#define CLASS_START_KEYWORD "class"
+#define CLASS_END_KEYWORD   "end;"
+
 #define OP_STAR   "__0xSLAP__STAR__"
 #define OP_CONCAT "__0xSLAP__CONCAT__"
 #define OP_UNION  "__0xSLAP__UNION__"
