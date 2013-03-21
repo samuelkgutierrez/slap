@@ -104,7 +104,6 @@ LexDescParser::parseClasses(void)
     string classID, reStr, classRel;
     int wordl = 0;
     stack<string> classes;
-    vector<LexDesc> lexs;
     cptr = fStartSav;
 
     while (true) {
@@ -156,7 +155,10 @@ LexDescParser::parseClasses(void)
                          << endl;
                     cout << "   L end found new class" << endl;
                 }
-                lexs.push_back(LexDesc(this->alphabet, classID, reStr, classRel));
+                this->lexs.push_back(LexDesc(this->alphabet,
+                                             classID,
+                                             reStr,
+                                             classRel));
                 break;
             }
         }
@@ -166,8 +168,9 @@ LexDescParser::parseClasses(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 void
-LexDescParser::parse(void)
+LexDescParser::parse(const AlphabetString &input)
 {
+    /* setup */
     this->parseAlphabet();
     if (this->beVerbose) {
         cout << "   L alphabet" << endl;
@@ -179,4 +182,13 @@ LexDescParser::parse(void)
         cout << "   L end alphabet" << endl;
     }
     this->parseClasses();
+
+    for (AlphabetString::const_iterator i = input.begin();
+         input.end() != i;
+         ++i) {
+        cout << *i;
+    }
+
+    /* now get to the real work */
+
 }

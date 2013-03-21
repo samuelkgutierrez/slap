@@ -22,6 +22,7 @@
 #include "FiniteStateMachine.hxx"
 #include "DFA.hxx"
 #include "NFA.hxx"
+#include "LexDesc.hxx"
 
 #include <string>
 #include <fstream>
@@ -46,6 +47,8 @@ private:
 
     void parseClasses(void);
 
+    std::vector<LexDesc> lexs;
+
 protected:
 
 public:
@@ -55,7 +58,7 @@ public:
 
     void verbose(bool beVerbose = false);
 
-    void parse(void);
+    void parse(const AlphabetString &input);
 };
 
 #endif

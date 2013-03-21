@@ -41,6 +41,8 @@ public:
             std::string id,
             std::string desc,
             std::string semRelStr);
+
+    bool accepts(std::string input);
 };
 
 #endif

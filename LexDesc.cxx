@@ -42,7 +42,6 @@ LexDesc::LexDesc(const AlphabetString &alphabet,
 {
     NFA nfa;
     RegExpInputParser reParser(alphabet, desc);
-
     this->id = id;
     this->desc = desc;
     this->semRelStr = semRelStr;
@@ -53,4 +52,14 @@ LexDesc::LexDesc(const AlphabetString &alphabet,
     NFAToDFAConverter nfaToDFAConv(nfa);
     nfaToDFAConv.verbose(false);
     this->dfa = nfaToDFAConv.getDFA();
+}
+
+bool
+LexDesc::accepts(string input)
+{
+    AlphabetString in;     
+    for (unsigned i = 0; i < input.length(); ++i) {
+        in.push_back(AlphabetSymbol(string((char *)input[i])));
+    }
+    return this->dfa.accepts(in);
 }
