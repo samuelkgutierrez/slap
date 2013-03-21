@@ -32,6 +32,7 @@ it is possible to test the standalone programs with input from stdin.
 # OR
 # ./nfa2dfa ./tests/nfa3.txt - <ENTER>
 # asdf <ENTER>
+Please note, however, that in this mode only one line of text can be tested.
 
 #################
  # assumptions #

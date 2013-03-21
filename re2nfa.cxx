@@ -96,9 +96,9 @@ static void
 usage(void)
 {
     cout << endl << "usage:" << endl;
-    cout << "re2nfa [-v] RESpecification InputsFile" << endl << endl;
+    cout << "re2nfa [-v] RESpecification [InputsFile][-]" << endl << endl;
     cout << "re2nfa reads an RE specification file and input strings and "
-            "returns whether or not the inputs found within InputsFile are "
+            "returns whether or not the input found within InputFile is"
             "accepted by the machine." << endl;
 }
 
@@ -107,7 +107,7 @@ usage(void)
 int
 main(int argc, char **argv)
 {
-    string nfaSpec, inputsFile;
+    string nfaSpec, inputFile;
     bool verboseMode = false;
 
     if (3 != argc && 4 != argc) {
@@ -116,7 +116,7 @@ main(int argc, char **argv)
     }
     else if (3 == argc) {
         nfaSpec = string(argv[1]);
-        inputsFile = string(argv[2]);
+        inputFile = string(argv[2]);
     }
     else {
         if ("-v" != string(argv[1])) {
@@ -124,20 +124,13 @@ main(int argc, char **argv)
             return EXIT_FAILURE;
         }
         nfaSpec = string(argv[2]);
-        inputsFile = string(argv[3]);
+        inputFile = string(argv[3]);
         verboseMode = true;
     }
     try {
-        UserInputStringParser inputParser(inputsFile);
-        AlphabetString inputs = inputParser.getInputs();
-        AlphabetSymbol alphaSym  = *inputs.begin();
-        string symStr = alphaSym.str();
-        AlphabetString parts;
-        for (unsigned long c = 0; c < symStr.length(); ++c) {
-            char *cp = &symStr[c];
-            parts.push_back(AlphabetSymbol(string(cp, 1)));
-        }
-        re2nfa(nfaSpec, parts, verboseMode);
+        UserInputStringParser inputParser(inputFile);
+        AlphabetString input = inputParser.getInput();
+        re2nfa(nfaSpec, input, verboseMode);
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;

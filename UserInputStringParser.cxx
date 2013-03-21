@@ -33,12 +33,6 @@
 using namespace std;
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* ////////////////////////////////////////////////////////////////////////// */
-/* private utility functions */
-/* ////////////////////////////////////////////////////////////////////////// */
-/* ////////////////////////////////////////////////////////////////////////// */
-
-/* ////////////////////////////////////////////////////////////////////////// */
 UserInputStringParser::UserInputStringParser(const string &fileToParse)
 {
     string line;
@@ -46,7 +40,11 @@ UserInputStringParser::UserInputStringParser(const string &fileToParse)
     if ("-" == fileToParse) {
         istream *in = &cin;
         getline(*in, line);
-        this->inputs.push_back(AlphabetSymbol(line));
+        /* break it up into pieces */
+        for (unsigned long c = 0; c < line.length(); ++c) {
+            char *cp = &line[c];
+            this->input.push_back(AlphabetSymbol(string(cp, 1)));
+        }
     }
     else {
         ifstream *file;
@@ -61,7 +59,11 @@ UserInputStringParser::UserInputStringParser(const string &fileToParse)
         /* start building the strings */
         while (file->good()) {
             getline(*file, line);
-            this->inputs.push_back(AlphabetSymbol(line));
+            /* break it up into pieces */
+            for (unsigned long c = 0; c < line.length(); ++c) {
+                char *cp = &line[c];
+                this->input.push_back(AlphabetSymbol(string(cp, 1)));
+            }
         }
         /* close the file */
         file->close();
@@ -71,7 +73,7 @@ UserInputStringParser::UserInputStringParser(const string &fileToParse)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 AlphabetString
-UserInputStringParser::getInputs(void) const
+UserInputStringParser::getInput(void) const
 {
-    return this->inputs;
+    return this->input;
 }

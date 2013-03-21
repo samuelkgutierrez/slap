@@ -125,7 +125,7 @@ main(int argc, char **argv)
     }
     try {
         UserInputStringParser inputParser(inputsFile);
-        AlphabetString inputs = inputParser.getInputs();
+        AlphabetString inputs = inputParser.getInput();
         AlphabetSymbol alphaSym  = *inputs.begin();
         string symStr = alphaSym.str();
         AlphabetString parts;
