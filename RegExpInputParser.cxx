@@ -26,6 +26,8 @@
 #include <algorithm>
 #include <locale>
 #include <map>
+#include <cctype>
+#include <sstream>
 
 #include <errno.h>
 #include <string.h>
@@ -43,26 +45,62 @@ static char *
 getRegExpCStr(char *fileText)
 {
     char *textCopy = NULL; 
-    char *cptr = NULL, *dptr = NULL;
+    char *alphaBegin = NULL, *alphaEnd;
+    string startStr, endStr, reStr;
+    int startStrLen = 0, endStrLen = 0;
+    char *saveAB = NULL, *saveAE = NULL;
 
     if (NULL == fileText) {
         throw SLAPException(SLAP_WHERE, "fileText NULL!");
     }
     /* make a copy of the text because we are going to modify it */
     textCopy = Utils::getNewCString(string(fileText));
-    cptr = textCopy;
-    /* skip all the white space and get starting position */
-    cptr += strspn(cptr, SLAP_WHITESPACE);
-    dptr = strcasestr(cptr, ALPHABET_START_KEYWORD);
-    /* cap, so we ignore the alphabet spec */
-    *dptr = '\0';
-    dptr = cptr;
-    dptr += strcspn(dptr, SLAP_EOL);
-    *dptr = '\0';
-    cout << "# re: [" << string(cptr) << "]" << endl;
+
+    /* find beginning of alphabet */
+    alphaBegin = Utils::getListStart(textCopy,
+                                     (char *)ALPHABET_START_KEYWORD,
+                                     (char *)ALPHABET_END_KEYWORD);
+    *alphaBegin = '\0';
+    /* move passed the start keyword */
+    alphaBegin += strlen(ALPHABET_START_KEYWORD);
+    /* now that we know the start of the alphabet, find the end */
+    alphaEnd = strstr(alphaBegin, ALPHABET_END_KEYWORD);
+    alphaEnd += strlen(ALPHABET_END_KEYWORD);
+    *alphaEnd = '\0';
+    alphaEnd += 1;
+
+    saveAB = textCopy;
+    /* capture the start string */
+    while ('\0' != *saveAB) {
+        startStrLen += 1;
+        ++saveAB;
+    }
+    startStr = string(textCopy, startStrLen - 1);
+
+    /* now the end string */
+    saveAE = alphaEnd;
+    while ('\0' != *alphaEnd) {
+        endStrLen += 1;
+        ++alphaEnd;
+    }
+    endStr = string(saveAE, endStrLen);
+
+    reStr = startStr + endStr;
+
+    size_t startpos = reStr.find_first_not_of(SLAP_WHITESPACE);
+    if (string::npos != startpos) {
+        reStr = reStr.substr(startpos);
+    }
+    size_t endpos = reStr.find_last_not_of(SLAP_WHITESPACE);
+    if (string::npos != endpos) {
+        reStr = reStr.substr(0, endpos + 1);
+    }
+
+    cout << "# re: [" << reStr << "]" << endl;
+
     delete[] textCopy;
     
-    return Utils::getNewCString(string(cptr));
+    return Utils::getNewCString(reStr);
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
