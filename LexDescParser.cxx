@@ -183,12 +183,7 @@ LexDescParser::parse(const AlphabetString &input)
     }
     this->parseClasses();
 
-    for (AlphabetString::const_iterator i = input.begin();
-         input.end() != i;
-         ++i) {
-        cout << *i;
-    }
-
     /* now get to the real work */
+    
 
 }
