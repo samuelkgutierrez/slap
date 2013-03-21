@@ -153,6 +153,7 @@ LexDescParser::parseClasses(void)
                          << endl;
                     cout << "   L end found new class" << endl;
                 }
+                break;
             }
         }
         cptr = cend + strlen(CLASS_END_KEYWORD);
