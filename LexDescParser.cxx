@@ -88,11 +88,11 @@ LexDescParser::parseClasses(void)
 {
     char *fStartSav = this->cInputStr;
     char *cptr = NULL, *dptr = NULL, *cend = NULL;
-    string classID, reStr;
+    string classID, reStr, classType;
     int wordl = 0;
     stack<string> classes;
-    classes.push("relevant");
     classes.push("irrelevant");
+    classes.push("relevant");
     classes.push("discard");
 
 
@@ -117,10 +117,24 @@ LexDescParser::parseClasses(void)
     cptr += strlen("is");
     cptr += strspn(cptr, SLAP_WHITESPACE);
     /* now grab re */
-
-    //while (NULL != (dptr = strstr(cptr, "relevant")
-
-    cout << "ID:|" << classID << "|" <<endl;
+    while (!classes.empty()) {
+        string curClass = classes.top();
+        classes.pop();
+        if (NULL == (dptr = strstr(cptr, curClass.c_str()))) {
+            continue;
+        }
+        /* make sure that it is within out bounds */
+        else if (dptr > cend) {
+            continue;
+        }
+        /* we found it! */
+        else {
+            reStr = string(cptr, dptr - cptr);
+            classType = curClass;
+            cout << "class: " << classType << endl;
+            cout << "re: " << reStr << endl;
+        }
+    }
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
