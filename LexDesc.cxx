@@ -59,3 +59,9 @@ LexDesc::accepts(const AlphabetString &input)
 {
     return this->dfa.accepts(input);
 }
+
+string
+LexDesc::getID(void)
+{
+    return this->id;
+}

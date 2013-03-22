@@ -44,6 +44,8 @@ public:
             std::string semRelStr);
 
     bool accepts(const AlphabetString &input);
+
+    std::string getID(void);
 };
 
 #endif

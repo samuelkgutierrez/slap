@@ -166,6 +166,8 @@ LexDescParser::parseClasses(void)
     }
 }
 
+
+
 /* ////////////////////////////////////////////////////////////////////////// */
 void
 LexDescParser::parse(const AlphabetString &input)
@@ -185,6 +187,23 @@ LexDescParser::parse(const AlphabetString &input)
 
     /* now get to the real work */
     AlphabetString::const_iterator a, b;
-    a = b = input.begin();
-
+    a = input.begin();
+    b = input.begin();
+    LexDesc test = *lexs.begin();
+    cout << "ID: " << test.getID() << endl;
+    while (true) {
+        AlphabetString s;
+        int index = 0;
+        while (index < input.size() &&
+               !test.accepts(AlphabetString(a, a + ++index))) {
+            cout << endl << "ACC: " << test.accepts(s) << endl;
+        }
+        cout << "GOT " << endl;
+        s = AlphabetString(a, a + index);
+        for (AlphabetString::iterator i = s.begin(); i != s.end(); ++i) {
+            cout << *i;
+        }
+        cout << endl;
+        break;
+    }
 }
