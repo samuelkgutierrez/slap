@@ -140,14 +140,7 @@ main(int argc, char **argv)
     try {
         UserInputStringParser inputParser(inputsFile);
         AlphabetString inputs = inputParser.getInput();
-        AlphabetSymbol alphaSym  = *inputs.begin();
-        string symStr = alphaSym.str();
-        AlphabetString parts;
-        for (unsigned long c = 0; c < symStr.length(); ++c) {
-            char *cp = &symStr[c];
-            parts.push_back(AlphabetSymbol(string(cp, 1)));
-        }
-        dfa2dfa(nfaSpec, parts, verboseMode);
+        dfa2dfa(nfaSpec, inputs, verboseMode);
     }
     catch (SLAPException &e) {
         cerr << e.what() << endl;
