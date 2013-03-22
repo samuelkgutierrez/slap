@@ -199,21 +199,18 @@ LexDescParser::parse(const AlphabetString &input)
     AlphabetString::const_iterator a;
     unsigned len = input.size();
     a = input.begin();
-    unsigned index = 1;
+    unsigned index = 0;
+    AlphabetString s;
     while (len) {
         index = 1;
-        AlphabetString s;
+        unsigned long lastGood = 1;
+        /* go until no one accepts */
         while (index < len &&
-               !someoneAccepts(AlphabetString(a, a + index++))) {
-            ;
+               !someoneAccepts(AlphabetString(a, a + index))) {
+            index++;
+            lastGood++;
         }
-        s = AlphabetString(a, a + index);
-        if (!someoneAccepts(s)) {
-            cout << "HERE" << endl;
-            while (someoneAccepts(AlphabetString(a, a + index--))) {
-                ;
-            }
-        }
+        cout << "INDEX " << index << endl;
         s = AlphabetString(a, a + index);
         cout << "GOT" << endl;
         for (AlphabetString::iterator i = s.begin(); i != s.end(); ++i) {
