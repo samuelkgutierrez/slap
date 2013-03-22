@@ -10,6 +10,7 @@
 ##############
  # BUILDING #
 ##############
+untar tar XXX
 ./configure
 make
 
@@ -19,6 +20,7 @@ make
 # (algorithms: {1, 2, ... n} means that within each standalone tool, the
 # algorithm number mentioned in the specification was used in some form or
 # another.)
+
 re2nfa -  converts an re to an nfa
           algorithms: 1, 2, 3, 4, 7
 
@@ -28,28 +30,41 @@ nfa2dfa - converts an nfa to a dfa using subset construction
 dfa2dfa - minimizes a given dfa using hopcroft's algorithm
           algorithms: 3, 4, 5
 
+slap - implements interface between scanner and parser.
+       algorithms 1, 2, 3, 4, 7, 8
+
+#############
+ # OPTIONS #
+#############
+o A -v option is provided that displays an enormous amount of output. 
+o In general, each tool is run:
+  tool-name [-v] [DESC FILE] [-][TESTINPUT]
+
 ########################
  # TESTING FROM STDIN #
 ########################
 o It is possible to test the standalone programs with input from stdin.
 # For Example:
-# echo "cb" | ./nfa2dfa ./tests/nfa3.txt -
+# echo "cb" | ./nfa2dfa -v ./tests/nfa3.txt -
 # OR
 # ./nfa2dfa ./tests/nfa3.txt - <ENTER>
 # asdf <ENTER>
 Please note, however, that in this mode only one line of text can be tested.
 
-#################
- # ASSUMPTIONS #
-#################
+####################################
+ # ASSUMPTIONS AND THINGS TO NOTE #
+####################################
 
 # Alphabet Specification
 o Only 'alphabet' and 'end' will be recognized as valid alphabet specification
   keywords.
 
 # re2nfa
-o Regular expression specifications do not span multiple lines.
 o Regular expression specification is before alphabet.
+o Testing: It is probably best to test with the -v option.
+  For Example: ./re2nfa -v ./tests/regexp1.txt ./tests/test-regexp1.txt
+o Test files are named: test-<regexp#>.txt
+o If the -v output is problematic, simply omit the option.
 
 # Lexical Description
 o class definitions are after one another. That is,

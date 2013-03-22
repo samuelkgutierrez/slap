@@ -200,6 +200,7 @@ LexDescParser::what(AlphabetString str)
                 cout << *j;
             }
             cout << " " << i->getRelStr() << endl;
+            break;
         }
     }
 }
