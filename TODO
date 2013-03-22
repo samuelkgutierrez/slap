@@ -1,7 +1,0 @@
-make sure that start and ends are balanced in inputs
-fix \n inputs. like:
-alphabet
-'b 'a 'o 'r 'i 'n 'g ' '\n
-end
-in input parse, need to add \n and maybe others like \t?
-fix ' and '_
