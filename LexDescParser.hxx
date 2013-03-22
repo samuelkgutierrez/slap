@@ -45,6 +45,7 @@ private:
     void parseClasses(void);
 
     std::vector<LexDesc> lexs;
+    bool someoneAccepts(const AlphabetString &str);
 
 protected:
 
