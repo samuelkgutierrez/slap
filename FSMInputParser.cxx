@@ -133,6 +133,10 @@ parseDFAInputList(FSMInputParser::FSMType fsmType,
             string(cptr, 1) + ". cannot continue.";
         throw SLAPException(SLAP_WHERE, eStr);
     }
+    if ("" == inputStr) {
+        inputStr = " ";
+        tmpAlphaSym = AlphabetSymbol(inputStr);
+    }
     /* else make sure it is a valid symbol */
     if (alphabet.end() == find(alphabet.begin(), alphabet.end(), tmpAlphaSym)) {
         string eStr = "invalid symbol detected during transition parse."
