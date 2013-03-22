@@ -46,6 +46,7 @@ public:
     bool accepts(const AlphabetString &input);
 
     std::string getID(void);
+    std::string getRelStr(void);
 };
 
 #endif

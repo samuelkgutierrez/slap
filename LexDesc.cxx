@@ -65,3 +65,9 @@ LexDesc::getID(void)
 {
     return this->id;
 }
+
+::string
+LexDesc::getRelStr(void)
+{
+    return this->semRelStr;
+}

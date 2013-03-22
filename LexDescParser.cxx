@@ -168,10 +168,19 @@ LexDescParser::parseClasses(void)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 bool
-LexDescParser::someoneAccepts(const AlphabetString &str)
+LexDescParser::oneAccepts(AlphabetString str)
 {
-    for (unsigned i = 0; i < lexs.size(); ++i) {
-        if (lexs[i].accepts(str)) {
+#if 0
+    cout << "TESTING INPUT" << endl;
+    for (AlphabetString::iterator i = str.begin(); i != str.end(); ++i) {
+        cout << *i;
+    }
+    cout << endl << "TESTING INPUT" << endl;
+#endif
+    for (vector<LexDesc>::iterator i = this->lexs.begin();
+         this->lexs.end() != i;
+         ++i) {
+        if (i->accepts(str)) {
             return true;
         }
     }
@@ -180,7 +189,24 @@ LexDescParser::someoneAccepts(const AlphabetString &str)
 
 /* ////////////////////////////////////////////////////////////////////////// */
 void
-LexDescParser::parse(const AlphabetString &input)
+LexDescParser::what(AlphabetString str)
+{
+    for (vector<LexDesc>::iterator i = this->lexs.begin();
+         this->lexs.end() != i;
+         ++i) {
+        if (i->accepts(str)) {
+            cout << i->getID() << " ";
+            for (AlphabetString::iterator j = str.begin(); j != str.end(); ++j) {
+                cout << *j;
+            }
+            cout << " " << i->getRelStr() << endl;
+        }
+    }
+}
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+LexDescParser::parse(AlphabetString input)
 {
     /* setup */
     this->parseAlphabet();
@@ -196,28 +222,26 @@ LexDescParser::parse(const AlphabetString &input)
     this->parseClasses();
 
     /* now get to the real work */
-    AlphabetString::const_iterator a;
+    AlphabetString::iterator a, b;
     unsigned len = input.size();
-    a = input.begin();
-    unsigned index = 0;
-    AlphabetString s;
+    a = b = input.begin();
+    b++;
     while (len) {
-        index = 1;
-        unsigned long lastGood = 1;
+        AlphabetString s;
         /* go until no one accepts */
-        while (index < len &&
-               !someoneAccepts(AlphabetString(a, a + index))) {
-            index++;
-            lastGood++;
+        while (--len && !oneAccepts(AlphabetString(a, b))) {
+            b++;
         }
-        cout << "INDEX " << index << endl;
-        s = AlphabetString(a, a + index);
-        cout << "GOT" << endl;
-        for (AlphabetString::iterator i = s.begin(); i != s.end(); ++i) {
-            cout << *i;
+        s = AlphabetString(a, b);
+        if (!oneAccepts(s)) {
+            while (!oneAccepts(AlphabetString(a, --b))) {
+                len++;
+            }
+            b++;
+            s = AlphabetString(a, b);
         }
-        cout << endl;
-        len -= index;
-        a += index;
+        what(s);
+        a = b;
+        b++;
     }
 }

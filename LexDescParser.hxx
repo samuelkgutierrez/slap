@@ -45,7 +45,8 @@ private:
     void parseClasses(void);
 
     std::vector<LexDesc> lexs;
-    bool someoneAccepts(const AlphabetString &str);
+    bool oneAccepts(AlphabetString str);
+    void what(AlphabetString str);
 
 protected:
 
@@ -56,7 +57,7 @@ public:
 
     void verbose(bool beVerbose = false);
 
-    void parse(const AlphabetString &input);
+    void parse(AlphabetString input);
 };
 
 #endif
