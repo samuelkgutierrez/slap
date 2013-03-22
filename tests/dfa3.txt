@@ -1,3 +1,6 @@
+alphabet
+'a 'b 'c
+end
 dfa 
 states 
 s1
@@ -13,6 +16,3 @@ s1 'a --> s2
 s2 'a --> s1
 end;
 
-alphabet
-'a 'b 'c
-end
