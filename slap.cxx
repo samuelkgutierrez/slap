@@ -69,8 +69,6 @@ parse(bool verboseMode,
     ldParser.verbose(verboseMode);
     ldParser.parse(input);
     cout << "c done" << endl;
-
-    cout << "c starting parse" << endl;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
