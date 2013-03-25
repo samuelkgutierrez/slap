@@ -209,6 +209,7 @@ LexDescParser::what(AlphabetString str)
 void
 LexDescParser::parse(AlphabetString input)
 {
+    /* XXX fix this code some day */
     /* setup */
     this->parseAlphabet();
     if (this->beVerbose) {
@@ -245,4 +246,5 @@ LexDescParser::parse(AlphabetString input)
         a = b;
         b++;
     }
+    /* XXX fix this code some day */
 }
