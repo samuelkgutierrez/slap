@@ -170,20 +170,20 @@ LexDescParser::parseClasses(void)
 bool
 LexDescParser::oneAccepts(AlphabetString str)
 {
-#if 0
     cout << "TESTING INPUT" << endl;
     for (AlphabetString::iterator i = str.begin(); i != str.end(); ++i) {
         cout << *i;
     }
-    cout << endl << "TESTING INPUT" << endl;
-#endif
+    cout << endl << "TESTING INPUT";
     for (vector<LexDesc>::iterator i = this->lexs.begin();
          this->lexs.end() != i;
          ++i) {
         if (i->accepts(str)) {
+            cout << endl << "accepting!" << endl;
             return true;
         }
     }
+    cout << endl;
     return false;
 }
 
@@ -231,25 +231,35 @@ LexDescParser::parse(AlphabetString input)
     while (len) {
         AlphabetString s;
         /* go until no one accepts */
-        while (--len) {
+        while (len) {
             if (!oneAccepts(AlphabetString(a, b))) {
+                len--;
                 b++;
+                continue;
             }
-            else {
-                break;
-            }
+            else break;
         }
         s = AlphabetString(a, b);
         cout << "    L done with first while" << endl;
         AlphabetSymbol::echoString(s);
         cout << endl << "    L done with first while" << endl;
+
+        if (oneAccepts(AlphabetString(a, b))) {
+            cout << "   L accept after first loop!" << endl;
+        }
+        else {
+            cout << "   L NO accept after first loop!" << endl;
+        }
+
 #if 0
-        if (!oneAccepts(s)) {
-            while (!oneAccepts(AlphabetString(a, --b))) {
-                len++;
+        if (!oneAccepts(AlphabetString(a, b - 1))) {
+            if (!oneAccepts(s)) {
+                while (!oneAccepts(AlphabetString(a, --b))) {
+                    len++;
+                }
+                b++;
+                s = AlphabetString(a, b);
             }
-            b++;
-            s = AlphabetString(a, b);
         }
 #endif
         what(s);
