@@ -49,6 +49,8 @@ public:
     /* << */
     friend std::ostream &operator<<(std::ostream &out,
                                     const AlphabetSymbol &sym);
+
+    static void echoString(const AlphabetString &astring);
 };
 
 #endif

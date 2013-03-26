@@ -235,6 +235,9 @@ LexDescParser::parse(AlphabetString input)
             b++;
         }
         s = AlphabetString(a, b);
+        cout << "    L done with first while" << endl;
+        AlphabetSymbol::echoString(s);
+        cout << endl << "    L done with first while" << endl;
         if (!oneAccepts(s)) {
             while (!oneAccepts(AlphabetString(a, --b))) {
                 len++;

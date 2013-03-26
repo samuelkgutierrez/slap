@@ -83,3 +83,14 @@ operator<(const AlphabetSymbol &s1,
 {
     return s1.symbol < s2.symbol;
 }
+
+/* ////////////////////////////////////////////////////////////////////////// */
+void
+AlphabetSymbol::echoString(const AlphabetString &astring)
+{
+    for (AlphabetString::const_iterator it = astring.begin();
+         astring.end() != it;
+         ++it) {
+        cout << *it;
+    }
+}
